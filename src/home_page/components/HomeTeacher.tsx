@@ -4,7 +4,7 @@
 //import { SendLiveText } from "../features/live_actions/live_text";
 import { NavigationBar } from "./NavigationBar";
 import { Outlet } from "react-router-dom";
-import SimplePeer from "../components/SimplePeer";
+//import SimplePeer from "../components/SimplePeer";
 
 
 export function HomeTeacher(props:any) {
@@ -18,10 +18,6 @@ export function HomeTeacher(props:any) {
             <Outlet />
             <div className={`flex h-screen w-screen items-center justify-center bg-bgColor text-textColor`}>
         
-                <div className='mx-14'>
-                    <SendLiveText />
-                </div>
-
             </div>
             </div>
         </div>

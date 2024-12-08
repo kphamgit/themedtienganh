@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -18,7 +18,6 @@
     "@tiptap/starter-kit": "^2.9.1",
     "@types/node": "^22.8.1",
     "@types/simple-peer": "^9.11.8",
-    "aws-sdk": "^2.1691.0",
     "axios": "^1.7.7",
     "buffer": "^6.0.3",
     "classnames": "^2.5.1",

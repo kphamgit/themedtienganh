@@ -1,6 +1,6 @@
-import { useContext, useEffect, useState } from "react";
-import { ThemeContext } from "./contexts/theme_context";
-import { ThemeContextInterface } from "./types";
+import {  useEffect, useState } from "react";
+//import { ThemeContext } from "./contexts/theme_context";
+//import { ThemeContextInterface } from "./types";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Home } from "./home_page/components/Home";
 import { Login } from "./features/auth/components/Login";
@@ -77,13 +77,13 @@ function App() {
                   <Route path="/categories/:categoryId" element={<CategoryPage />}>
                     <Route path="sub_categories_student/:sub_categoryId" element={<SubCategoryPageStudent />} />
                     <Route path="sub_categories_teacher/:sub_categoryId" element={<SubCategoryPageTeacher />} />
-                    <Route path="sub_categories/:sub_category_name/quizzes/:quizId" element={<QuizPageVideo />} />
+                   
                     <Route path="sub_categories/:sub_category_name/list_questions/:quiz_id" element={<ListQuestions />} />
                     <Route path="sub_categories/:sub_category_name/list_questions/:quiz_id/edit_question/:question_id" element={<QuestionEditor />} />
                   </Route>
                   <Route path="/live_text" element={<LiveText />} />
                   <Route path="/simple_peer" element={<SimplePeer />} />
-                  <Route path="/live_quiz" element={<QuizPageLive />} />
+                
                   <Route path="/live_game/:game_id/:backcolor" element={<MemoryGame />} />
                 </Route>
               </Routes>

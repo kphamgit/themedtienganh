@@ -104,13 +104,7 @@ export function HomeStudent() {
   return (
  
       <div className='bg-bgColor mx-10 p-5'>
-        <div className="grid grid-cols-2-2 justify-auto">
-          <NavigationBar />
-        </div >
-     
-        <div className='bg-bgColor'>
-        <Outlet />
-        </div>
+        <div>Student</div>
       </div>
 
  
