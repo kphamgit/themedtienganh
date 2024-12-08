@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bgColor: #ffffff;
+  --textColor: #333333;
+}
+
+.theme-dark {
+  --bgColor: #140101;
+  --textColor: #e6cbcb;
+
+  --navCatButtonBgActive: #382a2a;
+  --navCatButtonBgInActive: #382a2a;
+  --navCatButtonBgHover: #418471;
+
+  --userNavText: #ace4d7;
+
+  --questionAttemptBg: #093f2c;
+  --questionAttemptText: #f3e3e3;
+
+  --takeQuizButtonBg: #322d05;
+  --takeQuizButtonText: #c9d8e2;
+
+  --bgColor1: #3d0808;
+  --textColor1: #ffffff;
+
+  --bgColor2: #600909;
+  --textColor2: #ffffff;
+
+  --bgColor3: #600909;
+  --textColor3: #e5bcbc;
+}
+
+.theme-light {
+  --bgColor: #dfebea;
+  --textColor: #c7cce3;
+
+  --navCatButtonBgActive: #84e1ed;
+  --navCatButtonBgInActive: #5dc2a6;
+  --navCatButtonBgHover: #c0f3e4;
+
+  --userNavText: #06503f;
+
+  --questionAttemptBg: #d0e2db;
+  --questionAttemptText: #5c3131;
+
+  --takeQuizButtonBg: #d9d079;
+  --takeQuizButtonText: #031c2b;
+
+  --bgColor1: #36c492;
+  --textColor1: #253f06;
+
+  --bgColor2: #3d4cb3;
+  --textColor2: #9898d2;
+
+  --bgColor3: #600909;
+  --textColor3: #350606;
+}
+
+.letter-input {
+  /* each letter will take 1ch + 1px and we remove 1px of the last one*/
+  width: calc(2 * (1ch - 5px) - 3px);
+  height: calc(3 * (1ch - 3px) - 3px);
+  padding-left: 1px;
+  padding-right: 1px;
+  margin-left: 1px;
+  border-width: 1px;
+  border-color: rgb(54, 111, 109);
+  background: 
+  repeating-linear-gradient(to right, #e0cdcd, #e3cbcb 1ch, #fff 1ch, #d6bcbc calc(1ch));
+  font-size: 28px;
+  /*since a letter will take 1ch we add 1px to cover the border*/
+  
+  /*we use a monospace font-family so all the letter will take the same width = 1ch*/
+  font-family: monospace;
+  caret-color: color(srgb red green blue);
+ 
+}

@@ -1,0 +1,13 @@
+
+.player-wrapper {
+    position: relative;
+  }
+  .player-overlay {
+    position: absolute;
+    background-color: transparent;
+    width: 120%;
+    height: 350px;
+    left: 0;
+    top: 0;
+    z-index: 1;
+  }
