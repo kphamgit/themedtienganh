@@ -9,7 +9,7 @@ import { ThemeProvider } from "./providers";
 import { Provider } from 'react-redux';
 //import SocketContextComponent from './components/context/Socket/Component';
 import { store, persistore } from './redux/store';
-import { PersistGate } from 'redux-persist/integration/react';
+////import { PersistGate } from 'redux-persist/integration/react';
 import SocketContextComponent from './contexts/socket_context/Component.tsx'
 
 

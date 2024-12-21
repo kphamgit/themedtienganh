@@ -43,12 +43,12 @@ export function SubCategoryPageStudent(props:any) {
 
     return (
         <>
-            <div className='flex flex-row justify-center m-1 text-textColor1 text-xl'>{sub_category?.name} </div>
-            <div className='grid grid-cols-10'>
+            <div className='flex flex-row justify-center m-1 bg-bgColor1 text-textColor1 text-xl'>{sub_category?.name} </div>
+            <div className='grid grid-cols-10 bg-bgColor2'>
                 <div className='col-span-3 grid grid-rows rounded-lg'>
                     {sub_category?.units.map(unit => (
                         <div key={unit.id}>
-                        <div className='m-2 text-md'>Unit {unit.unit_number} - {unit.name}</div>
+                        <div className='m-2 text-md text-textColor1'>Unit {unit.unit_number} - {unit.name}</div>
                         <div className='flex flex-col m-2 gap-1 rounded-lg p-2'>{unit.quizzes.map(quiz =>
                              <div key={quiz.id}>
                                 <div className='flex flex-row gap-2'>

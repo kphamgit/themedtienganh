@@ -8,11 +8,9 @@ import { Logout } from "./features/auth/components/Logout";
 import SocketContextComponent from "./contexts/socket_context/Component";
 import TtSpeechProvider from "./contexts/azure/AzureTtsContext";
 import { SubCategoryPageStudent } from "./pages/SubCategoryStudent";
-import { SubCategoryPageTeacher } from "./pages/SubCategoryPageTeacher";
 //import { QuizPageVideo } from "./features/quiz_attempt/components/QuizPageVideo";
 import CategoryPage from "./pages/CategoryPage";
-import { ListQuestions } from "./features/live_actions/components/ListQuestions";
-import { QuestionEditor } from "./features/admin";
+
 import { LiveText } from "./pages/LiveText";
 //import { QuizPageLive } from "./pages/QuizPageLive";
 import MemoryGame from "./pages/MemoryGame";
@@ -76,10 +74,7 @@ function App() {
                 <Route path="/" element={<Home />}>
                   <Route path="/categories/:categoryId" element={<CategoryPage />}>
                     <Route path="sub_categories_student/:sub_categoryId" element={<SubCategoryPageStudent />} />
-                    <Route path="sub_categories_teacher/:sub_categoryId" element={<SubCategoryPageTeacher />} />
-                   
-                    <Route path="sub_categories/:sub_category_name/list_questions/:quiz_id" element={<ListQuestions />} />
-                    <Route path="sub_categories/:sub_category_name/list_questions/:quiz_id/edit_question/:question_id" element={<QuestionEditor />} />
+
                   </Route>
                   <Route path="/live_text" element={<LiveText />} />
                   <Route path="/simple_peer" element={<SimplePeer />} />

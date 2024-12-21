@@ -13,9 +13,7 @@ export function HomeTeacher(props:any) {
     return (
         <div className="mx-10 p-5">
             <div className="bg-bgColor mx-3">
-            <NavigationBar />
-       
-            <Outlet />
+          
             <div className={`flex h-screen w-screen items-center justify-center bg-bgColor text-textColor`}>
         
             </div>
