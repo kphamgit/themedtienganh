@@ -1,8 +1,8 @@
-import {  useEffect, useState } from "react";
+import {  useEffect, useState, lazy, Suspense } from "react";
 //import { ThemeContext } from "./contexts/theme_context";
 //import { ThemeContextInterface } from "./types";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Home } from "./components/navigation/Home";
+//import { Home } from "./components/navigation/Home";
 import { Login } from "./auth/Login";
 import { Logout } from "./auth/Logout";
 import SocketContextComponent from "./contexts/socket_context/Component";
@@ -17,6 +17,25 @@ import MemoryGame from "./components/live/MemoryGame";
 import SimplePeer from "./components/shared/SimplePeer";
 import { QuizPageVideo } from "./components/quiz_attempts/QuizPageVideo";
 //import SocketContext from "./contexts/socket_context/Context";
+
+const Home = lazy(() => import("./components/navigation/Home"))
+/*
+
+//const SubCategory = lazy(() => import("./routes/SubCategory"))
+//const SubCategoryPageTeacher = lazy(() => import("./pages/SubCategoryPageTeacher"))
+//const QuizPageVideo = lazy(() => import("./pages/QuizPageVideo"))
+
+const QuizPageVideo  = lazy(() => import('./routes/TakeVideoQuiz'));
+const YoutubeVideoPlayer = lazy(() => import('./components/YoutubeVideoPlayer'));
+const MemoryGame = lazy(() => import('./components/MemoryGame')) 
+const SimplePeer = lazy(() => import('./components/SimplePeer'))
+const QuizPageLive = lazy(() => import('./routes/TakeQuizLive'))  
+
+const TtSpeechProvider = lazy(() => import("./components/context/AzureTtsContext"))
+const AudioBlobProvider = lazy(() => import("./components/context/AudioBlobContext"))
+
+*/
+
 
 function getAuthFromSessionStorage() {
     const tokenString = sessionStorage.getItem('auth');

@@ -1,25 +1,17 @@
-import {useContext, useEffect} from 'react'
+import { useEffect, lazy} from 'react'
 
 import { useAppSelector } from '../../redux/store'
 import { Outlet, useNavigate } from 'react-router-dom'
-import SocketContext from '../../contexts/socket_context/Context'
-//import ReactTextareaAutosize from 'react-textarea-autosize'
-//import PeerComponentStudent from './PeerComponentStudent'
-//import { Dictaphone } from './Dictaphone'
+
+import LiveAudioRecorder  from "../shared/LiveAudioRecorder"
+import { ScoreBoard2 } from '../quiz_attempts/ScoreBoard2'
 import { NavigationBar } from './NavigationBar'
-//import SimplePeer from '../../components/SimplePeer'
+import { useSocketContext } from '../../hooks/useSocketContext'
 
+//const LiveAudioRecorder = lazy(() => import("../pages/LiveAudioRecorder"))
 
-//import VoiceRecorder from './VoiceRecorder'
-
-
-export function HomeStudent() {
+export default function HomeStudent(props: any ) {
     const user = useAppSelector(state => state.user.value)
-    const strings: string[] = ["bg-red-200", "bg-blue-200", "bg-purple-200", "bg-cyan-200", "bg-slate-200",
-  "bg-lime-200", "bg-green-200", "bg-amber-100", "bg-orange-100",  "bg-emerald-200", "bg-sky-200", "bg-indigo-100", "bg-rose-100",
-  "bg-yellow-200", "bg-fuchsia-200", "bg-teal-100",
-  ];
-
     //const [localLiveQuizId, setLocalLiveQuizId] = useState<string>('')
     // this is not needed but keep it for Typescript learning
       /*  Initialize localLiveQuizId with an empty string to avoid this error:
@@ -33,13 +25,18 @@ export function HomeStudent() {
         </select>
     */
 
-    const {socket, uid, users} = useContext(SocketContext).SocketState;
+    //const {socket, user_name, users} = useContext(SocketContext).SocketState;
+    const {socket, user_name, users} = useSocketContext()
+
     const navigate = useNavigate();
-  
+
     useEffect(() => {
-      if (socket) {
-        socket.on('live_question', (arg: { quiz_id: string, question_number: string, target_student: string, target_class: string }) => {
-          if (arg.target_student.trim() === 'everybody' && arg.target_class.trim() === user.classId?.toString()) {
+        socket.on('live_question', (arg: { quiz_id: string, question_number: string, target_student: string}) => {
+          console.log("emit live question received...arg=", arg)
+          const temp = {...arg, target_student: user.user_name}
+          socket.emit("live_question_received", temp)
+ 
+          if (arg.target_student.trim() === 'everybody') {
             //console.log("live question for everybody in my class", user.classId)
             navigate("/live_quiz", { state: arg })
           }
@@ -53,60 +50,88 @@ export function HomeStudent() {
         return () => {
           socket?.off("live_question")
         }
-      }
     },[socket, navigate, user.user_name, user.classId])
 
-    
-    useEffect(() => {
-      if (socket) {
-        socket.on('enable_live_text', (arg: { target_student: string, target_class: string }) => {
-          console.log("Home student: enable_live_text message received:", arg)
-          //const arg = {live_text: `${liveText}`, target_student: targetStudent, target_class: targetClass}
-          if (arg.target_student.trim() === 'everybody' && arg.target_class.trim() === user.classId?.toString()) {
-            //console.log("live text for everybody in my class", user.classId)
-            //console.log("navigate to /live_text")
-            navigate("/live_text", { state: arg })
-          }
-          else if (arg.target_student.trim() === user.user_name?.trim()) {
-            navigate("/live_text", { state: arg })
-          }
-          else {
-            console.log(" invalid student target")
-          }
-          
-        })
-        return () => {
-          socket?.off("enable_live_text")
+   
+  useEffect(() => {   
+      socket.on('live_text', (arg: { backchaining: boolean, text_complete: boolean, live_text: string, target_student: string, target_class: string }) => {
+        if (arg.target_student.trim() === 'everybody') {
+          navigate("/live_text", { state: arg })
         }
+
+      })
+      return () => {
+        socket?.off("live_text")
       }
-    },[socket, navigate, user.user_name, user.classId])
+  }, [socket, navigate])
+    
+      ///live_audio_recorder/live_picture
+      useEffect(() => {
+          socket.on('live_youtube_video', (arg: { target_student: string, video_url: string, video_duration: number }) => {
+            if (arg.target_student.trim() === 'everybody') {
+              navigate("/live_youtube_video", { state: {video_url: arg.video_url, video_duration: arg.video_duration} })
+            }
+    
+          })
+          return () => {
+            socket?.off("live_youtube_video")
+          }
+      }, [socket, navigate, user.user_name])
+        
+
+    useEffect(() => {
+   
+        socket.on('live_picture', (arg: { live_text: string, target_student: string, target_class: string }) => {
+           //console.log("....xxxxxx xxxxx xxx .... live_picture message received:", arg)
+           navigate("/live_picture", { state: arg })
+        })
+
+        return () => {
+          socket?.off("live_picture")
+        }
+    },[socket, navigate])
+  
 
   useEffect(() => {
-    if (socket) {
       socket.on('enable_game', (arg: { game_id: string, backcolor: string }) => {
-        //console.log(" game....", arg)
         navigate(`/live_game/${arg.game_id}/${arg.backcolor}`)
       })
       return () => {
         socket?.off("enable_game")
       }
-    }
   }, [socket, navigate, user.user_name, user.role])
 
-/*
-        {user.role.include('teacher') ?
-        <PeerComponentTeacher items={['aaaaa', 'bbbbb']} />
-        :
-        <PeerComponentStudent />
-        }
-//
-*/
-  return (
- 
-      <div className='bg-bgColor mx-10 p-5'>
-        <div>Student</div>
-      </div>
+  const pollyFunc = (selected_text: string) => {
+      console.log("in polly function")
+  }
 
- 
+  return (
+    <div>
+   
+      <div className='grid grid-cols-12'>
+        <div className='bg-green-200 col-span-9 h-screen'>
+          <NavigationBar />
+          <Outlet />
+        </div>
+        <div>
+          <LiveAudioRecorder />
+        </div>
+      </div>
+    
+    </div>
   )
 }
+
+/*
+
+     <div className='bg-amber-300 col-span-3'>
+            <div className='grid grid-rows-2'>
+            <div className='h-20'><LiveAudioRecorder /></div>
+            
+            </div>
+        </div>
+   <div className='m-3 text-gray-400 bg-slate-200' >
+            <ScoreBoard2 />
+          </div>
+         
+*/

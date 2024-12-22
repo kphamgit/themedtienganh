@@ -51,6 +51,7 @@ export async function getAClass(id: string): Promise<ClassProps> {
   
   }
 
+  /*
   export async function upload_form_data_to_s3(formData: any, config: any) {
     const url = `${rootpath}/api/uploads/do_upload_single` 
     //console.log(" in list upload..url =", url)
@@ -58,4 +59,39 @@ export async function getAClass(id: string): Promise<ClassProps> {
      axios.post(url, formData, config).then((response) => {
        return response;
      });
+  }
+
+  */
+
+  export async function upload_form_data_to_s3(formData: any, config: any) {
+    const url = `${rootpath}/api/upload_s3/do_upload_single` 
+    //console.log(" in list upload..url =", url)
+    //console.log("form data: ", formData)
+    /*
+     axios.post(url, formData, config).then((response) => {
+       return response;
+     });
+     */
+     try {
+      const response = await axios.post(url, formData, config);
+      console.log(response.data);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        // Handle specific Axios errors
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.error('Response error:', error.response.status, error.response.data);
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.error('Request error:', error.request);
+        } else {
+          // Something happened in setting up the request that triggered an error
+          console.error('Error:', error.message);
+        }
+      } else {
+        // Handle non-Axios errors
+        console.error('Unexpected error:', error);
+      }
+    }
   }

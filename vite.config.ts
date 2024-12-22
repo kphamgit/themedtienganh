@@ -8,7 +8,18 @@ export default defineConfig({
       exclude: [] // Include all polyfills
     }),
   ],
- 
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            // Create separate chunks for each library
+            return id.toString().split('node_modules/')[1].split('/')[0];
+          }
+        },
+      },
+    },
+  },
   resolve: {
     alias: {
       // ...

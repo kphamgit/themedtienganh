@@ -1,6 +1,6 @@
 
 import { useAppSelector } from '../../redux/store';
-import { useAxiosFetch } from '../../hooks';
+import { useAxiosFetch } from '../../hooks/useAxiosFetch';
 import { Link, NavLink } from 'react-router-dom';
 import { ThemeContext } from '../../contexts/theme_context/ThemeContext';
 import { ThemeContextInterface } from '../../types';

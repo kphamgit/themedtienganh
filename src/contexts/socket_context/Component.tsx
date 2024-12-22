@@ -1,6 +1,4 @@
 import React, { PropsWithChildren, useEffect, useReducer, useState } from 'react';
-//import { useSocket } from '../hooks/useSocket';
-//import { useSocket } from '../../../hooks/useSocket';
 import { useSocket } from '../../hooks';
 import { defaultSocketContextState, SocketContextProvider, SocketReducer } from './Context';
 import { useAppSelector } from '../../redux/store';
@@ -16,27 +14,9 @@ interface SocketInfo {
 
 const SocketContextComponent: React.FunctionComponent<ISocketContextComponentProps> = (props) => {
     const { children } = props;
-
     const user = useAppSelector(state => state.user.value)
 
     const URL = process.env.NODE_ENV === 'production' ? undefined : 'http://localhost:5001';
-    let rootpath = ''
-    if (process.env.NODE_ENV === "production") {
-        //rootpath = 'fullstack-kp-f6a689f4a15c.herokuapp.com'
-        rootpath = 'https://kphamenglish-f26e8b4d6e4b.herokuapp.com/'
-        //rootpath = 'https://www.kevinphamengli.com'
-    }
-    else if (process.env.NODE_ENV === "development"){
-        rootpath = 'localhost:5001'
-        
-    }
-    else {
-        console.log("invalid NODE_ENV ")
-    }
-
-    //const URL1 = 'http://localhost:5001'
-
-    //const socket = useSocket(`ws://${rootpath}`, {
         
     const socket = useSocket(URL!, {
         reconnectionAttempts: 5,
@@ -62,14 +42,14 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
     const StartListeners = () => {
         /** Messages */
         socket.on('user_connected', (users: SocketInfo[]) => {
-            console.info('User connected message received users=', users);
+            console.info('User connected message received');
             SocketDispatch({ type: 'update_users', payload: users });
         });
 
         /** Messages */
-        socket.on('user_disconnected', (uid: string) => {
-            console.info('In socket Component.ts User disconnected message received uid=', uid);
-            SocketDispatch({ type: 'remove_user', payload: uid });
+        socket.on('user_disconnected', (user_name: string) => {
+            console.info('In socket Component.ts User disconnected message received user name=', user_name);
+            SocketDispatch({ type: 'remove_user', payload: user_name });
         });
 
         /** Connection / reconnection listeners */
@@ -95,10 +75,10 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
     const SendHandshake = async () => {
         console.info('Sending handshake to server ...');
 
-        socket.emit('handshake', async (uid: string, users: SocketInfo[]) => {
-            console.info('User handshake callback message received');
+        socket.emit('handshake', async (user_name: string, users: SocketInfo[]) => {
+            console.info('User handshake callback message received user_name =', user_name, " users = ", users);
             SocketDispatch({ type: 'update_users', payload: users });
-            SocketDispatch({ type: 'update_uid', payload: uid });
+            SocketDispatch({ type: 'update_user_name', payload: user_name });
         });
 
         setLoading(false);

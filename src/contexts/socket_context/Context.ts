@@ -9,20 +9,18 @@ interface SocketInfo {
 
 export interface ISocketContextState {
     socket: Socket | undefined;
-    uid: string;
+    user_name: string;
     users: SocketInfo[];
-    user_uuids: string[];
 }
 //Youtube: https://www.youtube.com/watch?v=-aTWWl4klYE
 
 export const defaultSocketContextState: ISocketContextState = {
     socket: undefined,
-    uid: '',
+    user_name: '',
     users: [],
-    user_uuids: []
 };
 
-export type TSocketContextActions = 'update_socket' | 'update_uid' | 'update_users' | 'remove_user';
+export type TSocketContextActions = 'update_socket' | 'update_user_name' | 'update_users' | 'remove_user';
 export type TSocketContextPayload = string | SocketInfo[] | Socket;
 
 export interface ISocketContextActions {
@@ -31,17 +29,17 @@ export interface ISocketContextActions {
 }
 
 export const SocketReducer = (state: ISocketContextState, action: ISocketContextActions) => {
-    console.log('Message recieved - Action: ' + action.type + ' - Payload: ', action.payload);
+    console.log('in SocketReducer: message received - Action: ' + action.type + ' - Payload: ', action.payload);
 
     switch (action.type) {
         case 'update_socket':
             return { ...state, socket: action.payload as Socket };
-        case 'update_uid':
-            return { ...state, uid: action.payload as string };
+        case 'update_user_name':
+            return { ...state, user_name: action.payload as string };
         case 'update_users':
             return { ...state, users: action.payload as SocketInfo[] };
         case 'remove_user':
-            return { ...state, users: state.users.filter((uid) => uid.socket_id !== (action.payload as string) ) };
+            return { ...state, users: state.users.filter((user) => user.socket_id !== (action.payload as string) ) };
         default:
             return state;
     }
