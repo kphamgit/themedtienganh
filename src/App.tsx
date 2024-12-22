@@ -11,7 +11,7 @@ import SocketContextComponent from "./contexts/socket_context/Component";
 //import { QuizPageVideo } from "./features/quiz_attempt/components/QuizPageVideo";
 //import CategoryPage from "./components/navigation/CategoryPage";
 
-import { LiveText } from "./components/live/LiveText";
+//import { LiveText } from "./components/live/LiveText";
 //import { QuizPageLive } from "./pages/QuizPageLive";
 //import MemoryGame from "./components/live/MemoryGame";
 //import SimplePeer from "./components/shared/SimplePeer";
@@ -25,6 +25,7 @@ const QuizPageVideo  = lazy(() => import('./components/quiz_attempts/QuizPageVid
 const TtSpeechProvider = lazy(() => import("./contexts/azure/AzureTtsContext"))
 const CategoryPage = lazy(() => import("./components/navigation/CategoryPage"))//
 const MemoryGame = lazy(() => import("./components/live/MemoryGame"))//
+const LiveText = lazy(() => import("./components/live/LiveText"))//
 /*
 
 //const SubCategory = lazy(() => import("./routes/SubCategory"))

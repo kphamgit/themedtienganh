@@ -28,7 +28,7 @@ export default function LiveText(props: any) {
     "text_complete": false,
     "live_text": "eefefef",
     "target_student": "everybody",
-    "target_class": "3"
+    "targewwt_class": "3"
 }
     */
 
