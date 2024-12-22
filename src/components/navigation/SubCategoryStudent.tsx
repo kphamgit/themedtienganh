@@ -28,7 +28,7 @@ type SubCategory = {
     }[]
 }
 
-export function SubCategoryPageStudent(props:any) {
+export default function SubCategoryPageStudent(props:any) {
    
     const params = useParams<{ sub_categoryId: string }>();
     const { data: sub_category, loading: sub_loading, error: sub_error } = useAxiosFetch<SubCategory>({ url: `/sub_categories/${params.sub_categoryId}`, method: 'get' });

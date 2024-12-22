@@ -6,32 +6,38 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Login } from "./auth/Login";
 import { Logout } from "./auth/Logout";
 import SocketContextComponent from "./contexts/socket_context/Component";
-import TtSpeechProvider from "./contexts/azure/AzureTtsContext";
-import { SubCategoryPageStudent } from "./components/navigation/SubCategoryStudent";
+//import TtSpeechProvider from "./contexts/azure/AzureTtsContext";
+//import { SubCategoryPageStudent } from "./components/navigation/SubCategoryStudent";
 //import { QuizPageVideo } from "./features/quiz_attempt/components/QuizPageVideo";
-import CategoryPage from "./components/navigation/CategoryPage";
+//import CategoryPage from "./components/navigation/CategoryPage";
 
 import { LiveText } from "./components/live/LiveText";
 //import { QuizPageLive } from "./pages/QuizPageLive";
-import MemoryGame from "./components/live/MemoryGame";
-import SimplePeer from "./components/shared/SimplePeer";
-import { QuizPageVideo } from "./components/quiz_attempts/QuizPageVideo";
+//import MemoryGame from "./components/live/MemoryGame";
+//import SimplePeer from "./components/shared/SimplePeer";
+//import { QuizPageVideo } from "./components/quiz_attempts/QuizPageVideo";
 //import SocketContext from "./contexts/socket_context/Context";
 
 const Home = lazy(() => import("./components/navigation/Home"))
+const SubCategoryPageStudent = lazy(() => import("./components/navigation/SubCategoryStudent"))
+const SimplePeer = lazy(() => import('./components/shared/SimplePeer'))
+const QuizPageVideo  = lazy(() => import('./components/quiz_attempts/QuizPageVideo'));
+const TtSpeechProvider = lazy(() => import("./contexts/azure/AzureTtsContext"))
+const CategoryPage = lazy(() => import("./components/navigation/CategoryPage"))//
+const MemoryGame = lazy(() => import("./components/live/MemoryGame"))//
 /*
 
 //const SubCategory = lazy(() => import("./routes/SubCategory"))
 //const SubCategoryPageTeacher = lazy(() => import("./pages/SubCategoryPageTeacher"))
 //const QuizPageVideo = lazy(() => import("./pages/QuizPageVideo"))
 
-const QuizPageVideo  = lazy(() => import('./routes/TakeVideoQuiz'));
+
 const YoutubeVideoPlayer = lazy(() => import('./components/YoutubeVideoPlayer'));
 const MemoryGame = lazy(() => import('./components/MemoryGame')) 
-const SimplePeer = lazy(() => import('./components/SimplePeer'))
+
 const QuizPageLive = lazy(() => import('./routes/TakeQuizLive'))  
 
-const TtSpeechProvider = lazy(() => import("./components/context/AzureTtsContext"))
+
 const AudioBlobProvider = lazy(() => import("./components/context/AudioBlobContext"))
 
 */

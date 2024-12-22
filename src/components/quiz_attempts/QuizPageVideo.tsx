@@ -30,7 +30,7 @@ interface VideoProps {
     video_pages: PageParamsProps[]
   }
 
-export function QuizPageVideo(props:any) {
+export default function QuizPageVideo(props:any) {
     
     const params = useParams<{ sub_category_name: string, quizId: string,  }>();
     const user = useAppSelector(state => state.user.value)
