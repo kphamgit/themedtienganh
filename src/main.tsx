@@ -5,7 +5,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
-import { ThemeProvider } from "./providers";
+import ThemeProvider from './contexts/theme_context/ThemeProvider.tsx'
 import { Provider } from 'react-redux';
 //import SocketContextComponent from './components/context/Socket/Component';
 import { store, persistore } from './redux/store';

@@ -2,19 +2,20 @@ import {  useEffect, useState } from "react";
 //import { ThemeContext } from "./contexts/theme_context";
 //import { ThemeContextInterface } from "./types";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Home } from "./home_page/components/Home";
-import { Login } from "./features/auth/components/Login";
-import { Logout } from "./features/auth/components/Logout";
+import { Home } from "./components/navigation/Home";
+import { Login } from "./auth/Login";
+import { Logout } from "./auth/Logout";
 import SocketContextComponent from "./contexts/socket_context/Component";
 import TtSpeechProvider from "./contexts/azure/AzureTtsContext";
-import { SubCategoryPageStudent } from "./pages/SubCategoryStudent";
+import { SubCategoryPageStudent } from "./components/navigation/SubCategoryStudent";
 //import { QuizPageVideo } from "./features/quiz_attempt/components/QuizPageVideo";
-import CategoryPage from "./pages/CategoryPage";
+import CategoryPage from "./components/navigation/CategoryPage";
 
-import { LiveText } from "./pages/LiveText";
+import { LiveText } from "./components/live/LiveText";
 //import { QuizPageLive } from "./pages/QuizPageLive";
-import MemoryGame from "./pages/MemoryGame";
-import SimplePeer from "./components/SimplePeer";
+import MemoryGame from "./components/live/MemoryGame";
+import SimplePeer from "./components/shared/SimplePeer";
+import { QuizPageVideo } from "./components/quiz_attempts/QuizPageVideo";
 //import SocketContext from "./contexts/socket_context/Context";
 
 function getAuthFromSessionStorage() {
@@ -74,7 +75,7 @@ function App() {
                 <Route path="/" element={<Home />}>
                   <Route path="/categories/:categoryId" element={<CategoryPage />}>
                     <Route path="sub_categories_student/:sub_categoryId" element={<SubCategoryPageStudent />} />
-
+                    <Route path="sub_categories/:sub_category_name/quizzes/:quizId" element={<QuizPageVideo />} />
                   </Route>
                   <Route path="/live_text" element={<LiveText />} />
                   <Route path="/simple_peer" element={<SimplePeer />} />
