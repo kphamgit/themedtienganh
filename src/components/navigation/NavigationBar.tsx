@@ -28,22 +28,22 @@ export function NavigationBar(props: any) {
 
     return (
         <>
-         <div className='flex flex-row justify-left gap-2 bg-bgColor text-userNavText'>
+         <div className='flex flex-row justify-left gap-2 bg-bgColor1 text-userNavText'>
           <div>Welcome: {user.user_name}</div>
-          <div className= 'px-2 py-1 font-bold text-lg underline rounded-md mx-1'><Link to="/">Home</Link></div>
+          <div className= 'px-2 py-1 font-bold text-lg underline rounded-md mx-1 bg-bgColor1'><Link to="/">Home</Link></div>
             <div className='text-md'>
               <Link to="/logout">Log out</Link>
             </div>
             <div>
               <button
                 onClick={toggleTheme}
-                className="rounded-none bg-bgColor p-1 text-center text-2xl uppercase tracking-[3px] text-textColor transition-all duration-300 ease-in-out hover:rounded-lg"
+                className="rounded-none bg-bgColor1 p-1 text-center text-2xl uppercase tracking-[3px] text-textColor transition-all duration-300 ease-in-out hover:rounded-lg"
             >
                <MdDarkMode />
             </button>
            </div>
           </div>
-             <div className="flex flex-row p-0 gap-1 justify-center bg-bgColor">
+             <div className="flex flex-row p-0 gap-1 justify-center bg-bgColor1">
               {categories?.map((category:any) => (
                 <div key={category.id} className='flex flex-row'>
                   <NavLink

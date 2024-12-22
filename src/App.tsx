@@ -6,17 +6,12 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Login } from "./auth/Login";
 import { Logout } from "./auth/Logout";
 import SocketContextComponent from "./contexts/socket_context/Component";
-//import TtSpeechProvider from "./contexts/azure/AzureTtsContext";
-//import { SubCategoryPageStudent } from "./components/navigation/SubCategoryStudent";
-//import { QuizPageVideo } from "./features/quiz_attempt/components/QuizPageVideo";
-//import CategoryPage from "./components/navigation/CategoryPage";
-
-//import { LiveText } from "./components/live/LiveText";
-//import { QuizPageLive } from "./pages/QuizPageLive";
-//import MemoryGame from "./components/live/MemoryGame";
-//import SimplePeer from "./components/shared/SimplePeer";
-//import { QuizPageVideo } from "./components/quiz_attempts/QuizPageVideo";
-//import SocketContext from "./contexts/socket_context/Context";
+import TakeLiveQuiz from "./components/live/TakeLiveQuiz";
+//import { SendLiveText } from "./components/live/SendLiveText";
+//import { SendLivePicture } from "./components/live/SendLivePicture";
+import YoutubeVideoPlayer from "./components/shared/YoutubeVideoPlayer";
+import { LiveText } from "./components/live/LiveText";
+//import { LivePicture } from "./components/live/LivePicture";
 
 const Home = lazy(() => import("./components/navigation/Home"))
 const SubCategoryPageStudent = lazy(() => import("./components/navigation/SubCategoryStudent"))
@@ -25,19 +20,15 @@ const QuizPageVideo  = lazy(() => import('./components/quiz_attempts/QuizPageVid
 const TtSpeechProvider = lazy(() => import("./contexts/azure/AzureTtsContext"))
 const CategoryPage = lazy(() => import("./components/navigation/CategoryPage"))//
 const MemoryGame = lazy(() => import("./components/live/MemoryGame"))//
-const LiveText = lazy(() => import("./components/live/LiveText"))//
+const LivePicture = lazy(() => import("./components/live/LivePicture"))//
+
+
 /*
-
-//const SubCategory = lazy(() => import("./routes/SubCategory"))
-//const SubCategoryPageTeacher = lazy(() => import("./pages/SubCategoryPageTeacher"))
-//const QuizPageVideo = lazy(() => import("./pages/QuizPageVideo"))
-
 
 const YoutubeVideoPlayer = lazy(() => import('./components/YoutubeVideoPlayer'));
 const MemoryGame = lazy(() => import('./components/MemoryGame')) 
 
 const QuizPageLive = lazy(() => import('./routes/TakeQuizLive'))  
-
 
 const AudioBlobProvider = lazy(() => import("./components/context/AudioBlobContext"))
 
@@ -104,9 +95,11 @@ function App() {
                     <Route path="sub_categories/:sub_category_name/quizzes/:quizId" element={<QuizPageVideo />} />
                   </Route>
                   <Route path="/live_text" element={<LiveText />} />
+                  <Route path="/live_picture" element={<LivePicture />} />
                   <Route path="/simple_peer" element={<SimplePeer />} />
-                
+                  <Route path="/live_quiz" element={<TakeLiveQuiz />} />
                   <Route path="/live_game/:game_id/:backcolor" element={<MemoryGame />} />
+                  <Route path="/live_youtube_video" element={<YoutubeVideoPlayer />} />
                 </Route>
               </Routes>
             </BrowserRouter>

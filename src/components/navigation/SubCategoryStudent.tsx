@@ -44,7 +44,7 @@ export default function SubCategoryPageStudent(props:any) {
     return (
         <>
             <div className='flex flex-row justify-center m-1 bg-bgColor1 text-textColor1 text-xl'>{sub_category?.name} </div>
-            <div className='grid grid-cols-10 bg-bgColor2'>
+            <div className='grid grid-cols-10 bg-bgColor1'>
                 <div className='col-span-3 grid grid-rows rounded-lg'>
                     {sub_category?.units.map(unit => (
                         <div key={unit.id}>

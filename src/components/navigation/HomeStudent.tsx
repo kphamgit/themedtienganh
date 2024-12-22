@@ -32,7 +32,7 @@ export default function HomeStudent(props: any ) {
 
     useEffect(() => {
         socket.on('live_question', (arg: { quiz_id: string, question_number: string, target_student: string}) => {
-          console.log("emit live question received...arg=", arg)
+          console.log("live question received...arg=", arg)
           const temp = {...arg, target_student: user.user_name}
           socket.emit("live_question_received", temp)
  
@@ -68,9 +68,9 @@ export default function HomeStudent(props: any ) {
       ///live_audio_recorder/live_picture
       useEffect(() => {
           socket.on('live_youtube_video', (arg: { target_student: string, video_url: string, video_duration: number }) => {
-            if (arg.target_student.trim() === 'everybody') {
+            //if (arg.target_student.trim() === 'everybody') {
               navigate("/live_youtube_video", { state: {video_url: arg.video_url, video_duration: arg.video_duration} })
-            }
+            //}
     
           })
           return () => {
@@ -108,8 +108,8 @@ export default function HomeStudent(props: any ) {
   return (
     <div>
    
-      <div className='grid grid-cols-12'>
-        <div className='bg-green-200 col-span-9 h-screen'>
+      <div className='grid grid-cols-12 bg-bgColor1'>
+        <div className='col-span-9  m-10'>
           <NavigationBar />
           <Outlet />
         </div>

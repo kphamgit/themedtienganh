@@ -14,6 +14,8 @@ export default {
         textColor2: 'var(--textColor2)',
         bgColor3: 'var(--bgColor3)',
         textColor3: 'var(--textColor3)',
+        bgColor4: 'var(--bgColor4)',
+        textColor4: 'var(--textColor4)',
         navCatButtonBgActive: 'var(--navCatButtonBgActive)',
         navCatButtonBgInActive: 'var(--navCatButtonBgInActive)',
         navCatButtonBgInHover: 'var(--navCatButtonBgHover)',

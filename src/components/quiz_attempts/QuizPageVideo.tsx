@@ -155,16 +155,16 @@ export default function QuizPageVideo(props:any) {
     return (
         <>
            
-           <div className='flex flex-row justify-center text-lg m-1'>{params.sub_category_name}</div>
+           <div className='flex flex-row justify-center text-lg text-textColor2 m-1'>{params.sub_category_name}</div>
             <div className='flex flex-col mx-20 mt-4'>
             <div className='mx-10 my-6 flex flex-col'>
-                <div className='bg-gray-100 p-2 rounded-xl'>
+                <div className='bg-bgColor1 p-2 rounded-xl'>
                     {question &&
                         <>
-                            <div className='text-amber-800'>Question: {question.question_number}</div>
+                            <div className='text-textColor3 mb-2'>Question: {question.question_number}</div>
                            
-                            <div dangerouslySetInnerHTML={{ __html: question.instruction }}></div>
-                            <div className='m-2'>{question.prompt}</div>
+                            <div  className='text-textColor2' dangerouslySetInnerHTML={{ __html: question.instruction }}></div>
+                            <div className='m-2 text-textColor3'>{question.prompt}</div>
                             <div>
                                 {(question.audio_str && question.audio_str.trim().length > 0) &&
                                     <AzureAudioPlayer text={question.audio_str} />
@@ -201,7 +201,7 @@ export default function QuizPageVideo(props:any) {
                         </>
                     }
                 </div>
-                <div className='bg-green-200'>
+                <div className='bg-bgColor2'>
                     {questionAttemptResponse?
                         <>
                          <QuestionAttemptResults live_flag={false} response={questionAttemptResponse } user_answer={answer} />
@@ -213,10 +213,10 @@ export default function QuizPageVideo(props:any) {
             </div>
             <div className='mx-10'>
             {showNextButton ?
-                <button className='bg-amber-300 mt-0 text-lg p-1 rounded-md' onClick={do_next_question_attempt}>Next</button>
+                <button className='bg-bgColor2 mt-0 text-lg text-textColor2 p-1 rounded-md' onClick={do_next_question_attempt}>Next</button>
                 :
                 ( showSubmitButton &&
-                <button className='bg-green-300 mt-0 text-lg p-1 rounded-md' onClick={handleSubmit}>Submit</button>
+                <button className='bg-bgColor2 mt-0 text-textColor1 text-lg p-1 rounded-md' onClick={handleSubmit}>Submit</button>
                 )
             }
             </div>

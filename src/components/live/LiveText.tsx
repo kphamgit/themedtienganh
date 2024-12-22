@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 //import SocketContext from "../components/context/Socket/Context";
 import { useAppSelector } from "../../redux/store";
 
-export default function LiveText(props: any) {
+export function LiveText(props: any) {
     const user = useAppSelector(state => state.user.value)
    
     const location = useLocation();
@@ -28,7 +28,7 @@ export default function LiveText(props: any) {
     "text_complete": false,
     "live_text": "eefefef",
     "target_student": "everybody",
-    "targewwt_class": "3"
+    "target_class": "3"
 }
     */
 

@@ -39,7 +39,7 @@ export function TakeQuizButton(props: TakeQuizButtonProps ) {
 
     return (
         <>
-          <div><button className='bg-takeQuizButtonBg text-takeQuizButtonText px-2 rounded-md' onClick={handleClick}>{props.quiz_name}</button></div>
+          <div><button className='bg-bgColor2 text-takeQuizButtonText px-2 rounded-md' onClick={handleClick}>{props.quiz_name}</button></div>
         </>
     )
 }

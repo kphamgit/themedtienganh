@@ -173,7 +173,7 @@ export function QuestionAttemptResults(props:{
            // console.log(" xxxxx userAnswer=", userAnswer)
             const result = QuestionHelper.format_user_answer(userAnswer, answerKey, format, content)
             return (
-                <div>{result}</div>
+                <div className='bg-bgColor2 text-textColor2'>{result}</div>
             )
         }
         else {
@@ -183,127 +183,34 @@ export function QuestionAttemptResults(props:{
         }
     }
 
-    const displayUserAnswer1 = (): ReactNode => {
-     
-        //console.log("TEST=", test)
-        if (props.user_answer) {
-            if (format === 1) {
-                const replacements: DynamicObject = {};
-                const answer_parts = answerKey.split('/')
-                const user_answer_parts = props.user_answer.split('/')
-                answer_parts.forEach( (part, index) => {
-                    console.log("mmmmm", part)
-                    //replacements[part] = part
-                    replacements[part] = user_answer_parts[index]
-                })
-                const newStr = content.replace(/\[(.*?)\]/g, (match, p1) =>
-                    replacements[p1] || match // Replace if found in object, otherwise keep original
-                );
-                return (
-                    <div>{newStr}</div>
-                )
-        }
-        else if (format === 6) {  //word scramble
-                const user_answer_parts: string[] = props.user_answer.split('/')
-                return (
-                    <div>
-                        {user_answer_parts.map((part, index) => (
-                            <span key={index}>{part} </span>
-                        ))
-                        }
-                    </div>
-                )
-        }
-        else if (format === 4) {
-                const radio_index = parseInt(props.user_answer.charAt(answerKey.length - 1))
-                //console.log("xxxxxx radio index", radio_index)
-                if (radio_index) {
-                    const content_parts = content.split('/')
-                    return (
-                        <div>{content_parts[radio_index - 1]}</div>
-                    )
-                }
-         
-        }
-        else {
-            return (
-                <div className='mx-5 text-amber-700'>{props.user_answer}</div>
-            )
-        }
-        }
-        else {
-            return <div>Empty user answer</div>
-        }
-    }
-
-    const displayAnswerKey1 = (): ReactNode => {
-        //console.log(" question format", question.format)
-        if (format === 1) {
-            //let newStr = content.replace(/\[|\]/g, ""); //
-            return (
-                <div>{content.replace(/\[|\]/g, "")}</div>
-            )
-        }
-        else if (format === 6) {  //word scramble
-            if (answerKey) {
-                const answer_parts: string[] = answerKey.split('/')
-                return (
-                    <div>
-                        {answer_parts.map((part, index) => (
-                            <span key={index}>{part} </span>
-                        ))
-                        }
-                    </div>
-                )
-            }
-        }
-        else if (format === 4) {
-            if (answerKey) {
-                const radio_index = parseInt(answerKey.charAt(answerKey.length - 1))
-                //console.log("xxxxxx radio index", radio_index)
-                if (radio_index) {
-                    const content_parts = content.split('/')
-                    return (
-                        <div>{content_parts[radio_index - 1]}</div>
-                    )
-                }
-            }
-        }
-        else {
-            return (
-                <div>{answerKey}</div>
-            )
-        }
-    }
-
     return (
         <>
         { props.response.question?.instruction &&
-            <div dangerouslySetInnerHTML={{ __html: props.response.question.instruction }}></div>
+            <div className='m-2 bg-bgColor2 text-textColor2' dangerouslySetInnerHTML={{ __html: props.response.question.instruction }}></div>
         }
         { props.response.question?.prompt &&
-            <div className='m-2'>{props.response.question.prompt}</div>
+            <div className='m-2 bg-bgColor2 text-textColor2'>{props.response.question.prompt}</div>
         }
         { props.response.question &&
-            <div className='m-2'>{displayContentOrRadioChoices()}</div>
+            <div className='m-2 bg-bgColor2 text-textColor2'>{displayContentOrRadioChoices()}</div>
         }
      
         {props.response.results.error_flag ?
             <>
-            <div className='text-lg text-orange-600 mx-2'> 
+            <div className='text-lg bg-bgColor2 text-textColor2 mx-2'> 
                 <FaFrown />
             </div>
-            <div className='m-2'>Your answer is:</div>
+            <div className='text-lg bg-bgColor2 text-textColor2 mx-2'>Your answer is:</div>
             <div>
             {displayUserAnswer()}
             </div>
             
-            <div className='m-2'>The correct answer is:
-                <div className='text-lg text-amber-800 my-2'>{displayAnswerKey()}</div>
+            <div className='m-2 text-lg bg-bgColor2 text-textColor2 mx-2'>The correct answer is:
+                <div className='bg-bgColor2 text-lg text-textColor2 my-2'>{displayAnswerKey()}</div>
             </div>
             </>
         :
-            <div className='text-lg text-green-700 mx-2'> 
+            <div className='text-lg text-textColor1 mx-2'> 
                 <FaSmile />
             </div>
         }

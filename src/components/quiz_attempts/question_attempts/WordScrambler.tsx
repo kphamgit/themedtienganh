@@ -1,6 +1,6 @@
 import { Reorder } from "framer-motion"
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import { ChildRef } from '../types';
+//import { ChildRef } from '../types';
 
 interface Props {
     content: string | undefined;
@@ -10,7 +10,9 @@ interface Props {
     text: string, id: string
   }
 
-
+  export interface ChildRef {
+    getAnswer: () => string | undefined;
+  }
   
 export const WordScrambler = forwardRef<ChildRef, Props>((props, ref) => {
     const [items, setItems] = useState<MyProps[]>([]);

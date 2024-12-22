@@ -89,7 +89,7 @@ useEffect(() => {
     function renderContent(type: string, value: string, id: string, index: number) {
       if (type === 'input') {
         return (<input
-          className='bg-red-200 rounded-md cloze_answer'
+          className='bg-bgColor2 rounded-md cloze_answer'
           type="text"
           value={value}
           size={maxLength}
@@ -106,7 +106,7 @@ useEffect(() => {
 
   return (
     <>
-    <div className='flex flex-row flex-wrap gap-2'>
+    <div className='flex flex-row flex-wrap gap-2 text-textColor1'>
         {inputFields?.map((field, index) => (
           renderContent(field.type, field.value, field.id, index)
         ))

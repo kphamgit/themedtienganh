@@ -1,5 +1,5 @@
 import { useAppSelector } from '../../redux/store'
-import  {HomeTeacher}  from './HomeTeacher'
+import HomeTeacher  from './HomeTeacher'
 import  HomeStudent  from './HomeStudent'
 import { lazy, useEffect, Suspense } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -48,7 +48,7 @@ useEffect(() => {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-    <div className='m-14'>
+    <div className=''>
       {user.role === 'teacher' ?
         <HomeTeacher />
         : (

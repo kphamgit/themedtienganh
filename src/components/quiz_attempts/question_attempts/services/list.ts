@@ -35,3 +35,9 @@ export async function createQuestionAttempt(quiz_attempt_id: number): Promise<Qu
         const response = await axios.post(url,{user_answer: user_answer})
         return response.data
       }
+
+      export async function processLiveQuestionAttempt(question_id: number | undefined, user_answer:string): Promise<QuestionAttemptAttributes> {
+        const url = `${rootpath}/api/question_attempts/process_live_attempt/${question_id}/`
+        const response = await axios.post(url,{user_answer: user_answer})
+        return response.data
+      }
