@@ -47,6 +47,10 @@ const enableGame = () => {
   socket.emit("enable_game", {game_id: gameId, backcolor: randombackground})
 }
 
+const toggleLiveRecording = () => {
+  socket.emit("toggle_live_recording", {})
+}
+
 
 const send_enable_simple_peer = () => {
   
@@ -130,8 +134,14 @@ const send_live_youtube_video: MouseEventHandler<HTMLButtonElement> = (event) =>
                     onChange={e => setGameId(e.target.value)}
                 /></span>
             </div>
+
+            <div className='mx-14'>
+                <button className='p-1 rounded-md text-textColor1 m-4' onClick={toggleLiveRecording}>Toggle Live Recording</button>
+            </div>
+          
         < ReactTextareaAutosize className='w-auto m-14 px-3' id="prompt"  value={user.message} />
     
+
      
         </div>
     )

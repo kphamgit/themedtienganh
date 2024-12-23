@@ -174,13 +174,13 @@ export default function TakeLiveQuiz(props: any) {
             
            
             <div className='grid grid-cols-12'>
-                <div className='col-span-10 ml-10 mr-2 mt-6 flex flex-col bg-green-50 p-1 rounded-xl'>
-                    <div className='bg-gray-100 p-2 rounded-xl'>
-                        <div className='text-amber-800'>Question: {currentQuestionNumber}</div>
+                <div className='col-span-10 ml-10 mr-2 mt-6 flex flex-col bg-bgColor1 p-1 rounded-xl'>
+                    <div className='text-textColor2 bg-bgColor1 p-2 rounded-xl'>
+                        <div className='text-textColor2 bg-bgColor2'>Question: {currentQuestionNumber}</div>
                         {question &&
                             <>
                                 <div dangerouslySetInnerHTML={{ __html: question.instruction }}></div>
-                                <div className='m-2'>{question.prompt}</div>
+                                <div className='m-2 bg-bgColor3 text-textColor2'>{question.prompt}</div>
                                 <div>
                                     {(question.audio_str && question.audio_str.trim().length > 0) &&
                                         <AzureAudioPlayer text={question.audio_str} />

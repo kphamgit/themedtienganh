@@ -1,17 +1,19 @@
-import { useEffect, lazy} from 'react'
+import { useEffect, lazy, useState} from 'react'
 
 import { useAppSelector } from '../../redux/store'
 import { Outlet, useNavigate } from 'react-router-dom'
 
 import LiveAudioRecorder  from "../shared/LiveAudioRecorder"
-import { ScoreBoard2 } from '../quiz_attempts/ScoreBoard2'
+//import { ScoreBoard2 } from '../quiz_attempts/ScoreBoard2'
 import { NavigationBar } from './NavigationBar'
 import { useSocketContext } from '../../hooks/useSocketContext'
+
 
 //const LiveAudioRecorder = lazy(() => import("../pages/LiveAudioRecorder"))
 
 export default function HomeStudent(props: any ) {
     const user = useAppSelector(state => state.user.value)
+    const [showLiveRecording, setShowLiveRecording] = useState(false)
     //const [localLiveQuizId, setLocalLiveQuizId] = useState<string>('')
     // this is not needed but keep it for Typescript learning
       /*  Initialize localLiveQuizId with an empty string to avoid this error:
@@ -101,6 +103,17 @@ export default function HomeStudent(props: any ) {
       }
   }, [socket, navigate, user.user_name, user.role])
 
+  useEffect(() => {
+    socket.on('toggle_live_recording', (arg: {}) => {
+      console.log(" receive disable live recording")
+      // setShowLiveRecording(!showLiveRecording)
+       setShowLiveRecording(prevShowLiveRecording => !prevShowLiveRecording);
+    })
+    return () => {
+      socket?.off("toggle_live_recording")
+    }
+}, [socket, showLiveRecording ])
+
   const pollyFunc = (selected_text: string) => {
       console.log("in polly function")
   }
@@ -114,7 +127,11 @@ export default function HomeStudent(props: any ) {
           <Outlet />
         </div>
         <div className='m-14'>
+        <div className='m-14'>
+          { showLiveRecording &&
           <LiveAudioRecorder />
+          }
+        </div>
         </div>
       </div>
     
@@ -123,6 +140,15 @@ export default function HomeStudent(props: any ) {
 }
 
 /*
+     <div className='m-14'>
+          { showLiveRecording ?
+          <LiveAudioRecorder />
+          : 
+          null
+          }
+        </div>
+
+
 
      <div className='bg-amber-300 col-span-3'>
             <div className='grid grid-rows-2'>

@@ -118,8 +118,8 @@ export function ScoreBoard(props:{classId: string | undefined, startingQuestionI
     return (
         <>
             {my_class &&
-                <>
-                    <div className='text-amber-700 mb-2'>Live Score Board</div>
+                <div className='bg-bgColor1 text-textColor3'>
+                    <div className='text-textColor3 mb-2'>Live Score Board</div>
                    <div>
                     {my_class.users.map((student, index) => (
                         <div key={index} ref={(el) => {
@@ -138,7 +138,7 @@ export function ScoreBoard(props:{classId: string | undefined, startingQuestionI
                     }
                 </div>
                   
-                </>
+                </div>
             }
         </>
     )
