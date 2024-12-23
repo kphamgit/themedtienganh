@@ -113,7 +113,7 @@ export default function HomeStudent(props: any ) {
           <NavigationBar />
           <Outlet />
         </div>
-        <div>
+        <div className='m-14'>
           <LiveAudioRecorder />
         </div>
       </div>

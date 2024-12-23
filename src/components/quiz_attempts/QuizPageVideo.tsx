@@ -17,6 +17,7 @@ import { useAxiosFetch } from '../../hooks/useAxiosFetch';
 
 import ReactPlayer from 'react-player';
 import { createQuestionAttempt, processQuestionAttempt } from './question_attempts/services/list';
+import { Counter, CounterRef } from '../shared/Counter';
 
 interface PageParamsProps {
     page_num: number
@@ -51,6 +52,8 @@ export default function QuizPageVideo(props:any) {
     const [questionAttemptResponse, setQuestionAttemptResponse] = useState<{question: QuestionProps | undefined, results: QuestionAttemptAttributes}>()
     const [endOfQuiz, setEndOfQuiz] = useState(false)
     const childRef = useRef<ChildRef>(null);
+
+    const counterRef = useRef<CounterRef>(null)
 
     const [answer, setAnswer] = useState<string>()
 
@@ -146,6 +149,12 @@ export default function QuizPageVideo(props:any) {
         
     }
 
+    useEffect(() => {
+          //console.log("startttttt...")
+          counterRef.current?.startCount()
+        //}
+      },[])
+
     if (endOfQuiz) {
         return (
             <div>END OF QUIZ.</div>
@@ -156,6 +165,7 @@ export default function QuizPageVideo(props:any) {
         <>
            
            <div className='flex flex-row justify-center text-lg text-textColor2 m-1'>{params.sub_category_name}</div>
+           <div className='ml-20'><Counter initialSeconds={0} ref={counterRef} /></div>
             <div className='flex flex-col mx-20 mt-4'>
             <div className='mx-10 my-6 flex flex-col'>
                 <div className='bg-bgColor1 p-2 rounded-xl'>

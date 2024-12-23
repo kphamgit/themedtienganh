@@ -37,19 +37,19 @@ export function Login(props:any) {
                 <div className="flex flex-col m-10">
                     <div className={`flex h-screen w-screen items-center justify-center bg-bgColor text-textColor`}>
                         <div className="rounded-md bg-bgColor p-8 text-textColor">
-                            <h1 className="text-2xl mb-2">Login</h1>
-                            <form className="bg-bgColor">
+                            <h1 className="text-2xl mb-2 text-textColor1">Login</h1>
+                            <form className="bg-bgColor text-textColor2">
                                 <label>
                                     <p>Username</p>
-                                    <input className="bg-gray-700 text-textColor text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-auto p-2.5"
+                                    <input className="bg-bgColor3 text-textColor text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-auto p-2.5"
                                         type="text" onChange={e => setUserName(e.target.value)} />
                                 </label>
                                 <label>
                                     <p>Password</p>
-                                    <input className="bg-gray-700 text-textColor text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-auto p-2.5"
+                                    <input className="bg-bgColor3 text-textColor text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-auto p-2.5"
                                         type="text" onChange={e => setPassword(e.target.value)} />
                                 </label>
-                                <button className='bg-amber-800 m-2 p-2 hover:bg-amber-600 rounded-md' onClick={handleSubmit}>Submit</button>
+                                <button className='bg-bgColor4 text-textColor3 m-2 p-2 hover:bg-amber-600 rounded-md' onClick={handleSubmit}>Submit</button>
                             </form>
                         </div>
                     </div>
@@ -61,41 +61,3 @@ export function Login(props:any) {
     )
 
 }
-
-/*
- return (
-        <>
-
-            <div className='flex flex-row justify-center'>
-                <div className="flex flex-col m-10">
-
-                    <div className={`flex h-screen w-screen items-center justify-center bg-bgColor text-textColor`}>
-                        <div className="rounded-md bg-textColor p-8 text-bgColor">
-                            <h1 className="text-3xl">Login {darkTheme ? "dark" : "light"}</h1>
-                            <button
-                                onClick={toggleTheme}
-                                className="mt-2 w-full rounded-none bg-bgColor p-2 text-center text-2xl uppercase tracking-[3px] text-textColor transition-all duration-300 ease-in-out hover:rounded-lg"
-                            >
-                                Toggle
-                            </button>
-                            <form>
-                                <label>
-                                    <p>Username</p>
-                                    <input className="bg-amber-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-auto p-2.5"
-                                        type="text" onChange={e => setUserName(e.target.value)} />
-                                </label>
-                                <label>
-                                    <p>Password</p>
-                                    <input className="bg-amber-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-auto p-2.5"
-                                        type="text" onChange={e => setPassword(e.target.value)} />
-                                </label>
-                                <button className='bg-amber-500 m-2 p-2 hover:bg-amber-600 rounded-md' onClick={handleSubmit}>Submit</button>
-                            </form>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </>
-    )
-*/
