@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Login } from "./auth/Login";
 import { Logout } from "./auth/Logout";
 import SocketContextComponent from "./contexts/socket_context/Component";
-import TakeLiveQuiz from "./components/live/TakeLiveQuiz";
+//import TakeLiveQuiz from "./components/live/TakeLiveQuiz";
 //import { SendLiveText } from "./components/live/SendLiveText";
 //import { SendLivePicture } from "./components/live/SendLivePicture";
 import YoutubeVideoPlayer from "./components/shared/YoutubeVideoPlayer";
@@ -21,7 +21,7 @@ const TtSpeechProvider = lazy(() => import("./contexts/azure/AzureTtsContext"))
 const CategoryPage = lazy(() => import("./components/navigation/CategoryPage"))//
 const MemoryGame = lazy(() => import("./components/live/MemoryGame"))//
 const LivePicture = lazy(() => import("./components/live/LivePicture"))//
-
+const TakeLiveQuiz = lazy(() => import("./components/live/TakeLiveQuiz"))////
 
 /*
 
@@ -84,6 +84,7 @@ function App() {
     return (
         <>
      <SocketContextComponent>
+     <Suspense fallback={<div>Loading...</div>}>
       <TtSpeechProvider>
      
             <BrowserRouter>
@@ -105,6 +106,7 @@ function App() {
             </BrowserRouter>
        
       </TtSpeechProvider>
+      </Suspense>
       </SocketContextComponent>
          </>
   );
