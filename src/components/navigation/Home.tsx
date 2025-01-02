@@ -1,9 +1,6 @@
 import { useAppSelector } from '../../redux/store'
 import HomeTeacher  from './HomeTeacher'
 import  HomeStudent  from './HomeStudent'
-import { lazy, useEffect, Suspense } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useSocketContext } from '../../hooks/useSocketContext'
 
 //const HomeTeacher = lazy(() => import("./HomeTeacher"))
 //const HomeStudent = lazy(() => import("./HomeStudent"))
@@ -27,40 +24,46 @@ function getAuthFromSessionStorage() {
 
 export default function Home() {
     const user = useAppSelector(state => state.user.value)
-    const {socket, user_name, users} = useSocketContext()
-    const navigate = useNavigate();
+    //const {socket, user_name, users} = useSocketContext()
+    //const [roomID, setRoomID] = useState('')
+    //const navigate = useNavigate();
 
-useEffect(() => {
-
-    socket.on('enable_simple_peer', (arg:any) => {
-      //console.log(" socket on enable_simple_peer arg =", arg)
-      if (arg.to_user === user_name) {
-        //console.log(" for me")
-        navigate(`/simple_peer`, { state: users})
-      }
-     // 
-    })
-    return () => {
-      socket?.off("enable_simple_peer")
-    }
- 
-}, [socket, navigate, users])
-
+  
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-    <div className=''>
+  
+    <div>
       {user.role === 'teacher' ?
         <HomeTeacher />
         : (
         <HomeStudent />
         )
       }
- 
- 
+    </div>
+   
+  )
+}
+
+/*
+ return (
+    <Suspense fallback={<div>Loading...</div>}>
+    <div className='grid grid-cols-12 gap-2'>
+      <div className='col-span-9'>
+      {user.role === 'teacher' ?
+        <HomeTeacher />
+        : (
+        <HomeStudent />
+        )
+      }
+      </div>
+      <div className='col-span-3'>
+      {roomID.length > 0 &&
+        <Room roomID={roomID} />
+      }
+      </div>
     </div>
     </Suspense>
   )
-}
+*/
 
 //export default Home;
 /*
@@ -80,3 +83,4 @@ return (
 
 )
 */
+

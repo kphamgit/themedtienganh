@@ -1,7 +1,7 @@
 //import { Outlet } from "react-router-dom";
 //import VoiceRecorder from "../components/VoiceRecorder";
 
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { LiveAudioVisualizer } from 'react-audio-visualize';
 import { AudioRecorder, useAudioRecorder } from 'react-audio-voice-recorder';
 import { upload_form_data_to_s3 } from '../../services/list'
@@ -17,17 +17,10 @@ export default function LiveAudioRecorder(props: any) {
     //const [backChaining, setBackChaining] = useState(true)
     //const [sendToS3, setSendToS3] = useState(true)
     //const navigate = useNavigate();
-    const {socket, user_name, users} = useContext(SocketContext).SocketState;
+    const {socket} = useContext(SocketContext).SocketState;
     const { setAudioBlob} = useAudioBlobContext();
 
-    function addZero(i: number) {
-        let str = i.toString()
-        if (i < 10) {
-            str = "0" + i.toString()
-        }
-        return str;
-      }
-
+  
       const send_to_s3 = () => {
         /*
         const date = new Date();
@@ -105,59 +98,3 @@ export default function LiveAudioRecorder(props: any) {
         
     )
 }
-
-/*
- return (
-      <>
-        <div className="grid grid-rows-2">
-            <div className="flex flex-rows justify-center mt-2">
-                <AudioRecorder
-                    onRecordingComplete={setBlob}
-                    recorderControls={recorder}
-                />
-
-                {recorder.mediaRecorder && (
-                    <LiveAudioVisualizer
-                        mediaRecorder={recorder.mediaRecorder}
-                        width={200}
-                        height={75}
-                    />
-                )}
-            </div>
-            <div className="flex flex-col justify-center mt-2">
-            {blob 
-            && <>
-            <div><audio src={URL.createObjectURL(blob)} controls /></div>
-            <div><button className="bg-green-700 rounded-md p-2 text-white" onClick={send_to_s3}>Send</button></div>
-              </>
-            }
-            </div>
-        </div>
-        
-          </>
-    )
-*/
-
-/*
- {blob && (
-        <AudioVisualizer
-          blob={blob}
-          width={500}
-          height={75}
-          barWidth={1}
-          gap={0}
-          barColor={'#f76565'}
-        />
-      )}
-
-      {blob && (
-        <AudioVisualizer
-          blob={blob}
-          width={500}
-          height={75}
-          barWidth={3}
-          gap={2}
-          barColor={'lightblue'}
-        />
-      )}
-*/

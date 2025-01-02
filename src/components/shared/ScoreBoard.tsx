@@ -18,8 +18,8 @@ import SocketContext from '../../contexts/socket_context/Context'
     }
 
 export function ScoreBoard(props:{classId: string | undefined, startingQuestionId: string | undefined }) {
-    const { data: my_class, loading, error } = useAxiosFetch<ClassProps>({ url: `/classes/${props.classId}`, method: 'get' });
-    const {socket, uid, users} = useContext(SocketContext).SocketState;
+    const { data: my_class } = useAxiosFetch<ClassProps>({ url: `/classes/${props.classId}`, method: 'get' });
+    const {socket} = useContext(SocketContext).SocketState;
     
     const user = useAppSelector(state => state.user.value)
     const [targetStudent, setTargetStudent] = useState<string>()

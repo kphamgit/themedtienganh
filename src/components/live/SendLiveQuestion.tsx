@@ -1,5 +1,6 @@
 import { MouseEventHandler, useContext, useState } from 'react'
 import SocketContext from '../../contexts/socket_context/Context'
+import { NameList } from './NameList'
 //import { getAClass } from './services/list'
 
     export function SendLiveQuestion(props: any) {
@@ -9,7 +10,7 @@ import SocketContext from '../../contexts/socket_context/Context'
     const [questionNumber , setQuestionNumber ] = useState<string>('')
     const [targetStudent , setTargetStudent ] = useState<string>('')
     //const [targetClass , setTargetClass ] = useState<string>('')
-    const {socket, user_name, users} = useContext(SocketContext).SocketState;
+    const {socket} = useContext(SocketContext).SocketState;
 
     const send_live_question: MouseEventHandler<HTMLButtonElement> = (event) => {
         if (liveQuizId.length === 0) {
@@ -34,26 +35,15 @@ import SocketContext from '../../contexts/socket_context/Context'
         }
     }
 
-    const handleNameClick: MouseEventHandler<HTMLButtonElement> = (event) => {
-        const el = event.target as HTMLButtonElement
-        setTargetStudent(el.textContent as string)
+    const handleNameClick = (name: string) => {
+        setTargetStudent(name)
     }
 
     return (
         <>
             <div className='grid grid-row-2'>
-                <div className='flex flex-row justify-end gap-2 mt-2'>
+                <NameList parentFunct={handleNameClick} />
 
-                    {users &&
-                        users.map((student, index) => (
-                            <div key={index} >
-                            <button className='bg-blue-500 text-white p-1 rounded-md' onClick={handleNameClick}>{student.user_name}</button>
-                            </div>
-                        ))
-                    }
-                    <button className='bg-blue-600 text-white p-1 rounded-md' onClick={handleNameClick}>everybody</button>
-                </div>
-          
             <div className='flex flex-row gap-2 bg-green-50'>
                 <div className='text-md flex flex-row'>
                     <span className='mx-1'>Live quiz id 1:</span>

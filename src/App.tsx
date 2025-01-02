@@ -1,4 +1,4 @@
-import {  useEffect, useState, lazy, Suspense } from "react";
+import {  useState, lazy, Suspense } from "react";
 //import { ThemeContext } from "./contexts/theme_context";
 //import { ThemeContextInterface } from "./types";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -23,17 +23,6 @@ const MemoryGame = lazy(() => import("./components/live/MemoryGame"))//
 const LivePicture = lazy(() => import("./components/live/LivePicture"))//
 const TakeLiveQuiz = lazy(() => import("./components/live/TakeLiveQuiz"))////
 
-/*
-
-const YoutubeVideoPlayer = lazy(() => import('./components/YoutubeVideoPlayer'));
-const MemoryGame = lazy(() => import('./components/MemoryGame')) 
-
-const QuizPageLive = lazy(() => import('./routes/TakeQuizLive'))  
-
-const AudioBlobProvider = lazy(() => import("./components/context/AudioBlobContext"))
-
-*/
-
 
 function getAuthFromSessionStorage() {
     const tokenString = sessionStorage.getItem('auth');
@@ -48,19 +37,7 @@ function App() {
     //const { darkTheme, toggleTheme } = useContext(ThemeContext) as ThemeContextInterface;
     //const {socket, uid, users, user_uuids} = useContext(SocketContext).SocketState;
     const [auth, setAuth] = useState(getAuthFromSessionStorage());
-
-    useEffect(() => {
-        /*
-        getIds() // fetch ALL game ids, sub_category ids, unit ids, quizzes id
-          .then((response) => {
-            //console.log("NNNNNNNN response.data", response.data)
-            setCategoryIds(response.category_ids)
-            setSubCategoryIds(response.sub_category_ids)
-            setUnitIds(response.unit_ids)
-          })
-          */
-      }, [auth])
-    
+ 
       const onLogin = (userToken: string) => {
         setAuth(userToken)
         //also persits auth state in session Storage so that user is still logged after a page refresh
@@ -81,20 +58,22 @@ function App() {
         setAuth(null)
     }
 
-    return (
-        <>
-     <SocketContextComponent>
-     <Suspense fallback={<div>Loading...</div>}>
-      <TtSpeechProvider>
-     
+  return (
+    <>
+      <SocketContextComponent>
+        <Suspense fallback={<div>Loading...</div>}>
+          <TtSpeechProvider>
+
             <BrowserRouter>
               <Routes>
                 <Route path="/logout" element={<Logout onLogout={onLogout} />} />
                 <Route path="/" element={<Home />}>
+                  
                   <Route path="/categories/:categoryId" element={<CategoryPage />}>
                     <Route path="sub_categories_student/:sub_categoryId" element={<SubCategoryPageStudent />} />
                     <Route path="sub_categories/:sub_category_name/quizzes/:quizId" element={<QuizPageVideo />} />
                   </Route>
+
                   <Route path="/live_text" element={<LiveText />} />
                   <Route path="/live_picture" element={<LivePicture />} />
                   <Route path="/simple_peer" element={<SimplePeer />} />
@@ -104,17 +83,21 @@ function App() {
                 </Route>
               </Routes>
             </BrowserRouter>
-       
-      </TtSpeechProvider>
-      </Suspense>
+
+          </TtSpeechProvider>
+        </Suspense>
       </SocketContextComponent>
-         </>
+    </>
   );
   
 }
 
+// <Route path="/room/:roomID" element={<Room />} />
 export default App;
 /*
+
+        <Route path="/" exact component={CreateRoom} />
+        <Route path="/room/:roomID" component={Room} />
 return (
         <>
       <div className={`flex h-screen w-screen items-center justify-center bg-bgColor text-textColor`}>

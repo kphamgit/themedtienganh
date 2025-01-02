@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { TtSpeechContext } from '../../contexts/azure';
 import {
   SpeechSynthesizer, AudioConfig,

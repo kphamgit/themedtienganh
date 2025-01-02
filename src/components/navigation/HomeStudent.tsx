@@ -1,141 +1,41 @@
-import { useEffect, lazy, useState} from 'react'
+import { useEffect, useState} from 'react'
 
-import { useAppSelector } from '../../redux/store'
-import { Outlet, useNavigate } from 'react-router-dom'
-
-import LiveAudioRecorder  from "../shared/LiveAudioRecorder"
-//import { ScoreBoard2 } from '../quiz_attempts/ScoreBoard2'
-import { NavigationBar } from './NavigationBar'
 import { useSocketContext } from '../../hooks/useSocketContext'
+import MainStudent from './MainStudent'
+import { Side } from './Side'
 
 
 //const LiveAudioRecorder = lazy(() => import("../pages/LiveAudioRecorder"))
 
 export default function HomeStudent(props: any ) {
-    const user = useAppSelector(state => state.user.value)
-    const [showLiveRecording, setShowLiveRecording] = useState(false)
-    //const [localLiveQuizId, setLocalLiveQuizId] = useState<string>('')
-    // this is not needed but keep it for Typescript learning
-      /*  Initialize localLiveQuizId with an empty string to avoid this error:
-        A component is changing an uncontrolled input to be controlled. This is likely caused...
 
-         <select className='cloze_answer'>
-          { (classIds as string[]).map( (classId, index) => {
-               return <option key={index} id={index.toString()} >{classID} </option>
-          })
-          }
-        </select>
-    */
+  const [roomId, setRoomID] = useState('')
+  const {socket, user_name} = useSocketContext()
 
-    //const {socket, user_name, users} = useContext(SocketContext).SocketState;
-    const {socket, user_name, users} = useSocketContext()
-
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        socket.on('live_question', (arg: { quiz_id: string, question_number: string, target_student: string}) => {
-          console.log("live question received...arg=", arg)
-          const temp = {...arg, target_student: user.user_name}
-          socket.emit("live_question_received", temp)
- 
-          if (arg.target_student.trim() === 'everybody') {
-            //console.log("live question for everybody in my class", user.classId)
-            navigate("/live_quiz", { state: arg })
-          }
-          else if (arg.target_student.trim() === user.user_name?.trim()) {
-            navigate("/live_quiz", { state: arg })
-          }
-          else {
-            console.log(" invalid student target")
-          }
-        })
-        return () => {
-          socket?.off("live_question")
-        }
-    },[socket, navigate, user.user_name, user.classId])
-
-   
-  useEffect(() => {   
-      socket.on('live_text', (arg: { backchaining: boolean, text_complete: boolean, live_text: string, target_student: string, target_class: string }) => {
-        if (arg.target_student.trim() === 'everybody') {
-          navigate("/live_text", { state: arg })
-        }
-
-      })
-      return () => {
-        socket?.off("live_text")
-      }
-  }, [socket, navigate])
-    
-      ///live_audio_recorder/live_picture
-      useEffect(() => {
-          socket.on('live_youtube_video', (arg: { target_student: string, video_url: string, video_duration: number }) => {
-            //if (arg.target_student.trim() === 'everybody') {
-              navigate("/live_youtube_video", { state: {video_url: arg.video_url, video_duration: arg.video_duration} })
-            //}
-    
-          })
-          return () => {
-            socket?.off("live_youtube_video")
-          }
-      }, [socket, navigate, user.user_name])
-        
-
-    useEffect(() => {
-   
-        socket.on('live_picture', (arg: { live_text: string, target_student: string, target_class: string }) => {
-           //console.log("....xxxxxx xxxxx xxx .... live_picture message received:", arg)
-           navigate("/live_picture", { state: arg })
-        })
-
-        return () => {
-          socket?.off("live_picture")
-        }
-    },[socket, navigate])
-  
-
+  //console.log(" IIIIII user_name", user_name)
   useEffect(() => {
-      socket.on('enable_game', (arg: { game_id: string, backcolor: string }) => {
-        navigate(`/live_game/${arg.game_id}/${arg.backcolor}`)
-      })
-      return () => {
-        socket?.off("enable_game")
+    socket.on('chat_invite', (arg: { room_id: string, target_student: string }) => {
+      //console.log("receive chat invite...arg =", arg)
+      //console.log("receive chat invite...user_name =", user_name)
+      if (arg.target_student.trim() === user_name?.trim()) {
+        setRoomID(arg.room_id)
       }
-  }, [socket, navigate, user.user_name, user.role])
-
-  useEffect(() => {
-    socket.on('toggle_live_recording', (arg: {}) => {
-      console.log(" receive disable live recording")
-      // setShowLiveRecording(!showLiveRecording)
-       setShowLiveRecording(prevShowLiveRecording => !prevShowLiveRecording);
+       
     })
     return () => {
-      socket?.off("toggle_live_recording")
+      socket?.off("chat_invite")
     }
-}, [socket, showLiveRecording ])
-
-  const pollyFunc = (selected_text: string) => {
-      console.log("in polly function")
-  }
+},[socket, user_name])
 
   return (
-    <div>
-   
-      <div className='grid grid-cols-12 bg-bgColor1'>
-        <div className='col-span-9  m-10'>
-          <NavigationBar />
-          <Outlet />
+        <div className='grid grid-cols-12 m-14 bg-bgColor1'>
+            <div className='col-span-9'><MainStudent/></div>
+            { roomId.length > 0 ?
+            <div className='col-span-3'><Side room_id={roomId} /></div>
+            :
+            <div className='col-span-3 text-textColor1 bg-bgColor2'>SIDE STUDENT NO CHAT YET</div>
+            }
         </div>
-        <div className='m-14'>
-        <div className='m-14'>
-          { showLiveRecording &&
-          <LiveAudioRecorder />
-          }
-        </div>
-        </div>
-      </div>
-    
-    </div>
   )
 }
 

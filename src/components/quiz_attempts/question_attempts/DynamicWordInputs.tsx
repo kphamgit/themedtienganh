@@ -108,7 +108,9 @@ useEffect(() => {
     <>
     <div className='flex flex-row flex-wrap gap-2 text-textColor1'>
         {inputFields?.map((field, index) => (
-          renderContent(field.type, field.value, field.id, index)
+          <div key={index}>
+          {renderContent(field.type, field.value, field.id, index) }
+          </div>
         ))
     }
     </div>

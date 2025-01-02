@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useContext, useEffect, useState } from 'react'
+import React, { MouseEventHandler, useContext, useState } from 'react'
 import SocketContext from '../../contexts/socket_context/Context';
 
 export default function SendLiveText(props: any) {
@@ -7,8 +7,7 @@ export default function SendLiveText(props: any) {
     
     const [liveText , setLiveText ] = useState<string>('')
     const [targetStudent , setTargetStudent ] = useState<string>('everybody')
-    //const [classstudents, setClassstudents] = useState<string[] | undefined>()
-    const {socket, user_name, users} = useContext(SocketContext).SocketState;
+    const {socket} = useContext(SocketContext).SocketState;
     const [selectedBackChainingValue, setSelectedBackChainingValue] = useState('');
 
     //const send_live_text: MouseEventHandler<HTMLButtonElement> = (event) => {
@@ -56,9 +55,6 @@ export default function SendLiveText(props: any) {
         }
     }
 
-    //useEffect(() => {
-    //    setClassstudents(props.students)
-   // },[props.students])
 
     const handleNameClick: MouseEventHandler<HTMLButtonElement> = (event) => {
         const el = event.target as HTMLButtonElement
@@ -93,16 +89,6 @@ export default function SendLiveText(props: any) {
       
        </div>
             <div className='grid grid-row-2'>
-                <div className='flex flex-row justify-end gap-2 mt-2'>
-                <button className='bg-blue-600 text-white p-1 rounded-md' onClick={handleNameClick}>everybody</button>
-                    {users &&
-                        users.map((student, index) => (
-                            <button key={index} className='bg-blue-500 text-white p-1 rounded-md' onClick={handleNameClick}>{student.user_name}</button>
-                        ))
-                    }
-                   
-                </div>
-          
             <div className='flex flex-row gap-2'>
                 <div className='grid grid-row-2'>
                 <div className='text-md flex flex-row'>
@@ -136,17 +122,6 @@ export default function SendLiveText(props: any) {
                 </div>
                
                 </div>
-                <div className='grid grid-rows-2'>
-                   
-                    <div className='flex flex-row justify-around gap-2 mt-2'>
-             
-                        <span className='mx-1 '>Target student:<input className='bg-amber-300 px-2 text-sm rounded-md w-4/12' type="text" value={targetStudent}
-                            onChange={e => setTargetStudent(e.target.value)}
-                        /></span>
-                      
-                    </div>
-                 
-                </div>
                
             </div>
             
@@ -156,22 +131,3 @@ export default function SendLiveText(props: any) {
     )
 }
 
-/*
- <div>
-                    <span>Back Chaining:</span>
-                    <label>Yes</label>
-                    <input className="m-2"
-                        type="radio"
-                        value="yes"
-                        checked={selectedBackChainingValue === "yes"}
-                        onChange={handleRadioSelect}
-                    />
-                     <label>No</label>
-                        <input className="m-2"
-                        type="radio"
-                        value="no"
-                        checked={selectedBackChainingValue === "no"}
-                        onChange={handleRadioSelect}
-                    />
-                    </div>
-*/

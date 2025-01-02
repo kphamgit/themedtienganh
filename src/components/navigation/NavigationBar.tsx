@@ -23,8 +23,8 @@ interface SubCategory {
 export function NavigationBar(props: any) {
     
     const user = useAppSelector(state => state.user.value)
-    const { data: categories, loading, error } = useAxiosFetch<Category[]>({ url: '/categories', method: 'get' });
-    const { darkTheme, toggleTheme } = useContext(ThemeContext) as ThemeContextInterface;
+    const { data: categories } = useAxiosFetch<Category[]>({ url: '/categories', method: 'get' });
+    const { toggleTheme } = useContext(ThemeContext) as ThemeContextInterface;
 
     return (
         <>

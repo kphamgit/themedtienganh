@@ -1,9 +1,6 @@
 import React, { MouseEventHandler, useContext, useEffect, useRef, useState } from 'react'
 import SocketContext from '../../contexts/socket_context/Context';
 
-
-  
-
 interface Props {
     student_names: string[] | undefined;
   }
@@ -14,15 +11,13 @@ interface MProps {
     uname: string
 }
 
-    const AudioControl: React.FC<MProps> = ({ url, index, uname }) => {
-    //const  AudioControl = forwardRef<AudioControlRef, MProps>((props, ref) => {
-  
+    const AudioControl: React.FC<MProps> = ({ url, index, uname }) => {  
         const [mySrc, setMySrc] = useState<string>('')
         const [userName, setUserName] = useState<string>('')
         const [newAudioReceived, setNewAudioReceived] = useState<boolean>()
         const myRef = useRef<HTMLAudioElement>(null)
   
-   const {socket, user_name, users} = useContext(SocketContext).SocketState;
+   const {socket} = useContext(SocketContext).SocketState;
 
    useEffect(() => {
         setUserName(uname)
@@ -83,7 +78,7 @@ export const RecordViewTeacher: React.FC<Props> = ({ student_names }) => {
     const [students, setStudents] = useState<string[] | undefined>([])
     const liveScoreRefs = useRef<HTMLInputElement[]>([]);
     //const childRefs = useRef<AudioControlRef[]>([]);
-    const {socket, user_name, users} = useContext(SocketContext).SocketState;
+    const {socket} = useContext(SocketContext).SocketState;
     const send_live_score: MouseEventHandler<HTMLButtonElement> = (event) => {
         const el = event.target as HTMLButtonElement
        
