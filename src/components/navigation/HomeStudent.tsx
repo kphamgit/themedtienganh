@@ -33,7 +33,7 @@ export default function HomeStudent(props: any ) {
             { roomId.length > 0 ?
             <div className='col-span-3'><Side room_id={roomId} /></div>
             :
-            <div className='col-span-3 text-textColor1 bg-bgColor2'>SIDE STUDENT NO CHAT YET</div>
+            <div className='col-span-3 text-textColor1 bg-bgColor2'>Side</div>
             }
         </div>
   )

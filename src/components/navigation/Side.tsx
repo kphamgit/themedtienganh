@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Room from '../shared/Room'
 import { v1 as uuid } from "uuid";
+import RoomAudio from '../shared/RoomAudio';
 
 export function Side(props: {room_id: string}) {
     
@@ -13,7 +14,7 @@ export function Side(props: {room_id: string}) {
     return (
         <>
             { roomID &&
-                 <Room roomID = {roomID} />
+                 <RoomAudio roomID = {roomID} />
             }
            
         </>
