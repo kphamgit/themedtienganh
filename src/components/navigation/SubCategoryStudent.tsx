@@ -2,6 +2,7 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useAxiosFetch } from '../../hooks';
 import { TakeQuizButton } from '../shared/TakeQuizButton';
+import { useEffect } from 'react';
 
 type SubCategory = {
     categoryId: number,
@@ -34,6 +35,11 @@ export default function SubCategoryPageStudent(props:any) {
     const { data: sub_category, loading: sub_loading, error: sub_error } = useAxiosFetch<SubCategory>({ url: `/sub_categories/${params.sub_categoryId}`, method: 'get' });
     const navigate = useNavigate()
 
+    useEffect(() => {
+        console.log("HERE sub cat", sub_category)
+    }, [sub_category])
+
+//https://www.tienganhtuyhoa.com/categories/4/sub_categories_student/9
     const take_quiz = (quiz_id: number | undefined, url: string | undefined) => {
         if (sub_category) {
             const api_url = `/categories/${sub_category.categoryId}/sub_categories/${sub_category.name}/quizzes/${quiz_id}`
@@ -46,7 +52,7 @@ export default function SubCategoryPageStudent(props:any) {
             <div className='flex flex-row justify-center m-1 bg-bgColor1 text-textColor1 text-xl'>{sub_category?.name} </div>
             <div className='grid grid-cols-10 bg-bgColor1'>
                 <div className='col-span-3 grid grid-rows rounded-lg'>
-                    {sub_category?.units.map(unit => (
+                    {sub_category && sub_category.units.map(unit => (
                         <div key={unit.id}>
                         <div className='m-2 text-md text-textColor1'>Unit {unit.unit_number} - {unit.name}</div>
                         <div className='flex flex-col m-2 gap-1 rounded-lg p-2'>{unit.quizzes.map(quiz =>
