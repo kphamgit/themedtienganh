@@ -35,9 +35,9 @@ export default function SubCategoryPageStudent(props:any) {
     const { data: sub_category, loading: sub_loading, error: sub_error } = useAxiosFetch<SubCategory>({ url: `/sub_categories/${params.sub_categoryId}`, method: 'get' });
     const navigate = useNavigate()
 
-    useEffect(() => {
-        console.log("HERE sub cat", sub_category)
-    }, [sub_category])
+    //useEffect(() => {
+      //  console.log("HERE sub cat", sub_category)
+   // }, [sub_category])
 
 //https://www.tienganhtuyhoa.com/categories/4/sub_categories_student/9
     const take_quiz = (quiz_id: number | undefined, url: string | undefined) => {
