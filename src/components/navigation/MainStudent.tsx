@@ -32,6 +32,7 @@ export default function MainStudent(props: any ) {
 
     const navigate = useNavigate();
 
+    
     useEffect(() => {
         socket.on('live_question', (arg: { quiz_id: string, question_number: string, target_student: string}) => {
           console.log("live question received...arg=", arg)
@@ -39,7 +40,7 @@ export default function MainStudent(props: any ) {
           socket.emit("live_question_received", temp)
  
           if (arg.target_student.trim() === 'everybody') {
-            //console.log("live question for everybody in my class", user.classId)
+            
             navigate("/live_quiz", { state: arg })
           }
           else if (arg.target_student.trim() === user.user_name?.trim()) {
@@ -53,7 +54,7 @@ export default function MainStudent(props: any ) {
           socket?.off("live_question")
         }
     },[socket, navigate, user.user_name, user.classId])
-
+    
    
   useEffect(() => {   
       socket.on('live_text', (arg: { backchaining: boolean, text_complete: boolean, live_text: string, target_student: string, target_class: string }) => {

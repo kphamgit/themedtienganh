@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 //import SocketContext from "../components/context/Socket/Context";
 import { useAppSelector } from "../../redux/store";
 
-export function LiveText(props: any) {
+export default function LiveText(props: any) {
     const user = useAppSelector(state => state.user.value)
    
     const location = useLocation();

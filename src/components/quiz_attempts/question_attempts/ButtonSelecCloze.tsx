@@ -61,16 +61,16 @@ interface Props {
           <>
           
               <div className='flex flex-row justify-center mb-4'>
-                  <div className='mx-2'>{left && left}</div>
-                  <div className='text-amber-700' id='fill'>_______</div>
-                  <div className='mx-2'>{right && right}</div>
+                  <div className='mx-2 bg-bgColor3 text-textColor2'>{left && left}</div>
+                  <div className='bg-bgColor3 text-textColor2' id='fill'>_______</div>
+                  <div className='mx-2 bg-bgColor3 text-textColor2'>{right && right}</div>
               </div>
 
               <div>
                   <ul className='flex flex-1 gap-3'>
                       {labels.map(label => (
                           <li key={label}>
-                             <AzureButton text={label} parentFunc={handleClick}/>
+                             <AzureButton voice_text={left + ' ' + label + ' ' + right} button_text={label} parentFunc={handleClick}/>
                           </li>
                       )
                       )}

@@ -32,8 +32,8 @@ export const ButtonSelect = forwardRef<ChildRef, Props>((props, ref) => {
   return (
     <>
       <ul className='flex flex-row gap-3'>
-        {labels?.map(label =>
-          <AzureButton text={label} parentFunc={handleClick} />
+        {labels?.map((label, index) =>
+          <AzureButton key={index} button_text={label} parentFunc={handleClick} />
         )}
       </ul>
     </>

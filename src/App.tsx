@@ -9,8 +9,8 @@ import SocketContextComponent from "./contexts/socket_context/Component";
 //import TakeLiveQuiz from "./components/live/TakeLiveQuiz";
 //import { SendLiveText } from "./components/live/SendLiveText";
 //import { SendLivePicture } from "./components/live/SendLivePicture";
-import YoutubeVideoPlayer from "./components/shared/YoutubeVideoPlayer";
-import { LiveText } from "./components/live/LiveText";
+//import YoutubeVideoPlayer from "./components/shared/YoutubeVideoPlayer";
+//import { LiveText } from "./components/live/LiveText";
 //import { LivePicture } from "./components/live/LivePicture";
 
 const Home = lazy(() => import("./components/navigation/Home"))
@@ -22,6 +22,8 @@ const CategoryPage = lazy(() => import("./components/navigation/CategoryPage"))/
 const MemoryGame = lazy(() => import("./components/live/MemoryGame"))//
 const LivePicture = lazy(() => import("./components/live/LivePicture"))//
 const TakeLiveQuiz = lazy(() => import("./components/live/TakeLiveQuiz"))////
+const YoutubeVideoPlayer = lazy(() => import("./components/shared/YoutubeVideoPlayer"))////
+const LiveText = lazy(() => import("./components/live/LiveText"))////
 
 
 function getAuthFromSessionStorage() {

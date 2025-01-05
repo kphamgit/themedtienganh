@@ -8,7 +8,8 @@ import {
 } from 'microsoft-cognitiveservices-speech-sdk';
 
 interface MyProps {
-    text: string | undefined;
+    voice_text?: string;
+    button_text: string | undefined;
     parentFunc: (selected_text: string) => void
   }
   
@@ -35,14 +36,19 @@ export const AzureButton = (props: MyProps) => {
         ttSpeechConfig.config.speechSynthesisOutputFormat = SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3
 
         const synthesizer = new SpeechSynthesizer(ttSpeechConfig.config, audioConfig);
-        synthesizer.speakTextAsync(props.text!)
+        if (props.voice_text) {
+        synthesizer.speakTextAsync(props.voice_text)
+        }
+        else {
+            synthesizer.speakTextAsync(props.button_text!)
+        }
        
     }
 
 
     return (
         <>
-            <button className='bg-amber-700 p-1 text-white rounded-md hover:bg-amber-900' onClick={handleClick}>{props.text}</button>
+            <button className='bg-amber-700 p-1 text-white rounded-md hover:bg-amber-900' onClick={handleClick}>{props.button_text}</button>
         </>
     )
 }

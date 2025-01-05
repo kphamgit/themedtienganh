@@ -18,7 +18,7 @@ import { ScoreBoard } from './ScoreBoard';
 import SocketContext from '../../contexts/socket_context/Context';
 import { AzureAudioPlayer } from '../shared/AzureAudioPlayer';
 import { SRContinuous } from '../quiz_attempts/question_attempts/SRContinuous';
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 //import { Counter} from '../components/Counter';
 import { CounterRef } from '../shared/Counter';
 import { DynamicLetterInputs } from '../quiz_attempts/question_attempts/DynamicLetterInputs';
@@ -83,6 +83,8 @@ export default function TakeLiveQuiz(props: any) {
 
     const { audioBlob } = useAudioBlobContext();
     const [audioUrl, setAudioUrl] = useState('')
+
+    const navigate = useNavigate()
    
     interface ChildRef {
         getAnswer: () => string | undefined;
@@ -107,6 +109,30 @@ export default function TakeLiveQuiz(props: any) {
         }
     },[question_response])
     
+
+    useEffect(() => {
+        if (socket) {
+        socket.on('live_question', (arg: { quiz_id: string, question_number: string, target_student: string}) => {
+          
+          const temp = {...arg, target_student: user.user_name}
+          socket.emit("live_question_received", temp)
+ 
+          if (arg.target_student.trim() === 'everybody') {
+            
+            navigate("/live_quiz", { state: arg })
+          }
+          else if (arg.target_student.trim() === user.user_name?.trim()) {
+            navigate("/live_quiz", { state: arg })
+          }
+          else {
+            console.log(" invalid student target")
+          }
+        })
+        return () => {
+          socket?.off("live_question")
+        }
+        }
+    },[socket, navigate, user.user_name, user.classId])
     /*
     const handleSubmitNew: MouseEventHandler<HTMLButtonElement> = (event) => {
         if (audioBlob) {
@@ -163,16 +189,14 @@ export default function TakeLiveQuiz(props: any) {
     }
 
     if (endOfQuiz) {
-        return (
-            <div>END OF QUIZ.</div>
-        )
+       navigate('/')
     }
 
 //<audio controls src={audioUrl} />
     return (
         <>
             
-           
+           <div className='bg-bgColor1 text-textColor2 text-xl'>LIVE QUIZ</div>
             <div className='grid grid-cols-12'>
                 <div className='col-span-10 ml-10 mr-2 mt-6 flex flex-col bg-bgColor1 p-1 rounded-xl'>
                     <div className='text-textColor2 bg-bgColor1 p-2 rounded-xl'>
