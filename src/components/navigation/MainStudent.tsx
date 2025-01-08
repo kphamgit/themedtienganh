@@ -35,7 +35,7 @@ export default function MainStudent(props: any ) {
     
     useEffect(() => {
         socket.on('live_question', (arg: { quiz_id: string, question_number: string, target_student: string}) => {
-          console.log("live question received...arg=", arg)
+          //console.log("live question received...arg=", arg)
           const temp = {...arg, target_student: user.user_name}
           socket.emit("live_question_received", temp)
  
@@ -121,44 +121,39 @@ export default function MainStudent(props: any ) {
 
   return (
     <div>
-   
-      <div className='grid grid-cols-12 bg-bgColor1'>
-        <div className='col-span-9  m-10'>
+
+      <div className=' bg-bgColor2'>
+        <div className='col-span-9 m-10'>
           <NavigationBar />
           <Outlet />
         </div>
-        <div className='m-14'>
-        <div className='m-14'>
-          { showLiveRecording &&
-          <LiveAudioRecorder />
-          }
-        </div>
-        </div>
-      </div>
     
+      </div>
+
     </div>
   )
 }
 
 /*
-     <div className='m-14'>
-          { showLiveRecording ?
-          <LiveAudioRecorder />
-          : 
-          null
-          }
+   return (
+    <div>
+
+      <div className='grid grid-cols-12 bg-bgColor1'>
+        <div>Main Student</div>
+        <div className='col-span-9 m-10'>
+          <NavigationBar />
+          <Outlet />
         </div>
-
-
-
-     <div className='bg-amber-300 col-span-3'>
-            <div className='grid grid-rows-2'>
-            <div className='h-20'><LiveAudioRecorder /></div>
-            
-            </div>
-        </div>
-   <div className='m-3 text-gray-400 bg-slate-200' >
-            <ScoreBoard2 />
+        <div className='col-span-3 m-14'>
+          <div className='m-14'>
+            {showLiveRecording &&
+              <LiveAudioRecorder />
+            }
           </div>
+        </div>
+      </div>
+
+    </div>
+  )
          
 */

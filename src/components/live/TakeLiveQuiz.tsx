@@ -196,9 +196,9 @@ export default function TakeLiveQuiz(props: any) {
     return (
         <>
             
-           <div className='bg-bgColor1 text-textColor2 text-xl'>LIVE QUIZ</div>
+           <div className='bg-bgColor1 text-textColor2 text-lg'>LIVE QUIZ</div>
             <div className='grid grid-cols-12'>
-                <div className='col-span-10 ml-10 mr-2 mt-6 flex flex-col bg-bgColor1 p-1 rounded-xl'>
+                <div className='col-span-9 ml-10 mr-2 mt-6 flex flex-col bg-bgColor1 p-1 rounded-xl'>
                     <div className='text-textColor2 bg-bgColor1 p-2 rounded-xl'>
                         <div className='text-textColor2 bg-bgColor2'>Question: {currentQuestionNumber}</div>
                         {question &&
@@ -239,11 +239,11 @@ export default function TakeLiveQuiz(props: any) {
                             </>
                         }
                     </div>
-                    <div className='bg-gray-100 w-auto'>
+                    <div className='bg-bgColor1 w-auto'>
                         {questionAttemptResponse ?
-                                 <>
+                                 <div className='bg-bgColor1'>
                                  <QuestionAttemptResults live_flag={true} response={questionAttemptResponse } user_answer={answer} />
-                                </>
+                                </div>
                             :
                             <div></div>
                         }
@@ -258,9 +258,9 @@ export default function TakeLiveQuiz(props: any) {
                     </div>
 
                 </div>
-                <div className='mt-6 bg-blue-50 rounded-md col-span-2'>
+                <div className='col-span-3 mt-6 bg-blue-50 rounded-md '>
                
-                <ScoreBoard classId={user.classId?.toString()} startingQuestionId={live_quiz_data.question_number}/>
+                    <ScoreBoard classId={user.classId?.toString()} startingQuestionId={live_quiz_data.question_number}/>
              
                 </div>
 

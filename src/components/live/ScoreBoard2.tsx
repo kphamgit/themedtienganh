@@ -2,7 +2,7 @@ import { useAppSelector } from '../../redux/store'
 import { useContext, useEffect, useRef } from 'react'
 //import SocketContext from '../contexts/socket_context/Context'
 import SocketContext from '../../contexts/socket_context/Context'
-import QuestionHelper from './QuestionHelper'
+import QuestionHelper from '../quiz_attempts/QuestionHelper'
 
   interface ElapsedTime {
     minutes: number | undefined, seconds: number

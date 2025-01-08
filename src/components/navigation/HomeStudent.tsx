@@ -2,44 +2,29 @@ import { useEffect, useState} from 'react'
 
 import { useSocketContext } from '../../hooks/useSocketContext'
 import MainStudent from './MainStudent'
-import { Side } from './Side'
+import { SideStudent } from './SideStudent'
+//import Lottie from "lottie-react";
+//import groovyWalkAnimation from "../../myanima.json";
+//import groovyWalkAnimation from "../../groovywalk.json"
 
 
 //const LiveAudioRecorder = lazy(() => import("../pages/LiveAudioRecorder"))
 
 export default function HomeStudent(props: any ) {
 
-  const [roomId, setRoomID] = useState('')
-  const {socket, user_name} = useSocketContext()
-
-  //console.log(" IIIIII user_name", user_name)
-  useEffect(() => {
-    socket.on('chat_invite', (arg: { room_id: string, target_student: string }) => {
-      //console.log("receive chat invite...arg =", arg)
-      //console.log("receive chat invite...user_name =", user_name)
-      if (arg.target_student.trim() === user_name?.trim()) {
-        setRoomID(arg.room_id)
-      }
-       
-    })
-    return () => {
-      socket?.off("chat_invite")
-    }
-},[socket, user_name])
-
+  
   return (
         <div className='grid grid-cols-12 m-14 bg-bgColor1'>
-            <div className='col-span-9'><MainStudent/></div>
-            { roomId.length > 0 ?
-            <div className='col-span-3'><Side room_id={roomId} /></div>
-            :
-            <div className='col-span-3 text-textColor1 bg-bgColor2'>Side</div>
-            }
+            <div className='col-span-10'><MainStudent/></div>
+            <div className='col-span-2'><SideStudent  /></div>
+         
         </div>
   )
 }
 
 /*
+
+  <Lottie animationData={groovyWalkAnimation} loop={true} />//
      <div className='m-14'>
           { showLiveRecording ?
           <LiveAudioRecorder />

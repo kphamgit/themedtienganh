@@ -184,7 +184,7 @@ export function QuestionAttemptResults(props:{
     }
 
     return (
-        <>
+        <div className='bg-bgColor2 text-textColor2' >
         { props.response.question?.instruction &&
             <div className='m-2 bg-bgColor2 text-textColor2' dangerouslySetInnerHTML={{ __html: props.response.question.instruction }}></div>
         }
@@ -214,6 +214,6 @@ export function QuestionAttemptResults(props:{
                 <FaSmile />
             </div>
         }
-        </>
+        </div>
     )
 }
