@@ -53,7 +53,7 @@ const videoConstraints = {
     width: window.innerWidth / 2
 };
 
-const RoomAudio = (props:{roomID: string}) => {
+const RoomAudioTeacher = (props:{roomID: string}) => {
     const {socket, user_name} = useContext(SocketContext).SocketState;
     
     
@@ -75,33 +75,19 @@ const RoomAudio = (props:{roomID: string}) => {
             if (userAudio.current) {
                 userAudio.current.srcObject = stream;
             }
-            console.log("EMIT JOIN ROOM")
+            console.log("RoomAudioTeacher EMIT JOIN ROOM")
             socket.emit("join room", props.roomID);
 
-            socket.on("all users", (users: SocketInfo[]) => {
-                console.log("MMMM users", users)
-                
-                //const peers:Peer.Instance[] = [];
-                const peers:PeerProps[] = [];
-                users.forEach(usr => {
-                  if (socket.id) {
-                    const peer = createPeer(usr.socket_id, {socket_id: socket.id, user_name: user_name}, stream);
-                    peersRef.current.push({
-                        peerID: usr.socket_id,
-                        peerName: usr.user_name,
-                        peer,
-                    })
-                    peers.push({peer: peer, peerID: usr.socket_id, peerName: usr.user_name} );
-                  }
-                })
-                setPeers(peers);
-                
-            })
-
-            socket.on("user joined", payload => {
-              //console.log(" received - sending signal, payload caller=", payload)
-              //this.io.to(payload.userToSignal).emit('user joined', { signal: payload.signal, caller: payload.caller });
+            // receive an signal of type 'offer' (via the server) from a student.
+            socket.on("user joined", (payload: {signal: SignalData, caller: SocketInfo}) => {
+                // { signal: payload.signal, caller: payload.caller });
+              //console.log("RoomAudioTeacher ON user joined payload =", payload)
+              //console.log(" Teacher received - user joined message from payload.caller = ", payload.caller )
+              //console.log(" Teacher calling addPeer with signal =", payload.signal, 'signal type =', payload.signal.type)
+           
+                // construct a peer and add it to teacher's peersRef array and peers array
                 const peer = addPeer(payload.signal, payload.caller, stream);
+                
                 peersRef.current.push({
                     peerID: payload.caller.socket_id,
                     peerName: payload.caller.user_name,
@@ -109,88 +95,21 @@ const RoomAudio = (props:{roomID: string}) => {
                 })
                 setPeers(users => [...users as PeerProps[], {peer: peer, peerID: payload.caller.socket_id, peerName: payload.caller.user_name}]);
             });
-            socket.on("receiving returned signal", payload => {
-                const item = peersRef.current.find(p => p.peerID === payload.id);
-                item?.peer?.signal(payload.signal);
-            });
+
+            return () => {
+                socket.off("user joined")
+                socket.off("all users")
+              }
             
         })
         }
     }, []);
 
-    function createPeer(userToSignal:any, caller: SocketInfo | undefined, stream: any) {
-        console.log(" in create peer....")
-        const peer = new Peer({
-            initiator: true,
-            trickle: false,
-            config: {
-                iceServers: [
-                    {
-                      urls: "stun:stun.relay.metered.ca:80",
-                    },
-                    {
-                      urls: "turn:global.relay.metered.ca:80",
-                      username: "c272ce74be69d6f69c0f13ab",
-                      credential: "MvofS5mzj2TCXVDZ",
-                    },
-                    {
-                      urls: "turn:global.relay.metered.ca:80?transport=tcp",
-                      username: "c272ce74be69d6f69c0f13ab",
-                      credential: "MvofS5mzj2TCXVDZ",
-                    },
-                    {
-                      urls: "turn:global.relay.metered.ca:443",
-                      username: "c272ce74be69d6f69c0f13ab",
-                      credential: "MvofS5mzj2TCXVDZ",
-                    },
-                    {
-                      urls: "turns:global.relay.metered.ca:443?transport=tcp",
-                      username: "c272ce74be69d6f69c0f13ab",
-                      credential: "MvofS5mzj2TCXVDZ",
-                    },
-                ], 
-              },
-            stream,
-        });
-
-        peer.on("signal", signal => {
-          console.log(" emit sending signal caller=", caller)
-          console.log(" emit sending signal userToCall=", userToSignal)
-            socket?.emit("sending signal", { userToSignal, caller, signal })
-        })
-
-        peer.on('close', () => {
-            console.log(" createPeer on peer close removing stream")
-            peer.streams.forEach(stream => {
-                stream.getAudioTracks().forEach(track => track.stop());
-            });
-            
-            peer.streams.forEach(stream => {
-                stream.removeTrack(stream.getAudioTracks()[0])
-            });
-            peer.removeStream(stream)
-            /*
-                 peerConnection.localStreams.forEach { mediaStream ->
-            mediaStream.videoTracks.forEach { it.setEnabled(false) }
-            mediaStream.audioTracks.forEach { it.setEnabled(false) }
-        }
-            */
-            /*
-            if (peer.stream) {
-              peer.stream.getTracks().forEach(track => track.stop());
-            }
-          
-            const videoElement = document.getElementById('remoteVideo');
-            if (videoElement) {
-              videoElement.remove();
-            }
-            */
-          });
-        return peer;
-    }
-
-    function addPeer(incomingSignal: SignalData | string, caller:SocketInfo, stream: any) {
-        console.log(" in addPeer.....")
+    function addPeer(incomingSignal: SignalData, caller:SocketInfo, stream: any) {
+        // create a student peer and add it to my peersRef array and peers array
+        //console.log(" in RoomAudioTeacher addPeer....., caller = ", caller, "incoming signal type =", incomingSignal.type)
+        // incomingSignal type = offer
+        //console.log(" RoomAudioTeacher making new peer with initiator  = false")
         const peer = new Peer({
             initiator: false,
             trickle: false,
@@ -224,7 +143,11 @@ const RoomAudio = (props:{roomID: string}) => {
             stream,
         })
 
+        //this event is not fired upon peer creation, but when the peer makes an offer and it is accepted (see line 268 - accept offer)
         peer.on("signal", signal => {
+            console.log(" RoomAudioTeacher on signal signal type = ", signal.type)
+            // Now, signal.type is "answer". I.e, the teacher answers the call from the caller, basic2 or any other student
+            console.log(" RoomAudioTeacher EMITTING returning signal to caller =", caller, " signal type =", signal.type)
             socket?.emit("returning signal", { signal, caller })
         })
 
@@ -258,6 +181,8 @@ const RoomAudio = (props:{roomID: string}) => {
             
           });
 
+        console.log(" Accept the incoming signal of type=", incomingSignal.type)
+        //here, incomingSignal.type is "offer"
         peer.signal(incomingSignal);
 
         return peer;
@@ -300,7 +225,7 @@ const RoomAudio = (props:{roomID: string}) => {
     return (
         <div>
             <div>
-            <div className="bg-bgColor1 text-textColor1">{user_name}</div>
+            <div className="bg-bgColor1 text-textColor1">Me: {user_name}</div>
             <audio muted ref={userAudio} autoPlay />
             </div>
             { peers && 
@@ -308,7 +233,7 @@ const RoomAudio = (props:{roomID: string}) => {
                 if (peer) {
                 return (
                     <div key={index} id={peer.peerID.toString()}>
-                        <span className="bg-bgColor3 text-textColor3 text-xl mb-2">{peer.peerName}
+                        <span className="bg-bgColor3 text-textColor3 text-xl mb-2">Peer: {peer.peerName}
                         </span>
                     <Audio peer={peer.peer}  />
                     </div>
@@ -323,7 +248,7 @@ const RoomAudio = (props:{roomID: string}) => {
     );
 };
 
-export default RoomAudio;
+export default RoomAudioTeacher;
 
 /*
  return (

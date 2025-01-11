@@ -150,7 +150,7 @@ const enable_live_quiz: MouseEventHandler<HTMLButtonElement> = (event) => {
 
       < ReactTextareaAutosize className='w-auto m-14 px-3' id="prompt" value={user.message} />
 
-
+      <div className='bg-bgColor2 text-textColor2'>Socket id: {socket.id}</div>
 
     </div>
   )

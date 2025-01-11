@@ -3,7 +3,7 @@ import { useEffect, lazy, useState} from 'react'
 import { useAppSelector } from '../../redux/store'
 import { Outlet, useNavigate } from 'react-router-dom'
 
-import LiveAudioRecorder  from "../shared/LiveAudioRecorder"
+
 //import { ScoreBoard2 } from '../quiz_attempts/ScoreBoard2'
 import { NavigationBar } from './NavigationBar'
 import { useSocketContext } from '../../hooks/useSocketContext'
@@ -129,7 +129,7 @@ export default function MainStudent(props: any ) {
         </div>
     
       </div>
-
+      <div className='bg-bgColor2 text-textColor2'>Socket id: {socket.id}</div>
     </div>
   )
 }

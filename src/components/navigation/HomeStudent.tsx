@@ -1,10 +1,9 @@
-import { useEffect, useState} from 'react'
+//import { useEffect, useState} from 'react'
 
-import { useSocketContext } from '../../hooks/useSocketContext'
+//import { useSocketContext } from '../../hooks/useSocketContext'
 import MainStudent from './MainStudent'
 import { SideStudent } from './SideStudent'
-//import Lottie from "lottie-react";
-//import groovyWalkAnimation from "../../myanima.json";
+
 //import groovyWalkAnimation from "../../groovywalk.json"
 
 
