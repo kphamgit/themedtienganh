@@ -5,6 +5,7 @@ import RoomAudio from '../shared/RoomAudioStudent';
 import { useSocketContext } from '../../hooks/useSocketContext';
 import Lottie from "lottie-react";
 import telephoneAnimation from "../../telephone.json";
+import ChatPage from '../chat/ChatPage';
 
 export function SideStudent(props: any) {
     //room_id={roomId}
@@ -51,7 +52,7 @@ export function SideStudent(props: any) {
                  <RoomAudio roomID = {roomID} />
             </>
             }
-           
+           <ChatPage />
         </>
     )
 }

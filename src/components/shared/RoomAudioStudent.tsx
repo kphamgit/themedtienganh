@@ -53,7 +53,7 @@ const videoConstraints = {
     width: window.innerWidth / 2
 };
 
-const RoomAudioStudent = (props:{roomID: string}) => {
+const RoomAudioStudent = (props:any) => {
     const {socket, user_name} = useContext(SocketContext).SocketState;
     
     
@@ -64,9 +64,6 @@ const RoomAudioStudent = (props:{roomID: string}) => {
    
     const peersRef = useRef<PeerProps[]>([]);
 
-    //const params = useParams<{ roomID: string }>();
-    //const roomID = params.roomID;
-    //const roomID = uuid();
     //navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true }).then(stream => {
     useEffect(() => {
         if (socket) {
@@ -76,27 +73,27 @@ const RoomAudioStudent = (props:{roomID: string}) => {
                 userAudio.current.srcObject = stream;
             }
             //console.log("1) RoomAudioStudent Basic 2 emits JOIN ROOM")
-            socket.emit("join room", props.roomID);
+            socket.emit("join room");
 
-            socket.on("all users", (users: SocketInfo[]) => {
+            socket.on("teacher_id", (teacher: SocketInfo) => {
                 //console.log("RoomAudioStudent all users message received, all users:", users)
                
                 //
                 const peers:PeerProps[] = [];
                  //for a student in star configuration, "users" should contain only the teacher
-                users.forEach(usr => {
+                //users.forEach(usr => {
                   if (socket.id) {
                     //console.log(user_name, " is creating peer for user ", usr.user_name, ' which has socket id ', usr.socket_id)
                     //create teacher peer
-                    const peer = createPeer(usr.socket_id, {socket_id: socket.id, user_name: user_name}, stream);
+                    const peer = createPeer(teacher.socket_id, {socket_id: socket.id, user_name: user_name}, stream);
                     peersRef.current.push({
-                        peerID: usr.socket_id,
-                        peerName: usr.user_name,
+                        peerID: teacher.socket_id,
+                        peerName: teacher.user_name,
                         peer,
                     })
-                    peers.push({peer: peer, peerID: usr.socket_id, peerName: usr.user_name} );
+                    peers.push({peer: peer, peerID: teacher.socket_id, peerName: teacher.user_name} );
                   }
-                })
+                //})
                 setPeers(peers);
                 
             })
@@ -203,7 +200,7 @@ const RoomAudioStudent = (props:{roomID: string}) => {
     return (
         <div>
             <div>
-            <div>Room, id = {props.roomID} </div>
+           
             <div className="bg-bgColor1 text-textColor1">Me: {user_name}</div>
             <audio muted ref={userAudio} autoPlay />
             </div>

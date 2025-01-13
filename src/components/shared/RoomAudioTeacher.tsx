@@ -53,9 +53,8 @@ const videoConstraints = {
     width: window.innerWidth / 2
 };
 
-const RoomAudioTeacher = (props:{roomID: string}) => {
+const RoomAudioTeacher = (props:any) => {
     const {socket, user_name} = useContext(SocketContext).SocketState;
-    
     
     //const [peers, setPeers] = useState<Peer.Instance[] | undefined>([])
     const [peers, setPeers] = useState<PeerProps[] | undefined>([])
@@ -64,9 +63,7 @@ const RoomAudioTeacher = (props:{roomID: string}) => {
    
     const peersRef = useRef<PeerProps[]>([]);
 
-    //const params = useParams<{ roomID: string }>();
-    //const roomID = params.roomID;
-    //const roomID = uuid();
+   
     //navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true }).then(stream => {
     useEffect(() => {
         if (socket) {
@@ -75,8 +72,7 @@ const RoomAudioTeacher = (props:{roomID: string}) => {
             if (userAudio.current) {
                 userAudio.current.srcObject = stream;
             }
-            console.log("RoomAudioTeacher EMIT JOIN ROOM")
-            socket.emit("join room", props.roomID);
+            //console.log("RoomAudioTeacher EMIT JOIN ROOM"
 
             // receive an signal of type 'offer' (via the server) from a student.
             socket.on("user joined", (payload: {signal: SignalData, caller: SocketInfo}) => {
@@ -98,7 +94,6 @@ const RoomAudioTeacher = (props:{roomID: string}) => {
 
             return () => {
                 socket.off("user joined")
-                socket.off("all users")
               }
             
         })
