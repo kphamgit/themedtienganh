@@ -1,7 +1,7 @@
 import 'regenerator-runtime/runtime'
 //kpham: the above import 'regener...' has to be the first line due to error: can't find regeneratorRUntime
 // when using react speech recognition package
-import { StrictMode } from 'react'
+//import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
@@ -10,7 +10,7 @@ import { Provider } from 'react-redux';
 //import SocketContextComponent from './components/context/Socket/Component';
 import { store, persistore } from './redux/store';
 ////import { PersistGate } from 'redux-persist/integration/react';
-import SocketContextComponent from './contexts/socket_context/Component.tsx'
+//import SocketContextComponent from './contexts/socket_context/Component.tsx'
 
 
 createRoot(document.getElementById('root')!).render(

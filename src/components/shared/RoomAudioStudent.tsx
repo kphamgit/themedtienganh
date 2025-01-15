@@ -3,6 +3,10 @@ import  { useContext, useEffect, useRef, useState } from "react";
 import Peer, { SignalData } from "simple-peer";
 import styled from "styled-components";
 import SocketContext from "../../contexts/socket_context/Context";
+import { LiveAudioVisualizer } from "react-audio-visualize";
+import { Visualizer } from "react-sound-visualizer";
+import { MdMicOff } from 'react-icons/md';
+import { MdMic } from 'react-icons/md';
 //import { v1 as uuid } from "uuid";
 
 interface SocketInfo {
@@ -56,6 +60,9 @@ const videoConstraints = {
 const RoomAudioStudent = (props:any) => {
     const {socket, user_name} = useContext(SocketContext).SocketState;
     
+    const [myStream, setMyStream] = useState<MediaStream>();
+    const [audioEnabled, setAudioEnabled] = useState(true);
+
     
     //const [peers, setPeers] = useState<Peer.Instance[] | undefined>([])
     const [peers, setPeers] = useState<PeerProps[] | undefined>([])
@@ -63,6 +70,13 @@ const RoomAudioStudent = (props:any) => {
     const userAudio = useRef<HTMLAudioElement>(null);
    
     const peersRef = useRef<PeerProps[]>([]);
+
+    const toggleAudio = () => {
+        if (myStream) {
+          myStream.getAudioTracks()[0].enabled = !audioEnabled;
+          setAudioEnabled(!audioEnabled);
+        }
+      };
 
     //navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true }).then(stream => {
     useEffect(() => {
@@ -72,13 +86,13 @@ const RoomAudioStudent = (props:any) => {
             if (userAudio.current) {
                 userAudio.current.srcObject = stream;
             }
+            
+            setMyStream(stream.clone());
             //console.log("1) RoomAudioStudent Basic 2 emits JOIN ROOM")
             socket.emit("join room");
 
             socket.on("teacher_id", (teacher: SocketInfo) => {
                 //console.log("RoomAudioStudent all users message received, all users:", users)
-               
-                //
                 const peers:PeerProps[] = [];
                  //for a student in star configuration, "users" should contain only the teacher
                 //users.forEach(usr => {
@@ -172,59 +186,99 @@ const RoomAudioStudent = (props:any) => {
             peer.streams.forEach(stream => {
                 stream.removeTrack(stream.getAudioTracks()[0])
             });
-            peer.removeStream(stream)
+            
+            //peer.removeStream(stream)
            
           });
         return peer;
     }
 
     useEffect(() => {
-        if (socket) { 
+        if (socket) {
             socket.on("user_disconnected", (socket_id: string) => {
-               //console.log("in Room, user disconnected socket_id = ", socket_id )
-               // look in peersRef for this socket_id
-               const disconnecting_peer = peersRef.current.find(peer => peer.peerID === socket_id)
-               disconnecting_peer?.peer?.destroy()
-               const audio_div = document.getElementById(socket_id)
-               //console.log("video div", video_div)
-               while (audio_div?.firstChild) {
-                audio_div.firstChild.remove()
-            }
+                //console.log("in Room, user disconnected socket_id = ", socket_id )
+                // look in peersRef for this socket_id
+                
+                const disconnecting_peer = peersRef.current.find(peer => peer.peerID === socket_id)
+                disconnecting_peer?.peer?.destroy()
+                
+                const audio_div = document.getElementById(socket_id)
+                //console.log("video div", video_div)
+                
+                while (audio_div?.firstChild) {
+                    audio_div.firstChild.remove()
+                }
+                
+
             })
             return () => {
-              socket.off("user_disconnected")
+                socket.off("user_disconnected")
             }
         }
-      },[socket])
+    }, [socket])
 
     return (
         <div>
-            <div>
-           
-            <div className="bg-bgColor1 text-textColor1">Me: {user_name}</div>
-            <audio muted ref={userAudio} autoPlay />
+            <div className="bg-bgColor1 text-green-800 text-3xl flex flex-row justify-center" onClick={toggleAudio}>
+                {audioEnabled ?
+                    <MdMic />
+                    :
+                    <MdMicOff />
+                }
             </div>
-            { peers && 
-            peers.map((peer, index) => {
-                if (peer) {
-                return (
-                    <div key={index} id={peer.peerID.toString()}>
-                        <span className="bg-bgColor3 text-textColor3 text-xl mb-2">Peer: {peer.peerName}
-                        </span>
-                    <Audio peer={peer.peer}  />
-                    </div>
-                );
-                }
-                else {
-                    return <div className="text-textColor1">ENPTY</div>
-                }
-            })
+            <div>
+                <div className="bg-bgColor1 text-textColor1">Me: {user_name}</div>
+                <audio muted ref={userAudio} autoPlay />
+            </div>
+            {myStream &&
+                                
+                                <div>
+                                <Visualizer audio={myStream} autoStart={true} mode='current'>
+                                    {({ canvasRef }) => (
+                                        <>
+                                            <canvas ref={canvasRef} width={150} height={70} />
+
+                                        </>
+                                    )}
+                                </Visualizer>
+                                </div>
+                            }
+            {peers &&
+                peers.map((peer, index) => {
+                    if (peer) {
+                        return (
+                            <div key={index} id={peer.peerID.toString()}>
+                                <span className="bg-bgColor3 text-textColor3 text-xl mb-2">{peer.peerName}
+                                </span>
+                                <Audio peer={peer.peer} />
+                            
+                            </div>
+                        );
+                    }
+                    else {
+                        return <div className="text-textColor1">ENPTY</div>
+                    }
+                })
             }
+
         </div>
     );
 };
 
 export default RoomAudioStudent;
+
+/*
+  {myStream &&
+                                    <Visualizer audio={myStream} autoStart={true} mode='current'>
+                                        {({ canvasRef }) => (
+                                            <>
+                                                <canvas ref={canvasRef} width={150} height={70} />
+
+                                            </>
+                                        )}
+                                    </Visualizer>
+                                }
+*/
 
 /*
  return (

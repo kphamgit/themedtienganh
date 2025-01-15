@@ -3,7 +3,9 @@ import  { useContext, useEffect, useRef, useState } from "react";
 import Peer, { SignalData } from "simple-peer";
 import styled from "styled-components";
 import SocketContext from "../../contexts/socket_context/Context";
-//import { v1 as uuid } from "uuid";
+import { MdMicOff } from 'react-icons/md';
+import { MdMic } from 'react-icons/md';
+import { Visualizer } from "react-sound-visualizer";
 
 interface SocketInfo {
     socket_id: string;
@@ -56,14 +58,22 @@ const videoConstraints = {
 const RoomAudioTeacher = (props:any) => {
     const {socket, user_name} = useContext(SocketContext).SocketState;
     
-    //const [peers, setPeers] = useState<Peer.Instance[] | undefined>([])
+    const [myStream, setMyStream] = useState<MediaStream>();
+    const [audioEnabled, setAudioEnabled] = useState(true);
+
     const [peers, setPeers] = useState<PeerProps[] | undefined>([])
     
     const userAudio = useRef<HTMLAudioElement>(null);
    
     const peersRef = useRef<PeerProps[]>([]);
 
-   
+    const toggleAudio = () => {
+        if (myStream) {
+          myStream.getAudioTracks()[0].enabled = !audioEnabled;
+          setAudioEnabled(!audioEnabled);
+        }
+      };
+
     //navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true }).then(stream => {
     useEffect(() => {
         if (socket) {
@@ -72,7 +82,7 @@ const RoomAudioTeacher = (props:any) => {
             if (userAudio.current) {
                 userAudio.current.srcObject = stream;
             }
-            //console.log("RoomAudioTeacher EMIT JOIN ROOM"
+            setMyStream(stream);
 
             // receive an signal of type 'offer' (via the server) from a student.
             socket.on("user joined", (payload: {signal: SignalData, caller: SocketInfo}) => {
@@ -147,22 +157,22 @@ const RoomAudioTeacher = (props:any) => {
         })
 
         peer.on('close', () => {
-            console.log(" addPeer, on peer close...trying to remove stream")
+            //console.log(" in addPeer, on peer close...trying to remove stream")
             //peer.streams.forEach(stream => stream.getTracks().forEach(track => track.stop))
 
-            console.log(" createPeer on peer close removing stream")
-            
+            console.log(" iin addPeer on peer close removing Track")
+            /*
             peer.streams.forEach(stream => {
                 //stream.removeTrack(stream.getAudioTracks()[0])
                 stream.getAudioTracks().forEach(track => track.stop());
             });
-
+            */
             peer.streams.forEach(stream => {
                 stream.removeTrack(stream.getAudioTracks()[0])
               
             });
 
-            peer.removeStream(stream)
+            //peer.removeStream(stream)
            // peer.stream.getTracks().forEach(track => track.stop());
             //peer.removeStream(stream)
            // peer.removeTrack( stream)
@@ -220,7 +230,27 @@ const RoomAudioTeacher = (props:any) => {
     return (
         <div>
             <div>
+            <div className="bg-bgColor1 text-green-800 text-3xl flex flex-row justify-center" onClick={toggleAudio}>
+                {audioEnabled ?
+                    <MdMic />
+                    :
+                    <MdMicOff />
+                }
+            </div>
             <div className="bg-bgColor1 text-textColor1">Me: {user_name}</div>
+            {myStream &&
+                    <>
+                          
+                                    <Visualizer audio={myStream} autoStart={true} mode='current'>
+                                        {({ canvasRef }) => (
+                                            <>
+                                                <canvas ref={canvasRef} width={150} height={70} />
+
+                                            </>
+                                        )}
+                                    </Visualizer>
+                                    </>
+                                }
             <audio muted ref={userAudio} autoPlay />
             </div>
             { peers && 

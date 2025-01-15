@@ -15,7 +15,7 @@ export function Logout(props: LogoutProps) {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     //const socket = useSocket()
-    const {socket, uid, users} = useContext(SocketContext).SocketState;
+    const {socket} = useContext(SocketContext).SocketState;
 
     useEffect(() => {
         socket?.disconnect()

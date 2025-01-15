@@ -39,7 +39,7 @@ export function SideStudent(props: any) {
 
     return (
         <>  
-            <div><LiveAudioRecorder /></div>
+           
             {showAcceptButton &&
                 <div className='bg-bgColor2 text-textColor2'>Teacher calling...
                 <div>{roomID}</div>
@@ -58,16 +58,22 @@ export function SideStudent(props: any) {
 }
 
 /*
+       return (
+        <>  
+            <div><LiveAudioRecorder /></div>
             {showAcceptButton &&
                 <div className='bg-bgColor2 text-textColor2'>Teacher calling...
-               
-                
-                <button className='bg-bgColor2 text-textColor2' onClick={acceptCall}>Accept call</button>
+                <div>{roomID}</div>
+                 <Lottie animationData={telephoneAnimation} style={{ width: 150, height: 150 }} loop={true} />
+                <button className='bg-bgColor4 text-textColor2 p-2 rounded-md' onClick={acceptCall}>Accept</button>
                 </div>
             }
-            { callAccepted ?
-            <div className='col-span-2'><Side room_id={roomId} /></div>
-            :
-            <div className='col-span-2 text-textColor1 bg-bgColor2'>Side</div>
+            { callAccepted &&
+            <>
+                 <RoomAudio roomID = {roomID} />
+            </>
             }
+           <ChatPage />
+        </>
+    )
 */

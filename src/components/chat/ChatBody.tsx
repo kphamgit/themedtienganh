@@ -1,4 +1,3 @@
-import React from 'react';
 import { useRef, useEffect } from 'react';
 
 interface MessageProps {
@@ -14,16 +13,6 @@ const ChatBody = (props: {messages: MessageProps[]}) => {
       messagesEndRef.current?.scrollIntoView({ block: 'nearest', inline: 'start'  })
     }    
     
-  //messagesEndRef.current?.scrollIntoView({ behavior: "smooth",  block: 'nearest', inline: 'start'  })
-
-  /*
-  const handleLeaveChat = () => {
-    localStorage.removeItem('userName');
-    navigate('/');
-    window.location.reload();
-  };
-*/
-
   useEffect(() => {
     scrollToBottom()
   }, [props.messages])
