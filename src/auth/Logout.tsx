@@ -19,7 +19,7 @@ export function Logout(props: LogoutProps) {
 
     useEffect(() => {
         socket?.disconnect()
- 
+        
         props.onLogout()
         navigate('/')
         //eslint-disable-next-line

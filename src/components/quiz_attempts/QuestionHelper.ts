@@ -12,7 +12,7 @@ class QuestionHelper {
                 const answer_key_parts = answer_key.split('/')
                 const user_answer_parts = answer.split('/')
                 answer_key_parts.forEach( (answer_key_part, index) => {
-                    console.log("mmmmm", answer_key_part)
+                    //console.log("mmmmm", answer_key_part)
                     //replacements[part] = part
                     if (answer_key_part.includes('*')) {    //blank has multiple correct answers
                       
@@ -27,8 +27,10 @@ class QuestionHelper {
                 const newStr = content.replace(/\[(.*?)\]/g, (match, p1) =>
                     replacements[p1] || match // Replace if found in object, otherwise keep original
                 );
+                const newStr1 = newStr.replace(/\[(.*?)\]/g, '');
+                //console.log("xxxxx newStr1=", newStr1)
                 return (
-                    newStr
+                    newStr1
                 )
                 //return content.replace(/\[|\]/g, "")
             }
@@ -74,7 +76,9 @@ class QuestionHelper {
                   replacements[p1] || match // Replace if found in object, otherwise keep original
               );
               //console.log("newStr =", newStr)
-              return newStr
+              const newStr1 = newStr.replace(/\[(.*?)\]/g, '');
+              //console.log("xxxxx newStr1=", newStr1)
+              return newStr1
               
                 //return content.replace(/\[|\]/g, "")
             }

@@ -124,7 +124,7 @@ export function QuestionAttemptResults(props:{
                 )
          
         }
-        else if (format === 1) {
+        else if (format === 1) { // cloze
               const replacements: DynamicObject = {};
               const answer_parts = answerKey.split('/')
               answer_parts.forEach( (part, index) => {
@@ -141,8 +141,10 @@ export function QuestionAttemptResults(props:{
             const newStr = content.replace(/\[(.*?)\]/g, (match, p1) => 
                 replacements[p1] || match // Replace if found in object, otherwise keep original
             );
+            const newStr1 = newStr.replace(/\[(.*?)\]/g, '');
+              //console.log("xxxxx newStr1=", newStr1)
             return ( 
-                <div>{newStr}</div>
+                <div>{newStr1}</div>
             )
         }
         else if (format === 10 || format === 2) {

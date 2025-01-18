@@ -82,7 +82,7 @@ const RoomAudioTeacher = (props:any) => {
             if (userAudio.current) {
                 userAudio.current.srcObject = stream;
             }
-            setMyStream(stream);
+            setMyStream(stream.clone());
 
             // receive an signal of type 'offer' (via the server) from a student.
             socket.on("user joined", (payload: {signal: SignalData, caller: SocketInfo}) => {
@@ -257,10 +257,21 @@ const RoomAudioTeacher = (props:any) => {
             peers.map((peer, index) => {
                 if (peer) {
                 return (
+                   
                     <div key={index} id={peer.peerID.toString()}>
                         <span className="bg-bgColor3 text-textColor3 text-xl mb-2">Peer: {peer.peerName}
                         </span>
                     <Audio peer={peer.peer}  />
+                    { peer.peer && peer.peer.streams[0].getAudioTracks().length > 0 &&
+                    <Visualizer audio={peer.peer.streams[0]} autoStart={true} mode='current'>
+                                        {({ canvasRef }) => (
+                                            <>
+                                                <canvas ref={canvasRef} width={150} height={70} />
+
+                                            </>
+                                        )}
+                                    </Visualizer>
+                }
                     </div>
                 );
                 }
