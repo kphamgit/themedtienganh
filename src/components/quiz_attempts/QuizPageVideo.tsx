@@ -13,7 +13,7 @@ import { DropDowns } from './question_attempts/DropDowns';
 import { DynamicLetterInputs } from './question_attempts/DynamicLetterInputs';
 import { QuestionAttemptResults } from './QuestionAttemptResults';
 import { AzureAudioPlayer } from '../shared/AzureAudioPlayer';
-import useAxiosFetch1  from '../../hooks/useAxiosFetch1';
+import { useAxiosFetch1}  from '../../hooks/useAxiosFetch1';
 
 import ReactPlayer from 'react-player';
 import { createQuestionAttempt, processQuestionAttempt } from './question_attempts/services/list';
@@ -45,15 +45,21 @@ export default function QuizPageVideo(props:any) {
     //const url = `/http://localhost:5001/api/quiz_attempts/${params.quizId}/${user.id}`
     //
     //quiz_id/:user_id",
-    /*
-    const { data: quiz_attempt, loading, error } =
-       useAxiosFetch1<QuizAttemptProps>({ url: url, method: 'GET' })
-       */
+    
+  
+      const { data, loading, error } =
+          useAxiosFetch1<QuizAttemptProps>({ url: url, method: 'get' })
+       
+      /*
+<T>(props: {url: string, method: string, body? : {} }): DataResponse<T> => {
+      */
+
+/*
        const { data, loading, error } = useAxiosFetch1<QuizAttemptProps>(
         url, //endpoint url
         { timeout: 5000 } //extra parameter just for example
       );
-    
+  */  
      
        /*
  url: string;
@@ -154,7 +160,7 @@ export default function QuizPageVideo(props:any) {
       }
     
       if (error) {
-        return <div>{error}</div>;
+        return <div>Error Loading Quiz Attempt</div>;
       }
 
     const handleSubmit = () => {

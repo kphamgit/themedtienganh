@@ -1,10 +1,20 @@
 import { useState, useEffect } from "react";
-import axios, { AxiosResponse, AxiosRequestConfig } from "axios";
+import axios, { AxiosRequestConfig, AxiosError } from "axios";
 
-const useAxiosFetch1 = <T>(url: string, params?: AxiosRequestConfig) => {
+axios.defaults.baseURL = "http://localhost:8080/api";
+
+//const useAxios = <T>({ url, method = 'get', data, config }: UseAxiosOptions<T>): UseAxiosResult<T> => {
+interface DataResponse<T> {
+  data: T | null; 
+  loading: boolean; 
+  error: AxiosError | null
+}
+  
+export const useAxiosFetch1 = <T>(props: {url: string, method: string, body? : {} }): DataResponse<T> => {
+console.log("useAxiosFetch1 url = ", props.url)
   const [data, setData] = useState<T | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<AxiosError | null>(null);
 
   let rootpath = ''
 
@@ -18,33 +28,35 @@ const useAxiosFetch1 = <T>(url: string, params?: AxiosRequestConfig) => {
   else {
     console.log("invalid NODE_ENV ")
   }
-/*
-  const config: AxiosRequestConfig = {
+
+  useEffect(() => {
+    const config: AxiosRequestConfig = {
       url: props.url,
       method: props.method, // or 'POST', 'PUT', 'DELETE', etc.
       baseURL: rootpath + '/api',
       data: props.body
     };
-*/
-  useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = async (): Promise<void> => {
       try {
-        setLoading(true);
-        //console.log("useAxiosFetch1 url = ", url)
-        const response: AxiosResponse<T> = await axios.get(rootpath + '/api/' + url, params);
-        //console.log("useAxiosFetch1 response = ", response)
-        setData(response.data);
-        setLoading(false);
-      } catch (error) {
-        setError("Error getting the data");
-        setLoading(false);
-      }
-    };
-
+        console.log("useAxiosFetch1 config = ", config)
+          const response = await axios(config)
+          console.log("useAxiosFetch1 response = ", response)
+          setData(response.data)
+        } catch (err) {
+          if (axios.isAxiosError(err)) {
+            setError(err);
+          } else {
+            setError(new AxiosError('An error occurred', undefined, undefined, undefined, undefined));
+          }
+        } finally {
+          setLoading(false);
+        }
+    }
     fetchData();
-  }, []);
+ // }, []);
+}, [props.method, props.url, props.body, rootpath]);
 
-  return { data, loading, error };
+  //return { data, error, loading } as const;
+  return { data: data, loading, error };
 };
 
-export default useAxiosFetch1;
