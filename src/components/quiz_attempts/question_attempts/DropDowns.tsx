@@ -115,7 +115,7 @@ interface Props {
           }
         </select>
           :
-          <span>{field.value}</span>
+          <span className='bg-bgColor1 text-textColor2'>{field.value}</span>
           }
         </div>
       ))}

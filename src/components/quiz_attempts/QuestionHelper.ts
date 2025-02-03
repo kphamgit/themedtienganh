@@ -7,7 +7,7 @@ class QuestionHelper {
     format_user_answer = (answer: string | undefined, answer_key: string, format: number | undefined, content: string): string | undefined => {
         //console.log(" questionHelper format_answer,  format", format)
         if (answer) {
-            if (format === 1) {
+            if (format === 1 || format === 10 ) {
                 const replacements: DynamicObject = {};
                 const answer_key_parts = answer_key.split('/')
                 const user_answer_parts = answer.split('/')
@@ -15,9 +15,7 @@ class QuestionHelper {
                     //console.log("mmmmm", answer_key_part)
                     //replacements[part] = part
                     if (answer_key_part.includes('*')) {    //blank has multiple correct answers
-                      
                         const first_answer = answer_key_part.split('*')[0]  // only use the first answer
-                        
                         replacements[first_answer] = user_answer_parts[index]
                     }
                     else {
@@ -54,7 +52,7 @@ class QuestionHelper {
     format_answer_key = (answer_key: string, format: number | undefined, content: string): string | undefined => {
         //console.log(" questionHelper format_answer,  format", format)
         if (answer_key) {
-            if (format === 1) {
+            if (format === 1 || format === 10 ) {
                 const replacements: DynamicObject = {};
                 const answer_parts = answer_key.split('/')
                 answer_parts.forEach( (part, index) => {

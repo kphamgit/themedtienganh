@@ -20,7 +20,7 @@ export async function findCreateQuizAttempt(quiz_id, user_id) {
 */
 
 export const useAxiosFetch = <T>(props: {url: string, method: string, body? : {} }): DataResponse<T> => {
-
+console.log("useAxiosFetch url = ", props.url)
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<AxiosError | null>(null);
@@ -47,7 +47,36 @@ export const useAxiosFetch = <T>(props: {url: string, method: string, body? : {}
     };
     const fetchData = async (): Promise<void> => {
       try {
+        console.log("useAxiosFetch config = ", config)
           const response = await axios(config)
+          console.log("useAxiosFetch response = ", response)
+          setData(response.data)
+        } catch (err) {
+          if (axios.isAxiosError(err)) {
+            setError(err);
+          } else {
+            setError(new AxiosError('An error occurred', undefined, undefined, undefined, undefined));
+          }
+        } finally {
+          setLoading(false);
+        }
+    }
+    fetchData();
+ // }, []);
+}, [props.method, props.url, props.body, rootpath]);
+
+  /*
+  useEffect(() => {
+    const config: AxiosRequestConfig = {
+      url: props.url,
+      method: props.method, // or 'POST', 'PUT', 'DELETE', etc.
+      baseURL: rootpath + '/api',
+      data: props.body
+    };
+    const fetchData = async (): Promise<void> => {
+      try {
+          const response = await axios(config)
+          console.log("useAxiosFetch response = ", response)
           setData(response.data)
         } catch (err) {
           if (axios.isAxiosError(err)) {
@@ -61,6 +90,7 @@ export const useAxiosFetch = <T>(props: {url: string, method: string, body? : {}
     }
     fetchData();
   }, [props.method, props.url, props.body, rootpath]);
+*/
 
   //return { data, error, loading } as const;
   return { data: data, loading, error };

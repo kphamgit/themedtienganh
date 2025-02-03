@@ -1,8 +1,11 @@
 
 export type QuizAttemptProps = {
-  question: QuestionProps,
-  quiz_attempt_id: number,
-  question_attempt_id: number
+  quiz_attempt: {
+    id: string,
+    completion_status: string,
+    question: QuestionProps,
+    question_attempt_id: number
+  }
 }
 
 export type QuestionAttemptResponseProps =

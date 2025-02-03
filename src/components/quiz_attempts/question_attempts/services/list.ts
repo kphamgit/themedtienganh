@@ -14,15 +14,8 @@ else {
     console.log("invalid NODE_ENV ")
 }
 
-/*
-export async function createQuestionAttempt(quiz_attempt_id: number): Promise<QuestionAttemptProps> {
-    // server will decide the next question to fetch
-    const url = `${rootpath}/api/quiz_attempts/${quiz_attempt_id}/creat_next_question_attempt`
-    const response = await axios.post(url)
-    return response.data
-  }
-*/
-  export async function createQuestionAttempt(quiz_attempt_id: number): Promise<QuestionAttemptProps> {
+
+  export async function createQuestionAttempt(quiz_attempt_id: string): Promise<QuestionAttemptProps> {
     // server will decide the next question to fetch
     const url = `${rootpath}/api/quiz_attempts/${quiz_attempt_id}/create_next_question_attempt`
     const response = await axios.post(url)
@@ -30,7 +23,7 @@ export async function createQuestionAttempt(quiz_attempt_id: number): Promise<Qu
   }
 
 //function add(x: number, y: number): number {
-    export async function processQuestionAttempt( id: number | undefined, user_answer: string):  Promise<QuestionAttemptAttributes> {
+    export async function processQuestionAttempt( id: string | undefined, user_answer: string):  Promise<QuestionAttemptAttributes> {
         const url = `${rootpath}/api/quiz_attempts/${id}/process_question_attempt`
         const response = await axios.post(url,{user_answer: user_answer})
         return response.data

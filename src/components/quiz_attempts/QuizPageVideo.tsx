@@ -13,11 +13,13 @@ import { DropDowns } from './question_attempts/DropDowns';
 import { DynamicLetterInputs } from './question_attempts/DynamicLetterInputs';
 import { QuestionAttemptResults } from './QuestionAttemptResults';
 import { AzureAudioPlayer } from '../shared/AzureAudioPlayer';
-import { useAxiosFetch } from '../../hooks/useAxiosFetch';
+import useAxiosFetch1  from '../../hooks/useAxiosFetch1';
 
 import ReactPlayer from 'react-player';
 import { createQuestionAttempt, processQuestionAttempt } from './question_attempts/services/list';
 import { Counter, CounterRef } from '../shared/Counter';
+
+//http://localhost:5001/api/quiz_attempts/find_create/1/1
 
 interface PageParamsProps {
     page_num: number
@@ -35,11 +37,30 @@ export default function QuizPageVideo(props:any) {
     
     const params = useParams<{ sub_category_name: string, quizId: string,  }>();
     const user = useAppSelector(state => state.user.value)
-    const url = `/quiz_attempts/find_create/${params.quizId}/${user.id}`
+    const url = `quiz_attempts/find_create/${params.quizId}/${user.id}`
+    const [quizAttempt, setQuizAttempt] = useState<QuizAttemptProps | undefined>()
+    const [quizAttemptId, setQuizAttemptId] = useState<string | undefined>()
+
     //const url = `/quiz_attempts/${params.quizId}/${user.id}`
+    //const url = `/http://localhost:5001/api/quiz_attempts/${params.quizId}/${user.id}`
+    //
     //quiz_id/:user_id",
+    /*
     const { data: quiz_attempt, loading, error } =
-        useAxiosFetch<QuizAttemptProps>({ url: url, method: 'get' })
+       useAxiosFetch1<QuizAttemptProps>({ url: url, method: 'GET' })
+       */
+       const { data, loading, error } = useAxiosFetch1<QuizAttemptProps>(
+        url, //endpoint url
+        { timeout: 5000 } //extra parameter just for example
+      );
+    
+     
+       /*
+ url: string;
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  data?: any;
+  config?: AxiosRequestConfig;
+       */
 
     const videoParams:VideoProps = useLocation().state
    
@@ -61,12 +82,39 @@ export default function QuizPageVideo(props:any) {
     
     //const location = useLocation()
    // const videoParams:VideoProps = location.state
+   
+   const do_next_question_attempt = () => {
+    //kpham. typescript tips: non-null assertion
+    //server will decide the next question to fetch. KP
+    //console.log(" in QuizPageVideo get_next_question createQuestionAttempt......")
+    createQuestionAttempt(data!.quiz_attempt.id)
+        .then((response) => {
+            //console.log(" in QuizPageVideo do_next_question_attempt createQuestionAttempt..... response=", response)
+            if (response.end_of_quiz) {
+                setEndOfQuiz(true)
+            }
+            else {
+                //console.log("next question", response.question)
+                setQuestion(response.question)
+                setShowSubmitButton(true)
+                setShowNextButton(false)
+                setQuestionAttemptResponse(undefined)
+            }
+            
+        })
+        .catch(error => {
+            console.log(error)
+        });
+}
 
     useEffect(() => {
-        //console.log(quiz_attempt)
-        setQuestion(quiz_attempt?.question)
-        setShowSubmitButton(true)
-    }, [quiz_attempt])
+        if (data) {
+            do_next_question_attempt();
+        }
+        else {
+            console.log("in useEffect quiz_attempt is null")
+        }
+    },[data])
 
     const handlePlay = () => {
         //console.log("in handle play")
@@ -100,39 +148,23 @@ export default function QuizPageVideo(props:any) {
         setPlaying(!playing);
       };
 
-      const do_next_question_attempt = () => {
-        //kpham. typescript tips: non-null assertion
-        //server will decide the next question to fetch. KP
-        //console.log(" in QuizPageVideo get_next_question createQuestionAttempt......")
-        createQuestionAttempt(quiz_attempt!.quiz_attempt_id)
-            .then((response) => {
-                //console.log(" in QuizPageVideo do_next_question_attempt createQuestionAttempt..... response=", response)
-                if (response.end_of_quiz) {
-                    setEndOfQuiz(true)
-                }
-                else {
-                    //console.log("next question", response.question)
-                    setQuestion(response.question)
-                    setShowSubmitButton(true)
-                    setShowNextButton(false)
-                    setQuestionAttemptResponse(undefined)
-                }
-                
-            })
-            .catch(error => {
-                console.log(error)
-            });
-    }
+    
+    if (loading) {
+        return <div>Loading...</div>;
+      }
+    
+      if (error) {
+        return <div>{error}</div>;
+      }
 
     const handleSubmit = () => {
         const my_answer = childRef.current?.getAnswer();
-        //console.log("ZZZZZZ handleSubmit", my_answer)
+        //console.log("ZZZZZZ handleSubmit my_answer = ", my_answer)
         
         if (my_answer) {
             setAnswer(my_answer)
-            //console.log("in handleSubmit ")
             // use the ! (exclamation mark) = non-null assertion operator to avoid warning undefined not assignable to string
-            processQuestionAttempt(quiz_attempt?.quiz_attempt_id, my_answer!)
+            processQuestionAttempt(data?.quiz_attempt.id, my_answer!)
                 .then((response) => {
                     setShowNextButton(true)
                     setShowSubmitButton(false)
@@ -148,18 +180,34 @@ export default function QuizPageVideo(props:any) {
         }
         
     }
-
+/*
     useEffect(() => {
           //console.log("startttttt...")
           counterRef.current?.startCount()
         //}
       },[])
+      */
 
     if (endOfQuiz) {
         return (
-            <div>END OF QUIZ.</div>
+            <div className='bg-bgColor2 text-textColor2'>END OF QUIZ.</div>
         )
     }
+
+    //console.log("in QuizPageVideo render =", quiz_attempt.id)
+    /*
+    return (
+        <>
+           
+            { (data as QuizAttemptProps) &&
+                <div className='bg-bgColor1 text-textColor2'>QuizAttempt id: 
+                    {data?.quiz_attempt.id} rrAAAAAAAAAArreerrr
+                </div>
+            }
+
+        </>
+    )
+    */
 
     return (
         <>
@@ -238,4 +286,5 @@ export default function QuizPageVideo(props:any) {
 
         </>
     )
+
 }
