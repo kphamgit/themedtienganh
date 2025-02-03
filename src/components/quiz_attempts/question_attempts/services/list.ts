@@ -3,7 +3,7 @@ import { QuestionAttemptAttributes, QuestionAttemptProps, QuestionAttemptRespons
 
 let rootpath = ''
 if (process.env.NODE_ENV === "production") {
-    rootpath = 'https://fullstack-kp-f6a689f4a15c.herokuapp.com'
+    rootpath = 'https://kphamenglish-f26e8b4d6e4b.herokuapp.com'
     //rootpath = 'https://www.tienganhtuyhoa.com'
 }
 else if (process.env.NODE_ENV === "development"){

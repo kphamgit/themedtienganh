@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios, { AxiosRequestConfig, AxiosError } from "axios";
 
-axios.defaults.baseURL = "http://localhost:8080/api";
+axios.defaults.baseURL = "http://localhost:5001/api";
 
 //const useAxios = <T>({ url, method = 'get', data, config }: UseAxiosOptions<T>): UseAxiosResult<T> => {
 interface DataResponse<T> {
@@ -11,7 +11,7 @@ interface DataResponse<T> {
 }
   
 export const useAxiosFetch1 = <T>(props: {url: string, method: string, body? : {} }): DataResponse<T> => {
-console.log("useAxiosFetch1 url = ", props.url)
+//console.log("useAxiosFetch1 url = ", props.url)
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<AxiosError | null>(null);
@@ -38,9 +38,9 @@ console.log("useAxiosFetch1 url = ", props.url)
     };
     const fetchData = async (): Promise<void> => {
       try {
-        console.log("useAxiosFetch1 config = ", config)
+        //console.log("useAxiosFetch1 config = ", config)
           const response = await axios(config)
-          console.log("useAxiosFetch1 response = ", response)
+          //console.log("useAxiosFetch1 response = ", response)
           setData(response.data)
         } catch (err) {
           if (axios.isAxiosError(err)) {
