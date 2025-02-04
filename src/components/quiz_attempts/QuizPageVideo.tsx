@@ -67,12 +67,13 @@ export default function QuizPageVideo(props:any) {
     
    // const videoParams:VideoProps = location.state
    
-   const startTimeout = () => {
+   const startTimeout = (timeout: number) => {
+    console.log("startTimeout timeout", question?.timeout) 
     timeoutRef.current = setTimeout(() => {
       //console.log("Timeout executed!");
         handleTimeOut()
         counterRef.current?.stopCount()
-    }, question?.timeout);
+    }, timeout);
   };
 
   useEffect(() => {
@@ -89,7 +90,7 @@ export default function QuizPageVideo(props:any) {
     //console.log(" in QuizPageVideo get_next_question createQuestionAttempt......")
     createQuestionAttempt(data!.quiz_attempt.id)
         .then((response) => {
-            //console.log(" in QuizPageVideo do_next_question_attempt createQuestionAttempt..... response=", response)
+            console.log(" in QuizPageVideo do_next_question_attempt createQuestionAttempt..... response=", response)
             if (response.end_of_quiz) {
                 setEndOfQuiz(true)
             }
@@ -100,7 +101,7 @@ export default function QuizPageVideo(props:any) {
                 setShowNextButton(false)
                 setQuestionAttemptResponse(undefined)
                 counterRef.current?.startCount()
-                startTimeout()
+                startTimeout(response.question.timeout)
             }
             
         })
