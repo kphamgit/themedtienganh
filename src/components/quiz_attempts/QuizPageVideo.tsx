@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLocation, useParams } from 'react-router-dom';
 import { useAppSelector } from '../../redux/store';
 import { QuestionAttemptAttributes, QuestionProps, QuizAttemptProps } from './types';
@@ -13,13 +13,11 @@ import { DropDowns } from './question_attempts/DropDowns';
 import { DynamicLetterInputs } from './question_attempts/DynamicLetterInputs';
 import { QuestionAttemptResults } from './QuestionAttemptResults';
 import { AzureAudioPlayer } from '../shared/AzureAudioPlayer';
-import { useAxiosFetch1}  from '../../hooks/useAxiosFetch1';
 
 import ReactPlayer from 'react-player';
 import { createQuestionAttempt, processQuestionAttempt } from './question_attempts/services/list';
 import { Counter, CounterRef } from '../shared/Counter';
-
-//http://localhost:5001/api/quiz_attempts/find_create/1/1
+import { useAxiosFetch } from '../../hooks';
 
 interface PageParamsProps {
     page_num: number
@@ -43,31 +41,12 @@ export default function QuizPageVideo(props:any) {
 
     //const url = `/quiz_attempts/${params.quizId}/${user.id}`
     //const url = `/http://localhost:5001/api/quiz_attempts/${params.quizId}/${user.id}`
-    //
-    //quiz_id/:user_id",
-    
+   
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   
       const { data, loading, error } =
-          useAxiosFetch1<QuizAttemptProps>({ url: url, method: 'get' })
+          useAxiosFetch<QuizAttemptProps>({ url: url, method: 'get' })
        
-      /*
-<T>(props: {url: string, method: string, body? : {} }): DataResponse<T> => {
-      */
-
-/*
-       const { data, loading, error } = useAxiosFetch1<QuizAttemptProps>(
-        url, //endpoint url
-        { timeout: 5000 } //extra parameter just for example
-      );
-  */  
-     
-       /*
- url: string;
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  data?: any;
-  config?: AxiosRequestConfig;
-       */
-
     const videoParams:VideoProps = useLocation().state
    
     const playerRef = useRef<ReactPlayer>(null);
@@ -86,9 +65,24 @@ export default function QuizPageVideo(props:any) {
 
     const [playing, setPlaying] = useState(false);
     
-    //const location = useLocation()
    // const videoParams:VideoProps = location.state
    
+   const startTimeout = () => {
+    timeoutRef.current = setTimeout(() => {
+      //console.log("Timeout executed!");
+        handleTimeOut()
+        counterRef.current?.stopCount()
+    }, question?.timeout);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
    const do_next_question_attempt = () => {
     //kpham. typescript tips: non-null assertion
     //server will decide the next question to fetch. KP
@@ -105,6 +99,8 @@ export default function QuizPageVideo(props:any) {
                 setShowSubmitButton(true)
                 setShowNextButton(false)
                 setQuestionAttemptResponse(undefined)
+                counterRef.current?.startCount()
+                startTimeout()
             }
             
         })
@@ -163,6 +159,28 @@ export default function QuizPageVideo(props:any) {
         return <div>Error Loading Quiz Attempt</div>;
       }
 
+    const handleTimeOut = () => {
+        /*
+        setShowNextButton(true)
+        setShowSubmitButton(false)
+        //setQuestionAttemptResponse({question: question, results: response})
+        setQuestion(undefined)
+        setIsModalOpen(true)
+        */
+        setAnswer("TIMEOUT")
+        processQuestionAttempt(data?.quiz_attempt.id, "TIMEOUT"!)
+        .then((response) => {
+            setShowNextButton(true)
+            setShowSubmitButton(false)
+            setQuestionAttemptResponse({question: question, results: response})
+            setQuestion(undefined)
+            
+        })
+        .catch(error => {
+            console.log(error)
+        });
+    }
+
     const handleSubmit = () => {
         const my_answer = childRef.current?.getAnswer();
         //console.log("ZZZZZZ handleSubmit my_answer = ", my_answer)
@@ -176,6 +194,10 @@ export default function QuizPageVideo(props:any) {
                     setShowSubmitButton(false)
                     setQuestionAttemptResponse({question: question, results: response})
                     setQuestion(undefined)
+                    if (timeoutRef.current) {
+                        clearTimeout(timeoutRef.current);
+                    }
+                    counterRef.current?.stopCount()
                 })
                 .catch(error => {
                     console.log(error)
@@ -199,21 +221,6 @@ export default function QuizPageVideo(props:any) {
             <div className='bg-bgColor2 text-textColor2'>END OF QUIZ.</div>
         )
     }
-
-    //console.log("in QuizPageVideo render =", quiz_attempt.id)
-    /*
-    return (
-        <>
-           
-            { (data as QuizAttemptProps) &&
-                <div className='bg-bgColor1 text-textColor2'>QuizAttempt id: 
-                    {data?.quiz_attempt.id} rrAAAAAAAAAArreerrr
-                </div>
-            }
-
-        </>
-    )
-    */
 
     return (
         <>

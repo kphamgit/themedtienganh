@@ -34,8 +34,10 @@ interface QuestionAttemptAttributes {
 
 export function QuestionAttemptResults(props:{ 
     live_flag: boolean, 
-    response: {question: QuestionProps| undefined, 
-    results: QuestionAttemptAttributes}, 
+    response: {
+        question: QuestionProps| undefined, 
+        results: QuestionAttemptAttributes
+    },
     user_answer: string | undefined }) 
 
    {
@@ -207,9 +209,11 @@ export function QuestionAttemptResults(props:{
             {displayUserAnswer()}
             </div>
             
+            { userAnswer.length > 0 && userAnswer !== "TIMEOUT" &&
             <div className='m-2 text-lg bg-bgColor2 text-textColor2 mx-2'>The correct answer is:
                 <div className='bg-bgColor2 text-lg text-textColor2 my-2'>{displayAnswerKey()}</div>
             </div>
+        }
             </>
         :
             <div className='text-lg text-textColor1 mx-2'> 

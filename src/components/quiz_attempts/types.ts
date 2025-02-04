@@ -59,6 +59,7 @@ export type RadioProps =
     quizId : number,
     radio : RadioProps,
     speech_recognition : boolean
+    timeout: number
 }
 
  export interface ChildRef {
@@ -71,6 +72,17 @@ export type QuestionAttemptProps = {
   isErrorneous : false,
   question_attempt_id: number
 }
+
+/*
+answer          | varchar(255) | YES  |     | NULL    |                |
+| score           | int          | YES  |     | NULL    |                |
+| question_number | int          | YES  |     | NULL    |                |
+| questionId      | int          | YES  |     | NULL    |                |
+| error_flag      | tinyint(1)   | YES  |     | NULL    |                |
+| audio_src       | varchar(255) | YES  |     | NULL    |                |
+| completed       | tinyint(1)   | YES  |     | 0       |                |
+| quizAttemptId
+*/
 
 export interface QuestionAttemptAttributes {
   answer: string;
