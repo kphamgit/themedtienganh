@@ -44,6 +44,16 @@ export async function getAClass(id: string): Promise<ClassProps> {
   
   }
 
+  export async function getAQuestion(id: string): Promise<ClassProps> {
+    //console.log("in getAClass")
+  
+    const url = `${rootpath}/api/questions/${id}`
+    const response = await axios.get(url)
+   // console.log("UUUU response.data", response.data)
+    return response.data
+  
+  }
+
   export async function getAGame(id: string | undefined) {
     const url = `${rootpath}/api/match_games/${id}` 
     const response = await axios.get(url)

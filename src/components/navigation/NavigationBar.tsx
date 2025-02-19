@@ -5,7 +5,7 @@ import { Link, NavLink } from 'react-router-dom';
 import { ThemeContext } from '../../contexts/theme_context/ThemeContext';
 import { ThemeContextInterface } from '../../types';
 import { MdDarkMode } from "react-icons/md";
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 
 type Category = {
     id: number;
@@ -26,11 +26,13 @@ export function NavigationBar(props: any) {
     const { data: categories } = useAxiosFetch<Category[]>({ url: '/categories', method: 'get' });
     const { toggleTheme } = useContext(ThemeContext) as ThemeContextInterface;
 
+    
+
     return (
         <>
          <div className='flex flex-row justify-left gap-2 bg-bgColor1 text-userNavText'>
           <div>Welcome: {user.user_name}</div>
-          <div className= 'px-2 py-1 font-bold text-lg underline rounded-md mx-1 bg-bgColor1'><Link to="/">Home</Link></div>
+         
             <div className='text-md'>
               <Link to="/logout">Log out</Link>
             </div>
@@ -44,6 +46,7 @@ export function NavigationBar(props: any) {
            </div>
           </div>
              <div className="flex flex-row p-0 gap-1 justify-center bg-bgColor1">
+             <div className= 'bg-bgColor2 text-textColor2 px-2 py-1 font-bold text-lg underline rounded-md mx-1 bg-bgColor1'><Link to="/">Home</Link></div>
               {categories?.map((category:any) => (
                 <div key={category.id} className='flex flex-row'>
                   <NavLink

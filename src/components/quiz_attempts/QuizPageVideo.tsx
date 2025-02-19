@@ -44,7 +44,7 @@ export default function QuizPageVideo(props:any) {
    
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   
-      const { data, loading, error } =
+    const { data, loading, error } =
           useAxiosFetch<QuizAttemptProps>({ url: url, method: 'get' })
        
     const videoParams:VideoProps = useLocation().state
@@ -54,8 +54,11 @@ export default function QuizPageVideo(props:any) {
     const [showSubmitButton, setShowSubmitButton] = useState<boolean>(false)
 
     const [question, setQuestion] = useState<QuestionProps | undefined>()
+    const [questionId, setQuestionId] = useState<string | undefined>()
+    const [showQuestion, setShowQuestion] = useState(false)
+    const [showQuestionAttemptResults, setShowQuestionAttemptResults] = useState(false)
     const [showNextButton, setShowNextButton] = useState(false)
-    const [questionAttemptResponse, setQuestionAttemptResponse] = useState<{question: QuestionProps | undefined, results: QuestionAttemptAttributes}>()
+    const [questionAttemptResponse, setQuestionAttemptResponse] = useState< QuestionAttemptAttributes>()
     const [endOfQuiz, setEndOfQuiz] = useState(false)
     const childRef = useRef<ChildRef>(null);
 
@@ -68,7 +71,7 @@ export default function QuizPageVideo(props:any) {
    // const videoParams:VideoProps = location.state
    
    const startTimeout = (timeout: number) => {
-    console.log("startTimeout timeout", question?.timeout) 
+    //console.log("startTimeout timeout", question?.timeout) 
     timeoutRef.current = setTimeout(() => {
       //console.log("Timeout executed!");
         handleTimeOut()
@@ -90,13 +93,15 @@ export default function QuizPageVideo(props:any) {
     //console.log(" in QuizPageVideo get_next_question createQuestionAttempt......")
     createQuestionAttempt(data!.quiz_attempt.id)
         .then((response) => {
-            console.log(" in QuizPageVideo do_next_question_attempt createQuestionAttempt..... response=", response)
+            //console.log(" in QuizPageVideo do_next_question_attempt createQuestionAttempt..... response=", response)
             if (response.end_of_quiz) {
                 setEndOfQuiz(true)
             }
             else {
                 //console.log("next question", response.question)
                 setQuestion(response.question)
+                setQuestionId(response.question.id.toString())  // to be used by QuestionAttemptResults
+                setShowQuestion(true)
                 setShowSubmitButton(true)
                 setShowNextButton(false)
                 setQuestionAttemptResponse(undefined)
@@ -173,7 +178,8 @@ export default function QuizPageVideo(props:any) {
         .then((response) => {
             setShowNextButton(true)
             setShowSubmitButton(false)
-            setQuestionAttemptResponse({question: question, results: response})
+            setQuestionAttemptResponse(response)
+            setShowQuestion(false)
             setQuestion(undefined)
             
         })
@@ -193,7 +199,8 @@ export default function QuizPageVideo(props:any) {
                 .then((response) => {
                     setShowNextButton(true)
                     setShowSubmitButton(false)
-                    setQuestionAttemptResponse({question: question, results: response})
+                    setQuestionAttemptResponse(response)
+                    setShowQuestion(false)
                     setQuestion(undefined)
                     if (timeoutRef.current) {
                         clearTimeout(timeoutRef.current);
@@ -226,15 +233,17 @@ export default function QuizPageVideo(props:any) {
     return (
         <>
            
-           <div className='flex flex-row justify-center text-lg text-textColor2 m-1'>{params.sub_category_name}</div>
-           <div className='ml-20'><Counter initialSeconds={0} ref={counterRef} /></div>
-            <div className='flex flex-col mx-20 mt-4'>
-            <div className='mx-10 my-6 flex flex-col'>
-                <div className='bg-bgColor1 p-2 rounded-xl'>
-                    {question &&
+           <div className='flex flex-row justify-center text-lg  text-textColor2 m-4'>{params.sub_category_name}</div>
+          
+            <div className='bg-gradient-to-b from-bgColorQuestionAttempt to-green-100 flex flex-col mx-40 mt-4 rounded-md'>
+            <div className='mt-2 ml-10'><Counter initialSeconds={0} ref={counterRef} /></div>
+            <div className='bg-bgColorQuestionContent mx-10 my-6 flex flex-col rounded-md'>
+                <div className='p-2 rounded-xl'>
+                    {question && showQuestion &&
                         <>
-                            <div className='text-textColor3 mb-2'>Question: {question.question_number}</div>
-                           
+                        <div className='mb-2'>Question: {question.question_number}</div>
+                            <div className='bg-bgColorQuestionContent text-textColor1'>
+                            
                             <div  className='text-textColor2' dangerouslySetInnerHTML={{ __html: question.instruction }}></div>
                             <div className='m-2 text-textColor3'>{question.prompt}</div>
                             <div>
@@ -270,16 +279,16 @@ export default function QuizPageVideo(props:any) {
                                 <div>UNKNOWN question format</div>
                             )}
                             </div>
+                            </div>
                         </>
                     }
                 </div>
-                <div className='bg-bgColor2'>
-                    {questionAttemptResponse?
+                <div>
+                    {questionAttemptResponse  &&
                         <>
-                         <QuestionAttemptResults live_flag={false} response={questionAttemptResponse } user_answer={answer} />
+                         <QuestionAttemptResults live_flag={false} question_id= {questionId} response={questionAttemptResponse }  />
                         </>
-                        :
-                        <div></div>
+                     
                     }
                 </div>
             </div>
@@ -288,7 +297,7 @@ export default function QuizPageVideo(props:any) {
                 <button className='bg-bgColor2 mt-0 text-lg text-textColor2 p-1 rounded-md' onClick={do_next_question_attempt}>Next</button>
                 :
                 ( showSubmitButton &&
-                <button className='bg-bgColor2 mt-0 text-textColor1 text-lg p-1 rounded-md' onClick={handleSubmit}>Submit</button>
+                <button className='bg-bgColorSubmitBtn mt-0 text-textColorSubmitBtn text-lg p-2 rounded-md mb-2' onClick={handleSubmit}>Submit</button>
                 )
             }
             </div>

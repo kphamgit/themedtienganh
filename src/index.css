@@ -8,9 +8,7 @@
 }
 
 .theme-dark {
-  --bgColor: #140101;
-  --textColor: #e6cbcb;
-
+  
   --navCatButtonBgActive: #382a2a;
   --navCatButtonBgInActive: #382a2a;
   --navCatButtonBgHover: #418471;
@@ -34,12 +32,30 @@
 
   --bgColor4: #924444;
   --textColor4: #f0e5e5;
+
+  --bgColorCategory: #3d0808;
+  --textColorCategory: #ffffff;
+
+  --bgColorSubCategory: #FFFFFF;
+  --textColorSubCategory: #083a38;
+
+  --bgColorSubCategoryHover: #FFFFFF;
+  --textColorSubCategoryHover: #083a38;
+
+  --bgColorQuestionAttempt: #199570;
+  --textColorQuestionAttempt: #eff6f5;
+
+  --bgColorQuestionContent: #329e9c;
+  --textColorQuestionContent: #04362e;
+
+  --bgColorQuestionResults: #e6f5f5;
+  --textColorQuestionResults: #04362e;
+
+  --textColorHeader1: #daebe6;
 }
 
 .theme-light {
-  --bgColor: #dfebea;
-  --textColor: #c7cce3;
-
+  
   --navCatButtonBgActive: #84e1ed;
   --navCatButtonBgInActive: #5dc2a6;
   --navCatButtonBgHover: #c0f3e4;
@@ -52,17 +68,40 @@
   --takeQuizButtonBg: #d9d079;
   --takeQuizButtonText: #031c2b;
 
-  --bgColor1: #edd7ce;
+  --bgColor1: #ddf1ed;
   --textColor1: #372005;
 
-  --bgColor2: #e4afaf;
+  --bgColor2: #d4bdbd;
   --textColor2: #0c0c4a;
 
-  --bgColor3: #d19e9e;
+  --bgColor3: #d1b7b7;
   --textColor3: #350606;
 
-  --bgColor4: #b37878;
+  --bgColor4: #bfe9bc;
   --textColor4: #923d3d;
+
+  --bgColorCategory: #82c2a2;
+  --textColorCategory: #083a38;
+
+  --bgColorSubCategory: #FFFFFF;
+  --textColorSubCategory: #083a38;
+
+  --bgColorSubCategoryHover: #FFFFFF;
+  --textColorSubCategoryHover: #73adac;
+
+  --bgColorSubmitBtn: #199570;
+  --textColorSubmitBtn: #eff6f5;
+
+  --bgColorQuestionAttempt: #8dc5f6;
+  --textColorQuestionAttempt: #04362e;
+
+  --bgColorQuestionContent: #cef2f2;
+  --textColorQuestionContent: #04362e;
+
+  --bgColorQuestionResults: #d2f4f3;
+  --textColorQuestionResults: #04362e;
+
+  --textColorHeader1: #095d43;
 }
 
 .letter-input {

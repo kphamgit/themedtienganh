@@ -10,12 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@formkit/auto-animate": "^0.8.2",
     "@reduxjs/toolkit": "^2.3.0",
-    "@tiptap/core": "^2.9.1",
-    "@tiptap/extension-image": "^2.9.1",
-    "@tiptap/extension-text-align": "^2.9.1",
-    "@tiptap/react": "^2.9.1",
-    "@tiptap/starter-kit": "^2.9.1",
     "@types/node": "^22.8.1",
     "@types/simple-peer": "^9.11.8",
     "@types/uuid": "^10.0.0",
@@ -25,7 +21,6 @@
     "core-js": "^3.38.1",
     "framer-motion": "^11.11.10",
     "html-react-parser": "^5.1.18",
-    "lottie-react": "^2.4.0",
     "microsoft-cognitiveservices-speech-sdk": "^1.41.0",
     "react": "^18.3.1",
     "react-audio-visualize": "^1.2.0",
@@ -42,9 +37,7 @@
     "regenerator-runtime": "^0.14.1",
     "simple-peer": "^9.11.1",
     "socket.io-client": "^4.8.1",
-    "styled-components": "^6.1.13",
-    "tiptap-resize-image": "^2.0.1",
-    "uninstall": "^0.0.0"
+    "styled-components": "^6.1.13"
   },
   "browserslist": {
     "production": [

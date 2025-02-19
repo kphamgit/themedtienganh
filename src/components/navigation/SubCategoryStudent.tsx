@@ -42,11 +42,12 @@ export default function SubCategoryPageStudent(props:any) {
 //https://www.tienganhtuyhoa.com/categories/4/sub_categories_student/9
     const take_quiz = (quiz_id: number | undefined, url: string | undefined) => {
         if (sub_category) {
-            const api_url = `/categories/${sub_category.categoryId}/sub_categories/${sub_category.name}/quizzes/${quiz_id}`
+            const api_url = `/sub_categories/${sub_category.name}/quizzes/${quiz_id}`
             navigate(api_url, {state: {video_url: url }})
         }
     }
 
+    /*
     return (
         <>
             <div className='flex flex-row justify-center m-1 bg-bgColor1 text-textColor1 text-xl'>{sub_category?.name} </div>
@@ -56,13 +57,14 @@ export default function SubCategoryPageStudent(props:any) {
                         <div key={unit.id}>
                         <div className='m-2 text-md text-textColor1'>Unit {unit.unit_number} - {unit.name}</div>
                         <div className='flex flex-col m-2 gap-1 rounded-lg p-2'>{unit.quizzes.map(quiz =>
-                             <div key={quiz.id}>
+                            <div key={quiz.id}>
                                 <div className='flex flex-row gap-2'>
                                 <div className='text-sm text-questionAttemptText my-1'>Quiz {quiz.quiz_number}: </div>
                                 <TakeQuizButton quiz_id={quiz.id} quiz_name={quiz.name} video_url={quiz.video_url} parentFunct={take_quiz} />
                                 </div>
-                           </div>
-                        )}</div>
+                            </div>
+                        )}
+                        </div>
                         </div>
                     ))}
                  
@@ -74,6 +76,44 @@ export default function SubCategoryPageStudent(props:any) {
             </div>
         </>
     )
+    */
+
+    return (
+        <div className= "flex flex-col flex-wrap h-[1100px] w-full/3 border">
+            {sub_category && sub_category.units.map(unit => (
+                <>
+                    <div key={unit.id} className='bg-bgColor1 text-textColor2 flex items-center justify-start m-1 border"'>
+                        <div className='flex flex-col gap-1 rounded-lg'>
+                            <div className='mt-3 text-lg mx-1 text-textColorHeader1'>Unit {unit.unit_number} - {unit.name}</div>
+                            <div className='flex flex-col gap-1 mt-2'>
+                                {unit.quizzes.map(quiz =>
+                                    <div key={quiz.id} className='flex flex-row gap-1 wrap mx-2'>
+                                        <div className='text-sm my-1'>{quiz.quiz_number}</div>
+                                        <div>
+                                            <TakeQuizButton quiz_id={quiz.id} quiz_name={quiz.name} video_url={quiz.video_url} parentFunct={take_quiz} />
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                </>
+            ))}
+        </div>
+    );
+
+   /*
+    return (
+        <div className="flex flex-col flex-wrap h-[300px] w-[400px] border">
+          {Array.from({ length: 12 }, (_, i) => (
+            <div key={i} className="w-[120px] h-[50px] bg-blue-500 text-white flex items-center justify-center m-1 border">
+              {i + 1}
+            </div>
+          ))}
+        </div>
+      );
+      */
 }
 
 //  <Link className='underline text-sm' to={`/categories/${sub_category.categoryId}/sub_categories/${sub_category.name}/quizzes/${quiz.id}`}>{quiz.name}</Link>

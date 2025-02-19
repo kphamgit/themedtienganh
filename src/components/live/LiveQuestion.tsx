@@ -2,7 +2,7 @@ import { MouseEventHandler, useContext, useEffect, useRef, useState } from 'reac
 //import { useParams } from 'react-router-dom';
 import { useAppSelector } from '../../redux/store';
 import { useAxiosFetch } from '../../hooks';
-import { QuestionProps } from '../quiz_attempts/types';
+import { QuestionAttemptAttributes, QuestionProps } from '../quiz_attempts/types';
 import { DynamicWordInputs } from '../quiz_attempts/question_attempts/DynamicWordInputs';
 import { processLiveQuestionAttempt } from '../quiz_attempts/question_attempts/services/list';
 import { DropDowns } from '../quiz_attempts/question_attempts/DropDowns';
@@ -14,16 +14,15 @@ import { WordsSelect } from '../quiz_attempts/question_attempts/WordsSelect';
 import { RadioQuestion } from '../quiz_attempts/question_attempts/RadioQuestion';
 import { ButtonSelectCloze } from '../quiz_attempts/question_attempts/ButtonSelecCloze';
 //import { useSocket} from '../components/context/socketContext'
-import { ScoreBoard } from './ScoreBoard';
 import SocketContext from '../../contexts/socket_context/Context';
 import { AzureAudioPlayer } from '../shared/AzureAudioPlayer';
 import { SRContinuous } from '../quiz_attempts/question_attempts/SRContinuous';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 //import { Counter} from '../components/Counter';
 import { CounterRef } from '../shared/Counter';
 import { DynamicLetterInputs } from '../quiz_attempts/question_attempts/DynamicLetterInputs';
 import { useAudioBlobContext } from '../../contexts/AudioBlobContext'
-//import {QuestionAttemptResponseProps} from '../components/services/list'
+
 
 type GetQuestionProps = {
     end_of_quiz: boolean,
@@ -31,8 +30,15 @@ type GetQuestionProps = {
 
 }
 
+interface LiveQuestionProps {
+    question_number: string | undefined,
+    quiz_id: string | undefined 
+    set_results: (question_attempt_results: QuestionAttemptAttributes) => void
+}
+
+/*
 interface QuestionAttemptAttributes {
-    answer: string;
+    user_answer: string;
     score: number;
     question_number: number | undefined;
     questionId: string | undefined;
@@ -41,7 +47,7 @@ interface QuestionAttemptAttributes {
     completed: boolean;
     //quizAttemptId: string;
   }
-
+*/
   interface LiveScoreProps {
     question_format: number | undefined,
     question_number: number | undefined,
@@ -54,35 +60,34 @@ interface QuestionAttemptAttributes {
   }
 
 
-export default function TakeLiveQuiz(props: any) {
+export default function LiveQuestion(props: LiveQuestionProps) {
     //const params = useParams<{ quizId: string, sub_category_name:string ,  startingQuestionId: string }>();
-    const location = useLocation();
-    const live_quiz_data = location.state;
+   // const location = useLocation();
+    //const live_quiz_data = location.state;
     //console.log(" quizpagelive live quiz data", live_quiz_data)
 
     const user = useAppSelector(state => state.user.value)
     //const classIds = ['1', '2', '3']
     const counterRef = useRef<CounterRef>(null)
 
-    const url = `/quizzes/${live_quiz_data.quiz_id}/get_question/${live_quiz_data.question_number}`
+    const url = `/quizzes/${props.quiz_id}/get_question/${props.question_number}`
 
-    const { data: question_response, loading, error } =
-        useAxiosFetch<GetQuestionProps>({ url: url, method: 'get' })
+    const { data: question_data, loading, error } =
+       useAxiosFetch<GetQuestionProps>({ url: url, method: 'get' })
 
     const [question, setQuestion] = useState<QuestionProps | undefined>()
     const [showSubmitButton, setShowSubmitButton] = useState(true)
     //const [questionAttemptResponse, setQuestionAttemptResponse] = useState<QuestionAttemptAttributes | null>(null)
     const [questionAttemptResponse, setQuestionAttemptResponse] = useState<{question: QuestionProps | undefined, results: QuestionAttemptAttributes}>()
     const [endOfQuiz, setEndOfQuiz] = useState(false)
-    const [currentQuestionNumber, setCurrentQuestionNumber] = useState<number | undefined>()
-    const [answer, setAnswer] = useState<string>()
+    //const [currentQuestionNumber, setCurrentQuestionNumber] = useState<number | undefined>()
     //const [selectedClassId, setSelectedClassId] = useState<string>("2")
 
     const childRef = useRef<ChildRef>(null);
     const {socket, user_name, users} = useContext(SocketContext).SocketState;
 
     const { audioBlob } = useAudioBlobContext();
-    const [audioUrl, setAudioUrl] = useState('')
+    //const [audioUrl, setAudioUrl] = useState('')
 
     const navigate = useNavigate()
    
@@ -90,6 +95,14 @@ export default function TakeLiveQuiz(props: any) {
         getAnswer: () => string | undefined;
       }
 
+      useEffect(() => {
+        if (props && question_data) {
+            setQuestion(question_data?.question)
+          
+        }
+      }, [props, question_data])
+
+/*
     useEffect(() => {
         //console.log(quiz_attempt)
         if (question_response) {
@@ -108,31 +121,9 @@ export default function TakeLiveQuiz(props: any) {
             }
         }
     },[question_response])
+    */
     
 
-    useEffect(() => {
-        if (socket) {
-        socket.on('live_question', (arg: { quiz_id: string, question_number: string, target_student: string}) => {
-          
-          const temp = {...arg, target_student: user.user_name}
-          socket.emit("live_question_received", temp)
- 
-          if (arg.target_student.trim() === 'everybody') {
-            
-            navigate("/live_quiz", { state: arg })
-          }
-          else if (arg.target_student.trim() === user.user_name?.trim()) {
-            navigate("/live_quiz", { state: arg })
-          }
-          else {
-            console.log(" invalid student target")
-          }
-        })
-        return () => {
-          socket?.off("live_question")
-        }
-        }
-    },[socket, navigate, user.user_name, user.classId])
     /*
     const handleSubmitNew: MouseEventHandler<HTMLButtonElement> = (event) => {
         if (audioBlob) {
@@ -141,18 +132,22 @@ export default function TakeLiveQuiz(props: any) {
     }
     */
 
+    
     const handleSubmit: MouseEventHandler<HTMLButtonElement> = (event) => {
         const button_el = event.target as HTMLButtonElement  
         button_el.disabled = true
         const my_answer = childRef.current?.getAnswer();
         if (my_answer) {
-            setAnswer(my_answer)
+            console.log("handle_submit live_question, my_answer=", my_answer)
             // use the ! (exclamation mark) = non-null assertion operator to avoid warning undefined not assignable to string
             processLiveQuestionAttempt(question?.id, my_answer!)
                 .then((response) => {
                     setShowSubmitButton(false)
                     setQuestion(undefined)
-                    setQuestionAttemptResponse({question: question, results: response})               
+                    setQuestionAttemptResponse({question: question, results: response})   
+                    console.log(" in LiveQuestion response=", response)   
+                    props.set_results(response)         
+
                     const live_score_params: LiveScoreProps = {
                         question_format: question?.format,
                         question_number: response.question_number,
@@ -192,95 +187,84 @@ export default function TakeLiveQuiz(props: any) {
        navigate('/')
     }
 
-//<audio controls src={audioUrl} />
+/*
+    return (
+        <>
+            <div>LIVE QUESTION{question.id}</div>
+        </>
+    )
+        */
     return (
         <>
             
-           <div className='bg-bgColor1 text-textColor2 text-lg'>LIVE QUIZ</div>
-            <div className='grid grid-cols-12'>
-                <div className='col-span-9 ml-10 mr-2 mt-6 flex flex-col bg-bgColor1 p-1 rounded-xl'>
-                    <div className='text-textColor2 bg-bgColor1 p-2 rounded-xl'>
-                        <div className='text-textColor2 bg-bgColor2'>Question: {currentQuestionNumber}</div>
-                        {question &&
+          
+            <div>
+                    <div className='text-textColor2 bg-bgColor1 p-2 rounded-xl ml-12 mr-2 mt-3'>
+                        { question &&
                             <>
-                                <div dangerouslySetInnerHTML={{ __html: question.instruction }}></div>
-                                <div className='m-2 bg-bgColor3 text-textColor2'>{question.prompt}</div>
+                              <div className='mb-2'>Question: {question.question_number}</div>
+                            <div className='bg-bgColorQuestionContent text-textColor1'>
+                            
+                            <div  className='text-textColor2' dangerouslySetInnerHTML={{ __html: question.instruction }}></div>
+                            <div className='m-2 text-textColor3'>{question.prompt}</div>
+                            <div>
+                                {(question.audio_str && question.audio_str.trim().length > 0) &&
+                                    <AzureAudioPlayer text={question.audio_str} />
+                                }
+                                {(question.audio_src && question.audio_src.trim().length > 0) &&
+                                    <audio src={question.audio_src} controls />
+                                }
+                            
+                            </div>
+                      
+                            <div className='mt-3'>
+                            { question.format === 1 ? (
+                                <DynamicWordInputs content={question.content} ref={childRef} />
+                            ) : question.format === 2 ? (
+                                <ButtonSelectCloze content={question.content} ref={childRef} />
+                            ) : question.format === 3 ? (
+                                <ButtonSelect content={question.content} ref={childRef} />
+                            ) : question.format === 4 ? (
+                                <RadioQuestion question={question} ref={childRef} />
+                            ) : question.format === 6 ? (
+                                <WordScrambler content={question.content} ref={childRef} />
+                            ) : question.format === 7 ? (
+                                <SRContinuous content={question.content} ref={childRef} />
+                            ) : question.format === 8 ? (
+                                <WordsSelect content={question.content} ref={childRef} />
+                            ) : question.format === 10 ? (
+                                <DropDowns content={question.content} ref={childRef} />
+                            ) : question.format === 11 ? (
+                                <DynamicLetterInputs content={question.content} ref={childRef} />
+                            ) : (
+                                <div>UNKNOWN question format</div>
+                            )}
+                            </div>
+                            </div>
                                 <div>
-                                    {(question.audio_str && question.audio_str.trim().length > 0) &&
-                                        <AzureAudioPlayer text={question.audio_str} />
-                                    }
-                                    {(question.audio_src && question.audio_src.trim().length > 0) &&
-                                        <audio src={question.audio_src} controls />
-                                    }
-                                </div>
-                                <div className='mt-3'>
-                                    {question.format === 1 ? (
-                                        <DynamicWordInputs content={question.content} ref={childRef} />
-                                    ) : question.format === 2 ? (
-                                        <ButtonSelectCloze content={question.content} ref={childRef} />
-                                    ) : question.format === 3 ? (
-                                        <ButtonSelect content={question.content} ref={childRef} />
-                                    ) : question.format === 4 ? (
-                                        <RadioQuestion question={question} ref={childRef} />
-                                    ) : question.format === 6 ? (
-                                        <WordScrambler content={question.content} ref={childRef} />
-                                    ) : question.format === 7 ? (
-                                        <SRContinuous content={question.content} ref={childRef} />
-                                    ) : question.format === 8 ? (
-                                        <WordsSelect content={question.content} ref={childRef} />
-                                    ) : question.format === 10 ? (
-                                        <DropDowns content={question.content} ref={childRef} />
-                                    ) : question.format === 11 ? (
-                                        <DynamicLetterInputs content={question.content} ref={childRef} />
-                                    ) : (
-                                        <div>UNKNOWN question format</div>
-                                    )}
-                                </div>
+                        {showSubmitButton &&
+                            <button className='bg-bgColor3 text-textColor3 m-1 text-lg p-1 rounded-md' onClick={handleSubmit}>Submit</button>
+                        }
+                    </div>
                             </>
                         }
                     </div>
-                    <div className='bg-bgColor1 w-auto'>
-                        {questionAttemptResponse ?
-                                 <div className='bg-bgColor1'>
-                                 <QuestionAttemptResults live_flag={true} response={questionAttemptResponse } user_answer={answer} />
-                                </div>
-                            :
-                            <div></div>
-                        }
-                    </div>
-                    <div>
-                        {showSubmitButton &&
-                            <button className='bg-green-300 m-1 text-lg p-1 rounded-md' onClick={handleSubmit}>Submit</button>
-                        }
-                    </div>
-                    <div>
-
-                    </div>
-
-                </div>
-                <div className='col-span-3 mt-6 bg-blue-50 rounded-md '>
-               
-                    <ScoreBoard classId={user.classId?.toString()} startingQuestionId={live_quiz_data.question_number}/>
-             
-                </div>
-
+       
             </div>
-            <div className='m-14'>
-            </div>
-
         </>
     )
 }
 
 /*
-                  {questionAttemptResponse?
-                        <>
-                         <QuestionAttemptResults live_flag={false} response={questionAttemptResponse } />
-                        </>
-                        :
-                        <div></div>
-                    }
-
+                    <div className='bg-bgColor1 w-auto'>
+                        {questionAttemptResponse ?
+                                 <div className='bg-bgColor1'>
+                                 <QuestionAttemptResults live_flag={true} response={questionAttemptResponse }  />
+                                </div>
+                            :
+                            <div></div>
+                        }
+                    </div>
 
 
 

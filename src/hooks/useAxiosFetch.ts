@@ -20,7 +20,7 @@ export async function findCreateQuizAttempt(quiz_id, user_id) {
 */
 
 export const useAxiosFetch = <T>(props: {url: string, method: string, body? : {} }): DataResponse<T> => {
-console.log("useAxiosFetch url = ", props.url)
+//console.log("useAxiosFetch url = ", props.url)
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<AxiosError | null>(null);
@@ -47,9 +47,9 @@ console.log("useAxiosFetch url = ", props.url)
     };
     const fetchData = async (): Promise<void> => {
       try {
-        console.log("useAxiosFetch config = ", config)
+        //console.log("useAxiosFetch config = ", config)
           const response = await axios(config)
-          console.log("useAxiosFetch response = ", response)
+          //console.log("useAxiosFetch response = ", response)
           setData(response.data)
         } catch (err) {
           if (axios.isAxiosError(err)) {

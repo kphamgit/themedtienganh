@@ -27,24 +27,42 @@ export const AzureAudioPlayer = (props: MyProps) => {
 
         const synthesizer = new SpeechSynthesizer(ttSpeechConfig.config, audioConfig);
         //synthesizer.speakTextAsync(props.text!)
-        const t = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-US">
-      <voice name="en-US-JaneNeural">
+        
+        /*
+        const t = 
+        `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-US">
+            <voice name="en-US-Steffan:DragonHDLatestNeural">
+               <phoneme alphabet="ipa" ph="oʊ"> ago </phoneme>
+            </voice>
+        </speak>`
+        */
+
+        
+                const t = 
+        `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-US">
+        <voice name="en-US-JaneNeural">
           <prosody rate="-10.00%">
-              ${props.text}
+              a
           </prosody>
-      </voice>
-  </speak>`
-  
-  synthesizer.speakSsmlAsync(t)
-       
+        </voice>
+        </speak>`
+        
+
+        synthesizer.speakSsmlAsync(t)
+
     }
 
 // <button className='bg-amber-600 p-1 text-white rounded-md hover:bg-amber-700' onClick={handleClick}>{props.text}</button>
     return (
         <>
-          
            <FaPlayCircle onClick={playAudio} className='text-2xl m-3 bg-gray-100 hover:bg-green-400'/>
         </>
     )
 }
-// 
+/*
+<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-US">
+    <voice name="en-US-AvaNeural">
+        <phoneme alphabet="ipa" ph="tə.ˈmeɪ.toʊ"> tomato </phoneme>
+    </voice>
+</speak>
+*/

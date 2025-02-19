@@ -85,9 +85,8 @@ const send_live_youtube_video: MouseEventHandler<HTMLButtonElement> = (event) =>
 }
 
 const enable_live_quiz: MouseEventHandler<HTMLButtonElement> = (event) => {
-  //console.log("xxxxxxx xxxxxxxxx")
-  const el = event.target as HTMLButtonElement
-  
+  console.log("enable_live_quiz")
+  //const el = event.target as HTMLButtonElement
   const arg = {}
   socket.emit('enable_live_quiz', arg)
 }
@@ -120,9 +119,7 @@ const enable_live_quiz: MouseEventHandler<HTMLButtonElement> = (event) => {
       <div className='mx-14'>
         <SendLiveQuestion />
       </div>
-      <div className='mx-14'>
-        <SendLiveQuestion />
-      </div>
+
       <div>
         <SendLivePicture user_name={user.user_name} />
       </div>

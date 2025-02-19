@@ -90,7 +90,7 @@ export const Counter = forwardRef<CounterRef, Props>((props, ref) => {
     
     <div>
     {!stop && 
-    <div className='bg-bgColor1 text-textColor1'>{count}</div>
+    <div>{count}</div>
     }
     </div>
   );

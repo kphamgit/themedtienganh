@@ -1,6 +1,6 @@
 import { useAxiosFetch } from '../../hooks'
 import { useAppSelector } from '../../redux/store'
-import { MouseEventHandler, useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import SocketContext from '../../contexts/socket_context/Context'
 import QuestionHelper from '../quiz_attempts/QuestionHelper'
 
@@ -19,7 +19,7 @@ import QuestionHelper from '../quiz_attempts/QuestionHelper'
         }[]
     }
 
-export function ScoreBoard(props:{classId: string | undefined, startingQuestionId: string | undefined }) {
+export function ScoreBoard(props:{classId: string | undefined}) {
     const { data: my_class, loading, error } = useAxiosFetch<ClassProps>({ url: `/classes/${props.classId}`, method: 'get' });
     const {socket, user_name, users} = useContext(SocketContext).SocketState;
     
@@ -69,19 +69,62 @@ export function ScoreBoard(props:{classId: string | undefined, startingQuestionI
     }, [socket, user.user_name, user.role])
 
     useEffect(() => {
-     
+
       if (socket) {
         socket.on('live_question', (arg: { quiz_id: string, question_number: string, target_student: string }) => {
-          //console.log("IN USE EFFECT SCOREBOATD")
-          if (arg.target_student.trim() === 'everybody') {
+          console.log("IN score board live_question", arg)
+          if (arg.target_student.trim() === 'everybody' || 
+            arg.target_student.trim() === user.user_name?.trim()
+            ) {
+            for (let my_div of studenDivRefs.current) {
+                console.log(my_div.childNodes[0].childNodes[0].textContent);
+                if (my_div.childNodes[0].childNodes[0].textContent === user.user_name) {
+                    my_div.childNodes[0].childNodes[1].childNodes[0].textContent = arg.question_number
+                    my_div.childNodes[0].childNodes[1].childNodes[1].textContent = ''   // clear score span
+                    break;
+                }
+            }
             
-            studenDivRefs.current.forEach((my_div) => {
-                //my_div.childNodes[2].textContent = ''
-                my_div.childNodes[0].childNodes[1].childNodes[0].textContent = arg.question_number
-                my_div.childNodes[0].childNodes[1].childNodes[1].textContent = ''   // clear score span
+            socket.emit('live_question_acknowledgement', {quiz_id: arg.quiz_id, 
+                question_number: arg.question_number, target_student: user.user_name
             })
+            /*
+            studenDivRefs.current.forEach((my_div) => {
+               console.log("IN score board live_question everybody", my_div.childNodes[0].childNodes[0].textContent)   
+               if (my_div.childNodes[0].childNodes[0].textContent === user.user_name) {
+                  
+               }
+               // my_div.childNodes[0].childNodes[1].childNodes[0].textContent = arg.question_number
+               // my_div.childNodes[0].childNodes[1].childNodes[1].textContent = ''   // clear score span
+            })
+            */
           }
-          else if (arg.target_student.trim() === user.user_name?.trim()) {
+          else {
+            console.log(" invalid student target")
+          }
+          
+        })
+        socket.on('live_question_acknowledgement', (arg: { quiz_id: string, question_number: string, target_student: string }) => {
+            console.log("IN score board ON live_question_acknowledgement", arg)
+            for (let my_div of studenDivRefs.current) {
+                console.log(my_div.childNodes[0].childNodes[0].textContent);
+                if (my_div.childNodes[0].childNodes[0].textContent === arg.target_student) {
+                    my_div.childNodes[0].childNodes[1].childNodes[0].textContent = arg.question_number
+                    my_div.childNodes[0].childNodes[1].childNodes[1].textContent = ''   // clear score span
+                    break;
+                }
+            }
+        })
+
+        return () => {
+          socket?.off("live_question")
+          socket?.off("live_question_acknowledgement")
+        }
+      }
+    },[socket, user.user_name])
+    
+    /*
+  else if (arg.target_student.trim() === user.user_name?.trim()) {
            
             let for_student_index = 0
             studenDivRefs.current.forEach((my_div, index) => {
@@ -94,17 +137,8 @@ export function ScoreBoard(props:{classId: string | undefined, startingQuestionI
             target_student_div.childNodes[0].childNodes[1].childNodes[1].textContent = ''   //clear score span 
 
           }
-          else {
-            console.log(" invalid student target")
-          }
-          
-        })
-        return () => {
-          socket?.off("live_question")
-        }
-      }
-    },[socket, user.user_name])
-    
+    */
+
     /*
     const handleNameClicked: MouseEventHandler<HTMLButtonElement> = (event) => {
         const el = event.target as HTMLButtonElement
@@ -118,7 +152,7 @@ export function ScoreBoard(props:{classId: string | undefined, startingQuestionI
         <>
             {my_class &&
                 <div className='bg-bgColor1 text-textColor3'>
-                    <div className='text-textColor3 mb-2'>Live Score Board</div>
+                    <div className='text-textColor3 p-1'>Live Score Board</div>
                     <div>
                         {my_class.users.map((student, index) => (
                             <div className='bg-bgColor3 mb-2 main_student_div' key={index} ref={(el) => {
@@ -129,7 +163,7 @@ export function ScoreBoard(props:{classId: string | undefined, startingQuestionI
                                 <div className='flex flex-row justify-start student_info_div'>
                                     <div className='mx-1 student_name_div'>{student.user_name}</div>
                                     <div className='student_score_div'>
-                                        <span className='mx-2 text-green-700 question_number' >{props.startingQuestionId}</span>
+                                        <span className='mx-2 text-green-700 question_number' ></span>
                                         <span className='mx-2 text-orange-600'></span>
                                         <span className='mx-2 text-orange-700 font-bold' ></span>
                                         

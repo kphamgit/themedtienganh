@@ -2,20 +2,9 @@ import { ReactNode, useEffect, useState } from 'react'
 import { FaSmile } from 'react-icons/fa';
 import { FaFrown } from 'react-icons/fa';
 //import ReactPlayer from 'react-player';
-import { QuestionProps } from './types';
+import { QuestionAttemptAttributes, QuestionProps } from './types';
 import  QuestionHelper from './QuestionHelper';
-
-
-interface QuestionAttemptAttributes {
-    answer: string;
-    score: number;
-    question_number: number | undefined;
-    questionId: string | undefined;
-    error_flag: boolean;
-    audio_src: string;
-    completed: boolean;
-    //quizAttemptId: string;
-  }
+import { useAxiosFetch } from '../../hooks';
 
   type RadioProps =
   {
@@ -32,75 +21,85 @@ interface QuestionAttemptAttributes {
     [key: string]: any;
   }
 
-export function QuestionAttemptResults(props:{ 
-    live_flag: boolean, 
-    response: {
-        question: QuestionProps| undefined, 
-        results: QuestionAttemptAttributes
-    },
-    user_answer: string | undefined }) 
-
-   {
-    //console.log("XXXXQQQQQQQQ", props.response.question_attempt_results)
+  /*
+    export function QuestionAttemptResults(props:
+        { live_flag: boolean, 
+            question: QuestionProps| undefined, 
+            response: QuestionAttemptAttributes
+        }) 
+    */
+        export function QuestionAttemptResults(props:
+            { live_flag: boolean, 
+                question_id: string| undefined, 
+                response: QuestionAttemptAttributes
+            }) 
+           {
+    //console.log("XXXXQQQQQQQQ", question_attempt_results)
     const [format, setFormat] = useState<number>()
     const [answerKey, setAnswerKey] = useState<string>('')
     const [content, setContent] = useState<string>('')
     const [radio, setRadio] = useState<RadioProps>()
     const [userAnswer, setUserAnswer] = useState('')
-        
+     
+    const url = `/questions/${props.question_id}`
+    const { data: question, loading, error } =
+    useAxiosFetch<QuestionProps>({ url: url, method: 'get' })
+    
+
     useEffect(() => {
-        if (props.response.question?.content) {
-            setContent(props.response.question.content)
+        if (question?.content) {
+            setContent(question.content)
         }
-        if (props.response.question?.answer_key) {
-            if (props.response.question?.format === 4) { //radio
-                if (props.response.question.answer_key === 'choice1')
-                    setAnswerKey(props.response.question.radio.choice_1_text)
-                if (props.response.question.answer_key === 'choice2')
-                    setAnswerKey(props.response.question.radio.choice_2_text)
-                if (props.response.question.answer_key === 'choice3')
-                    setAnswerKey(props.response.question.radio.choice_3_text)
-                if (props.response.question.answer_key === 'choice4')
-                    setAnswerKey(props.response.question.radio.choice_4_text)
+        if (question?.answer_key) {
+            if (question?.format === 4) { //radio
+                if (question.answer_key === 'choice1')
+                    setAnswerKey(question.radio.choice_1_text)
+                if (question.answer_key === 'choice2')
+                    setAnswerKey(question.radio.choice_2_text)
+                if (question.answer_key === 'choice3')
+                    setAnswerKey(question.radio.choice_3_text)
+                if (question.answer_key === 'choice4')
+                    setAnswerKey(question.radio.choice_4_text)
             }
             else {
-                setAnswerKey(props.response.question.answer_key)
+                //console.log("setAnswerKey props.answer_key", question.answer_key)
+                setAnswerKey(question.answer_key)
             }
         }
-        if (props.response.question?.format) {
-            setFormat(props.response.question.format)
+        if (question?.format) {
+            setFormat(question.format)
         }
-        if (props.response.question?.radio) {
-            setRadio(props.response.question.radio)
+        if (question?.radio) {
+            setRadio(question.radio)
         }
-        if (props.user_answer) {
-            if (props.response.question?.format === 4) { //radio
-                if (props.user_answer === 'choice1')
+        if (props.response.user_answer) {
+            if (question?.format === 4) { //radio
+                if (props.response.user_answer === 'choice1')
     
-                    setUserAnswer(props.response.question.radio.choice_1_text)
+                    setUserAnswer(question.radio.choice_1_text)
     
-                if (props.user_answer === 'choice2')
+                if (props.response.user_answer === 'choice2')
     
-                    setUserAnswer(props.response.question.radio.choice_2_text)
+                    setUserAnswer(question.radio.choice_2_text)
     
-                if (props.user_answer === 'choice3')
+                if (props.response.user_answer === 'choice3')
     
-                    setUserAnswer(props.response.question.radio.choice_3_text)
+                    setUserAnswer(question.radio.choice_3_text)
     
-                if (props.user_answer === 'choice4')
+                if (props.response.user_answer === 'choice4')
     
-                    setUserAnswer(props.response.question.radio.choice_4_text)
+                    setUserAnswer(question.radio.choice_4_text)
     
             }
             else {
                 //console.log("MMMMMM props.user_answer", props.user_answer)
-                setUserAnswer(props.user_answer)
+                setUserAnswer(props.response.user_answer)
             }
         }
-    }, [props.response.question, props.user_answer])
+    }, [question, props.response.user_answer])
 
 
-    const displayContentOrRadioChoices = (): ReactNode => {
+    const displayQuestion = (): ReactNode => {
         if (format === 6) {  //word scramble
             if (answerKey) {
                 const answer_parts: string[] = answerKey.split('/')
@@ -177,7 +176,7 @@ export function QuestionAttemptResults(props:{
            // console.log(" xxxxx userAnswer=", userAnswer)
             const result = QuestionHelper.format_user_answer(userAnswer, answerKey, format, content)
             return (
-                <div className='bg-bgColor2 text-textColor2'>{result}</div>
+                <div>{result}</div>
             )
         }
         else {
@@ -187,39 +186,42 @@ export function QuestionAttemptResults(props:{
         }
     }
 
+    //bg-gradient-to-b from-bgColorQuestionAttempt to-green-100
     return (
-        <div className='bg-bgColor2 text-textColor2' >
-        { props.response.question?.instruction &&
-            <div className='m-2 bg-bgColor2 text-textColor2' dangerouslySetInnerHTML={{ __html: props.response.question.instruction }}></div>
-        }
-        { props.response.question?.prompt &&
-            <div className='m-2 bg-bgColor2 text-textColor2'>{props.response.question.prompt}</div>
-        }
-        { props.response.question &&
-            <div className='m-2 bg-bgColor2 text-textColor2'>{displayContentOrRadioChoices()}</div>
-        }
-     
-        {props.response.results.error_flag ?
-            <>
-            <div className='text-lg bg-bgColor2 text-textColor2 mx-2'> 
-                <FaFrown />
+        <div>
+            <div className='bg-bgColorQuestionContent text-black ml-3 mb-3'>
+                {question?.instruction &&
+                    <div dangerouslySetInnerHTML={{ __html: question.instruction }}></div>
+                }
+                {question?.prompt &&
+                    <div>{question.prompt}</div>
+                }
+                {question &&
+                    <div>{displayQuestion()}</div>
+                }
             </div>
-            <div className='text-lg bg-bgColor2 text-textColor2 mx-2'>Your answer is:</div>
-            <div>
-            {displayUserAnswer()}
+            <div className='bg-gradient-to-t from-bg-bgColorQuestionResults to-white text-textColor1 p-2 m-0 rounded-md'>
+                {props.response.error_flag ?
+                    <>
+                        <div className=' text-textColor2 mx-2'>Your answer is:</div>
+                        <div className='m-2 text-textColor2'>
+                            {displayUserAnswer()}
+                        </div>
+                        <div className=' text-textColor2 mx-2'>
+                            <FaFrown />
+                        </div>
+                        {userAnswer.length > 0 && userAnswer !== "TIMEOUT" &&
+                            <div className='m-2 text-textColor2 mx-2'>The correct answer is:
+                                <div className='text-textColor2 my-2'>{displayAnswerKey()}</div>
+                            </div>
+                        }
+                    </>
+                    :
+                    <div className='text-lg text-textColor1 mx-2'>
+                        <FaSmile />
+                    </div>
+                }
             </div>
-            
-            { userAnswer.length > 0 && userAnswer !== "TIMEOUT" &&
-            <div className='m-2 text-lg bg-bgColor2 text-textColor2 mx-2'>The correct answer is:
-                <div className='bg-bgColor2 text-lg text-textColor2 my-2'>{displayAnswerKey()}</div>
-            </div>
-        }
-            </>
-        :
-            <div className='text-lg text-textColor1 mx-2'> 
-                <FaSmile />
-            </div>
-        }
         </div>
     )
 }

@@ -1,4 +1,4 @@
-import { useEffect, lazy, useState} from 'react'
+import { useEffect, lazy, useState, useRef, ReactNode} from 'react'
 
 import { useAppSelector } from '../../redux/store'
 import { Outlet, useNavigate } from 'react-router-dom'
@@ -7,6 +7,18 @@ import { Outlet, useNavigate } from 'react-router-dom'
 //import { ScoreBoard2 } from '../quiz_attempts/ScoreBoard2'
 import { NavigationBar } from './NavigationBar'
 import { useSocketContext } from '../../hooks/useSocketContext'
+import NavBar from './NavBar'
+import AzureTranscription from '../shared/AzureTranscription'
+import { SRContinuous } from '../quiz_attempts/question_attempts/SRContinuous'
+//import WatsonSpeechRecognition from '../shared/WatsonSpeechRecognition'
+
+
+//import IBMSTT from '../shared/WatsonSpeechRecognition'
+
+interface ChildRef {
+  getAnswer: () => string | undefined;
+}
+
 
 
 //const LiveAudioRecorder = lazy(() => import("../pages/LiveAudioRecorder"))
@@ -14,6 +26,8 @@ import { useSocketContext } from '../../hooks/useSocketContext'
 export default function MainStudent(props: any ) {
     const user = useAppSelector(state => state.user.value)
     const [showLiveRecording, setShowLiveRecording] = useState(false)
+    const childRef = useRef<ChildRef>(null);
+
     //const [localLiveQuizId, setLocalLiveQuizId] = useState<string>('')
     // this is not needed but keep it for Typescript learning
       /*  Initialize localLiveQuizId with an empty string to avoid this error:
@@ -32,30 +46,21 @@ export default function MainStudent(props: any ) {
 
     const navigate = useNavigate();
 
-    
+
     useEffect(() => {
-        socket.on('live_question', (arg: { quiz_id: string, question_number: string, target_student: string}) => {
-          //console.log("live question received...arg=", arg)
-          const temp = {...arg, target_student: user.user_name}
-          socket.emit("live_question_received", temp)
- 
-          if (arg.target_student.trim() === 'everybody') {
-            
-            navigate("/live_quiz", { state: arg })
-          }
-          else if (arg.target_student.trim() === user.user_name?.trim()) {
-            navigate("/live_quiz", { state: arg })
-          }
-          else {
-            console.log(" invalid student target")
-          }
-        })
-        return () => {
-          socket?.off("live_question")
-        }
-    },[socket, navigate, user.user_name, user.classId])
+      navigate('/homepage');
+    }, []);
+
+    useEffect(() => {
+      socket.on('live_quiz', (arg: any) => {
+        console.log("enable_live_quiz received...arg=", arg)
+        navigate("/live_quiz", {state: arg})  
+      })
+      return () => {
+        socket?.off("live_quiz")
+      }
+    }, [socket, navigate])
     
-   
   useEffect(() => {   
       socket.on('live_text', (arg: { backchaining: boolean, text_complete: boolean, live_text: string, target_student: string, target_class: string }) => {
         if (arg.target_student.trim() === 'everybody') {
@@ -119,20 +124,70 @@ export default function MainStudent(props: any ) {
       console.log("in polly function")
   }
 
+  /*
+    <Route path="/logout" element={<Logout onLogout={onLogout} />} />
+                 <Route path="/" element={<Home />}>
+                   
+                   <Route path="sub_categories_student/:sub_categoryId" element={<SubCategoryPageStudent />} />
+                   <Route path="sub_categories/:sub_category_name/quizzes/:quizId" element={<QuizPageVideo />} />
+                   
+                   <Route path="/front_page" element={<FrontPage />} />
+                   <Route path="/live_text" element={<LiveText />} />
+                   <Route path="/live_picture" element={<LivePicture />} />
+                   <Route path="/simple_peer" element={<SimplePeer />} />
+                   <Route path="/live_quiz" element={<LiveQuiz />} />
+                   <Route path="/live_game/:game_id/:backcolor" element={<MemoryGame />} />
+                   <Route path="/live_youtube_video" element={<YoutubeVideoPlayer />} />
+                 </Route>
+               </Routes>
+  */
+
   return (
     <div>
 
-      <div className=' bg-bgColor2'>
-        <div className='col-span-9 m-10'>
-          <NavigationBar />
-          <Outlet />
+      <div className=' bg-bgColor1'>
+        <div>
+          <div className='text-xl p-2'><span>Welcome </span><span className='text-amber-700'>{user_name}</span><span> to Tieng Anh TuyHoa</span></div>
+          <NavBar />
+          <Outlet  />
+         
         </div>
     
       </div>
-      <div className='bg-bgColor2 text-textColor2'>Socket id: {socket.id}</div>
+      <div>
+        
+      </div>
+   
     </div>
   )
 }
+
+/*
+   <div>
+        
+       </div>
+      <div>
+         <SRContinuous content="testing" ref={childRef} />
+      </div>
+      <div>
+      <AzureTranscription></AzureTranscription>
+      </div>
+      <div className='bg-bgColor2 text-textColor2'>Student Socket id: {socket.id}</div>
+*/
+
+/*
+`${serviceUrl}/v1/recognize?access_token=${apiKey}`);
+*/
+//       <SpeechToText apiKey='Pd2P9-VfGe-huJgOWQaZ0PwaEnoZISGBD0vcISEZT-Al' serviceUrl='https://api.au-syd.speech-to-text.watson.cloud.ibm.com/instances/bbcafcae-2824-4e97-a564-92b779fa9830/v1/recognize' />
+
+/*
+
+<IBMSTT apiKey='Pd2P9-VfGe-huJgOWQaZ0PwaEnoZISGBD0vcISEZT-Al' serviceUrl='https://api.au-syd.speech-to-text.watson.cloud.ibm.com/instances/bbcafcae-2824-4e97-a564-92b779fa9830/v1/recognize' />
+
+ <div>
+      <SpeechToTextComponent></SpeechToTextComponent>
+    </div>
+*/
 
 /*
    return (
