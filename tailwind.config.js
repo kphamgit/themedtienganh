@@ -30,6 +30,8 @@ export default {
         textColorQuestionContent: 'var(--textColorQuestionContent)',
         bgColorQuestionResults: 'var(--bgColorQuestionResults)',
         textColorQuestionResults: 'var(--textColorQuestionResults)',
+        textColorFaFrown: 'var(--textColorFaFrown)',
+        textColorFaSmile: 'var(--textColorFaSmile)',
         textColorSubmitBtn: 'var(--textColorSubmitBtn)',
         navCatButtonBgActive: 'var(--navCatButtonBgActive)',
         navCatButtonBgInActive: 'var(--navCatButtonBgInActive)',
@@ -39,6 +41,7 @@ export default {
         userNavText: 'var(--userNavText)',
         takeQuizButtonBg: 'var(--takeQuizButtonBg)',
         takeQuizButtonText: 'var(--takeQuizButtonText)',
+
       },
     },
   },

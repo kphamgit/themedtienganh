@@ -51,6 +51,10 @@
   --bgColorQuestionResults: #e6f5f5;
   --textColorQuestionResults: #04362e;
 
+  --textColorFaFrown: #e07070;
+  --textColorFaSmile: #8ce3b7;
+
+
   --textColorHeader1: #daebe6;
 }
 
@@ -100,6 +104,9 @@
 
   --bgColorQuestionResults: #d2f4f3;
   --textColorQuestionResults: #04362e;
+
+  --textColorFaFrown: #cd2727;
+  --textColorFaSmile: #0c884a;
 
   --textColorHeader1: #095d43;
 }

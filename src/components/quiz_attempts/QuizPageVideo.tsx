@@ -19,6 +19,9 @@ import { createQuestionAttempt, processQuestionAttempt } from './question_attemp
 import { Counter, CounterRef } from '../shared/Counter';
 import { useAxiosFetch } from '../../hooks';
 
+import Popup from 'reactjs-popup';
+import ModalPopup from '../shared/ModalPopup';
+
 interface PageParamsProps {
     page_num: number
     numQuestions: number;
@@ -237,15 +240,18 @@ export default function QuizPageVideo(props:any) {
           
             <div className='bg-gradient-to-b from-bgColorQuestionAttempt to-green-100 flex flex-col mx-40 mt-4 rounded-md'>
             <div className='mt-2 ml-10'><Counter initialSeconds={0} ref={counterRef} /></div>
+           
             <div className='bg-bgColorQuestionContent mx-10 my-6 flex flex-col rounded-md'>
                 <div className='p-2 rounded-xl'>
+                    
                     {question && showQuestion &&
                         <>
                         <div className='mb-2'>Question: {question.question_number}</div>
                             <div className='bg-bgColorQuestionContent text-textColor1'>
-                            
+                            <ModalPopup />
                             <div  className='text-textColor2' dangerouslySetInnerHTML={{ __html: question.instruction }}></div>
                             <div className='m-2 text-textColor3'>{question.prompt}</div>
+                           
                             <div>
                                 {(question.audio_str && question.audio_str.trim().length > 0) &&
                                     <AzureAudioPlayer text={question.audio_str} />

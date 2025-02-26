@@ -148,8 +148,8 @@ import { useAxiosFetch } from '../../hooks';
                 <div>{newStr1}</div>
             )
         }
-        else if (format === 10 || format === 2) {
-            //console.log(" question format 10")
+        else if (format === 10 || format === 2) {   //10: dropdown, 2: drop-down-select
+     
             return (
                 <div>{content.replace(/[\[\]^']+/g,'')}</div>
             )
@@ -207,7 +207,7 @@ import { useAxiosFetch } from '../../hooks';
                         <div className='m-2 text-textColor2'>
                             {displayUserAnswer()}
                         </div>
-                        <div className=' text-textColor2 mx-2'>
+                        <div className=' text-textColorFaFrown mx-2'>
                             <FaFrown />
                         </div>
                         {userAnswer.length > 0 && userAnswer !== "TIMEOUT" &&
@@ -217,7 +217,7 @@ import { useAxiosFetch } from '../../hooks';
                         }
                     </>
                     :
-                    <div className='text-lg text-textColor1 mx-2'>
+                    <div className='text-lg text-textColorFaSmile mx-2'>
                         <FaSmile />
                     </div>
                 }
