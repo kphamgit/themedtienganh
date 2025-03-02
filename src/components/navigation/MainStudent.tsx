@@ -147,7 +147,7 @@ export default function MainStudent(props: any ) {
 
       <div className=' bg-bgColor1'>
         <div>
-          <div className='text-xl p-2'><span>Welcome </span><span className='text-amber-700'>{user_name}</span><span> to Tieng Anh TuyHoa</span></div>
+          <div className='text-xl p-2'><span>Welcome </span><span className='text-amber-700'>{user_name}</span><span> to Tieng Anh Tuy Hoa</span></div>
           <NavBar />
           <Outlet  />
          

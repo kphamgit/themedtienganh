@@ -7,6 +7,7 @@ import { Login } from "./auth/Login";
 import { Logout } from "./auth/Logout";
 import SocketContextComponent from "./contexts/socket_context/Component";
 import HomePage from "./components/navigation/HomePage";
+import Games from "./components/navigation/Games";
 //import LiveQuiz from "./components/live/LiveQuiz";
 //import TakeLiveQuiz from "./components/live/TakeLiveQuiz";
 //import { SendLiveText } from "./components/live/SendLiveText";
@@ -76,6 +77,7 @@ function App() {
                 <Route path="/logout" element={<Logout onLogout={onLogout} />} />
                 <Route path="/" element={<Home />}>
                   <Route path="/homepage" element={<HomePage />} />
+                  <Route path="/games" element={<Games />} />
                   <Route path="sub_categories_student/:sub_categoryId" element={<SubCategoryPageStudent />} />
                   <Route path="sub_categories/:sub_category_name/quizzes/:quizId" element={<QuizPageVideo />} />
                   

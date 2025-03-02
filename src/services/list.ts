@@ -61,6 +61,12 @@ export async function getAClass(id: string): Promise<ClassProps> {
   
   }
 
+  export async function getAGameNew(id: string | undefined) {
+    const url = `${rootpath}/api/match_games/get_game_new/${id}` 
+    const response = await axios.get(url)
+    return response.data
+  
+  }
   export async function upload_form_data_to_s3(formData: any, config: any) {
     const url = `${rootpath}/api/upload_s3/do_upload_single` 
     //console.log(" in list upload..url =", url)

@@ -15,6 +15,11 @@ interface Props {
     options: { value: string; label: string }[];
   }
   
+/*
+forwardRef is a React feature that allows a parent component to access the DOM node of a child component. 
+It is used when a parent component needs to interact with a child component's DOM element, 
+for example, to set focus or get its size and position.
+*/
 
 export const RadioQuestion = forwardRef<ChildRef, Props>((props, ref) => {
   

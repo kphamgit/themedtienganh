@@ -249,8 +249,8 @@ export default function QuizPageVideo(props:any) {
                         <div className='mb-2'>Question: {question.question_number}</div>
                             <div className='bg-bgColorQuestionContent text-textColor1'>
                             <ModalPopup />
-                            <div  className='text-textColor2' dangerouslySetInnerHTML={{ __html: question.instruction }}></div>
-                            <div className='m-2 text-textColor3'>{question.prompt}</div>
+                            <div  className='text-textColor2 m-2' dangerouslySetInnerHTML={{ __html: question.instruction }}></div>
+                            <div className='m-2 text-textColorQuestionPrompt'>{question.prompt}</div>
                            
                             <div>
                                 {(question.audio_str && question.audio_str.trim().length > 0) &&

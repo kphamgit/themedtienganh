@@ -194,6 +194,9 @@ export default function Navbar() {
               )}
             </div>
           ))}
+            <div className='text-md bg-bgColor2 text-textColor  p-2'>
+              <Link to="/games">Games</Link>
+            </div>
         </div>
         {/* navitems */}
       </section>

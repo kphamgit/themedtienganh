@@ -7,16 +7,16 @@ import {
   SpeakerAudioDestination,
 } from 'microsoft-cognitiveservices-speech-sdk';
 
-interface MyProps {
+export interface AzureButtonProps {
     voice_text?: string;
     button_text: string | undefined;
     parentFunc: (selected_text: string) => void
   }
   
-export const AzureButton = (props: MyProps) => {
+export const AzureButton = (props: AzureButtonProps) => {
 
     const { ttSpeechConfig } = useContext(TtSpeechContext)
-    console.log("in AzureButton", props)
+    //console.log("in AzureButton", props)
     //const handleClick: MouseEventHandler<HTMLSpanElement> = (event) => {
 
     const handleClick: MouseEventHandler<HTMLButtonElement> = (event) => {
