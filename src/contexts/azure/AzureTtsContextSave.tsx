@@ -11,7 +11,7 @@ useState: React hook for managing state in functional components.
 createContext: Creates a context object that can be used to share data between componentswithout prop drilling.
    */
 
-import { SpeechConfig, SpeechSynthesisOutputFormat, 
+import { SpeechConfig, 
    } from 'microsoft-cognitiveservices-speech-sdk';
 /*
 This comes from the Microsoft Cognitive Services Speech SDK and is used to create a 
@@ -45,16 +45,9 @@ setTtSpeechConfig: A function that updates the ttSpeechConfig state. Its type is
 //Default State
 const defaultState = {
     ttSpeechConfig: {
-        config: { speechSynthesisVoiceName: "en-US-JasonNeural", speechSynthesisOutputFormat: SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3  }
+        config: {}
     }
 } as TtSpeechContextInterface
-
-
-/*
- ttSpeechConfig.config.speechSynthesisVoiceName = "en-US-JasonNeural"
-        ttSpeechConfig.config.speechSynthesisOutputFormat = SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3 
-*/
-
 
 /*
 Explanation:
@@ -82,8 +75,6 @@ Explanation:
 The provider component accepts children as its prop. This allows you to wrap other components
  inside the provider so that they have access to the context.
 */
-
-
 
 //TtSpeechProvider Component
 export default function TtSpeechProvider({children} : TtSpeechProviderProps)

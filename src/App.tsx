@@ -8,6 +8,7 @@ import { Logout } from "./auth/Logout";
 import SocketContextComponent from "./contexts/socket_context/Component";
 import HomePage from "./components/navigation/HomePage";
 import Games from "./components/navigation/Games";
+import { TextMatchGame } from "./components/live/TextMatchGame";
 //import LiveQuiz from "./components/live/LiveQuiz";
 //import TakeLiveQuiz from "./components/live/TakeLiveQuiz";
 //import { SendLiveText } from "./components/live/SendLiveText";
@@ -86,6 +87,7 @@ function App() {
                   <Route path="/simple_peer" element={<SimplePeer />} />
                   <Route path="/live_quiz" element={<LiveQuiz />} />
                   <Route path="/live_game/:game_id/:backcolor" element={<MemoryGame />} />
+                  <Route path="/play_game/:game_id" element={<TextMatchGame />} />
                   <Route path="/live_youtube_video" element={<YoutubeVideoPlayer />} />
                 </Route>
               </Routes>

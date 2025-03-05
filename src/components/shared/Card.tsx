@@ -8,6 +8,18 @@ import {
 } from 'microsoft-cognitiveservices-speech-sdk';
 import classNames from 'classnames';
 
+/*
+export interface CardProps {
+  id: number;
+  text: string;
+  matched: boolean;
+  flipped: boolean;
+  match_index: number;
+  bgcolor: string;
+  handle_choice?: (card: CardProps) => void;
+}
+*/
+
 export const Card: React.FC<CardProps> = (props: CardProps) => {
 
     const { ttSpeechConfig } = useContext(TtSpeechContext)

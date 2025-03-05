@@ -1,19 +1,13 @@
 import { forwardRef, MouseEventHandler, useContext, useEffect, useImperativeHandle, useState } from "react";
 import { TtSpeechContext } from '../../contexts/azure';
+import { WordPair } from "../live/WordMatchingGame";
 
 import {
   SpeechSynthesizer, AudioConfig,
-  SpeechSynthesisOutputFormat,
   SpeakerAudioDestination,
 } from 'microsoft-cognitiveservices-speech-sdk';
+// SpeechSynthesisOutputFormat,
 
-  export interface WordPair {
-    id: number;
-    word: string;
-    match: string;
-    language: string;
-  }
-  
   export interface AzureMatchButtonRefProps {
     //toggleDisabled: () => void;
     enableButton: () => void;
@@ -40,10 +34,20 @@ interface AzureMatchButtonProps {
             disableButton: () => setIsDisabled(true)
         }));
   
+        const disableAllButtons = () =>{
+            const all_left_buttons = document.querySelectorAll('.left')
+            all_left_buttons.forEach((button) => {
+              button.setAttribute('disabled', 'true')
+            })
+            const all_right_buttons = document.querySelectorAll('.right')
+            all_right_buttons.forEach((button) => {
+              button.setAttribute('disabled', 'true')
+            })
+        }
+
         const handleClick: MouseEventHandler<HTMLButtonElement> = (event) => {
-            //setIsDisabled(true)
-            console.log("in AzureButton handleClick")
-            props.disable_all_btns() // call parent function 1 immediately to disable all other buttons (both left and right side)
+            //console.log("in AzureButton handleClick. Disable all buttons")
+            disableAllButtons()
             const el = event.target as HTMLButtonElement
             //console.log("in AzureButton handleClick", el.textContent)      
             playAudio(el.textContent!)
@@ -63,14 +67,12 @@ interface AzureMatchButtonProps {
         //props.parentFunc1()
         //console.log("in DISABLE RIGHT BUTTONS");
         
-        ttSpeechConfig.config.speechSynthesisVoiceName = "en-US-JasonNeural"
-        ttSpeechConfig.config.speechSynthesisOutputFormat = SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3 
+        //ttSpeechConfig.config.speechSynthesisVoiceName = "en-US-JasonNeural"
+        //ttSpeechConfig.config.speechSynthesisOutputFormat = SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3 
 
         let player = new SpeakerAudioDestination()
         const audioConfig = AudioConfig.fromSpeakerOutput(player);
 
-        //ttSpeechConfig.config.speechSynthesisVoiceName = "en-US-JaneNeural"
-        ttSpeechConfig.config.speechSynthesisOutputFormat = SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3
         player.onAudioEnd = function() {
       
           props.handleAudioEnded(props.word_pair, props.side)
@@ -91,18 +93,16 @@ interface AzureMatchButtonProps {
           complete_cb,
           err_cb);
     }
-
+    //disabled={isDisabled}
         return (
               <>
-                <div>{isDisabled.toString()}</div>
-                  <button
-                    
-                      className={`px-4 py-2 rounded-lg text-white font-semibold transition ${
+                  <button    
+                      className={`px-4 py-2 rounded-lg text-white ${props.side} font-semibold transition ${
                         isDisabled
                           ? "bg-blue-400 cursor-not-allowed"
                           : "bg-blue-500 hover:bg-blue-600"
                       }`}
-                      disabled={isDisabled}
+                     
                       onClick={e => handleClick(e)}
                   >
                       {label}
