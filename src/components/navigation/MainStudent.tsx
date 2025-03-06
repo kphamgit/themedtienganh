@@ -1,15 +1,18 @@
-import { useEffect, lazy, useState, useRef, ReactNode} from 'react'
+import { useEffect, lazy, useState, useRef, ReactNode, useContext} from 'react'
 
 import { useAppSelector } from '../../redux/store'
 import { Outlet, useNavigate } from 'react-router-dom'
 
 
 //import { ScoreBoard2 } from '../quiz_attempts/ScoreBoard2'
-import { NavigationBar } from './NavigationBar'
+//import { NavigationBar } from './NavigationBar'
 import { useSocketContext } from '../../hooks/useSocketContext'
 import NavBar from './NavBar'
-import AzureTranscription from '../shared/AzureTranscription'
-import { SRContinuous } from '../quiz_attempts/question_attempts/SRContinuous'
+import { ThemeContext } from '../../contexts/theme_context/ThemeContext';
+import { ThemeContextInterface } from '../../types';
+import { MdDarkMode } from 'react-icons/md';
+//import AzureTranscription from '../shared/AzureTranscription'
+//import { SRContinuous } from '../quiz_attempts/question_attempts/SRContinuous'
 //import WatsonSpeechRecognition from '../shared/WatsonSpeechRecognition'
 
 
@@ -26,7 +29,7 @@ interface ChildRef {
 export default function MainStudent(props: any ) {
     const user = useAppSelector(state => state.user.value)
     const [showLiveRecording, setShowLiveRecording] = useState(false)
-    const childRef = useRef<ChildRef>(null);
+    const { toggleTheme } = useContext(ThemeContext) as ThemeContextInterface;
 
     //const [localLiveQuizId, setLocalLiveQuizId] = useState<string>('')
     // this is not needed but keep it for Typescript learning
@@ -147,7 +150,19 @@ export default function MainStudent(props: any ) {
 
       <div className=' bg-bgColor1'>
         <div>
-          <div className='text-xl p-2'><span>Welcome </span><span className='text-amber-700'>{user_name}</span><span> to Tieng Anh Tuy Hoa</span></div>
+          <div className='text-xl p-2 flex flex-row justify-start gap-2'>
+            <div><span className='text-textColor1'>Welcome </span> 
+            <span className='text-textColor4'>{user_name}</span>
+            <span className='text-textColor1'> to Tieng Anh Tuy Hoa</span></div>
+            <div>
+              <button
+                onClick={toggleTheme}
+                className="rounded-none bg-bgColor1 p-1 text-center text-2xl uppercase tracking-[3px] text-textColor2 transition-all duration-300 ease-in-out hover:rounded-lg"
+              >
+                <MdDarkMode />
+              </button>
+            </div>
+          </div>
           <NavBar />
           <Outlet  />
          

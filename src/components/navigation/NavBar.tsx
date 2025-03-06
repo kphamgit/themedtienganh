@@ -161,7 +161,7 @@ export default function Navbar() {
       <section ref={animationParent} className="flex items-center gap-10">
         {/* logo */}
         <div className="hidden md:flex items-center gap-0.5 transition-all">
-            <div className='text-md bg-bgColor2 text-textColor  p-2'>
+            <div className='text-md bg-bgColor2 text-textColor2  p-2'>
               <Link to="/homepage">Home</Link>
             </div>
           {navItems.map((d, i) => (
@@ -194,7 +194,7 @@ export default function Navbar() {
               )}
             </div>
           ))}
-            <div className='text-md bg-bgColor2 text-textColor  p-2'>
+            <div className='text-md bg-bgColor2 text-textColor2  p-2'>
               <Link to="/games">Games</Link>
             </div>
         </div>
@@ -204,19 +204,14 @@ export default function Navbar() {
       {/* right side data */}
       <section className=" hidden md:flex   items-center gap-8 ">
      
-        <div className='text-md bg-bgColor2 text-textColor  p-2'>
+        <div className='text-md bg-bgColor2 text-textColor2  p-2'>
               <Link to="/logout">Log out</Link>
             </div>
 
         <button className="h-fit rounded-xl border-2 border-neutral-400 px-4 py-2 text-neutral-400 transition-all hover:border-black hover:text-black/90">
           Register
         </button>
-        <button
-                onClick={toggleTheme}
-                className="rounded-none bg-bgColor1 p-1 text-center text-2xl uppercase tracking-[3px] text-textColor2 transition-all duration-300 ease-in-out hover:rounded-lg"
-            >
-               <MdDarkMode />
-            </button>
+      
       </section>
 
       <FiMenu

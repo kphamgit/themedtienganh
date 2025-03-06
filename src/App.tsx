@@ -8,7 +8,7 @@ import { Logout } from "./auth/Logout";
 import SocketContextComponent from "./contexts/socket_context/Component";
 import HomePage from "./components/navigation/HomePage";
 import Games from "./components/navigation/Games";
-import { TextMatchGame } from "./components/live/TextMatchGame";
+import { TextMatchGame } from "./components/matching_games/TextMatchGame";
 //import LiveQuiz from "./components/live/LiveQuiz";
 //import TakeLiveQuiz from "./components/live/TakeLiveQuiz";
 //import { SendLiveText } from "./components/live/SendLiveText";
