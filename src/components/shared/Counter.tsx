@@ -5,15 +5,30 @@ interface Props {
     initialSeconds: number
   }
 
+  /*
   interface ElapsedTime {
     minutes: number, seconds: number
   }
+  */
 
   export interface CounterRef {
     getCount: () => number | undefined;
     startCount: () => void
-    stopCount: () => ElapsedTime
+    stopCount: () => string   // return a string for elapsed time
   }
+/*
+  type TimeDisplayProps = {
+    minutes: string;
+    seconds: string;
+  };
+  
+  const TimeDisplay: React.FC<TimeDisplayProps> = ({ minutes, seconds }) => {
+    // Ensure the values are always two digits
+    const formatTime = (value: string) => value.padStart(2, "0");
+  
+    return <span>{`${formatTime(minutes)}:${formatTime(seconds)}`}</span>;
+  };
+  */
 
 export const Counter = forwardRef<CounterRef, Props>((props, ref) => {
   const [count, setCount] = useState<number>();
@@ -79,7 +94,9 @@ export const Counter = forwardRef<CounterRef, Props>((props, ref) => {
       //console.log("m seconds", m_seconds)
       setCount(undefined)
       setStop(true)
-      return {minutes: minutes, seconds: m_seconds}
+       // Ensure the values are always two digits
+      const formatTime = (value: string) => value.padStart(2, "0");
+      return `${formatTime(minutes.toString())} minutes ${formatTime(m_seconds.toString())} seconds.`
     },
     getCount() {
       return count;

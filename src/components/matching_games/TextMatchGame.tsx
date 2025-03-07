@@ -5,6 +5,8 @@ import { CardProps } from './types';
 //import { Link, useParams } from 'react-router-dom';
 import { getAGameNew } from '../../services/list.js';
 import TextCardAzure, {TextCardAzureRefProps} from './TextCardAzure.js';
+import { Counter, CounterRef } from '../shared/Counter.js';
+import { time } from 'console';
 //import { CardProps } from './MemoryGame.js';
 //import Popup from 'reactjs-popup';
 //mport  Counter  from './Counter.js'
@@ -13,17 +15,20 @@ import TextCardAzure, {TextCardAzureRefProps} from './TextCardAzure.js';
 //everytime component is refreshed.
 
 /*
-  src: string;
-    matched: boolean;
-    match_index: number;    
+export interface CounterRef {
+    getCount: () => number | undefined;
+    startCount: () => void
+    stopCount: () => ElapsedTime
+  }
 */
-
-
 //className={completed ? 'text-strike' : null}
 //export function TextMatchGame(props: {theLeftCards1: CardProps, theRightCards1: CardProps}) {
     export function TextMatchGame(props: {id: string}) {
         const [leftCards , setLeftCards] = useState<CardProps[]>([])
         const [rightCards , setRightCards] = useState<CardProps[]>([])
+
+        const counterRef = useRef<CounterRef>(null)
+     
         
     const [leftCards1 , setLeftCards1] = useState<CardProps[]>([{
         src: 'apple', matched: false, match_index: 0, language: 'en'},
@@ -48,7 +53,7 @@ import TextCardAzure, {TextCardAzureRefProps} from './TextCardAzure.js';
     const [gameover, setGameOver] = useState(false)
 
     //const childRef = useRef();
-    const myTimeout = useRef(null)
+    //const myTimeout = useRef(null)
 
     const [choiceLeft, setChoiceLeft] = useState<CardProps | undefined>(undefined)
     const [choiceRight, setChoiceRight] = useState<CardProps | undefined>(undefined)
@@ -59,9 +64,15 @@ import TextCardAzure, {TextCardAzureRefProps} from './TextCardAzure.js';
     const leftCardAzureRefs = useRef<(TextCardAzureRefProps | null)[]>([]);
     const rightCardAzureRefs = useRef<(TextCardAzureRefProps | null)[]>([]);
 
-    //const params = useParams<{ game_id: string}>();
+    const [elapsedTime, setElapsedTime] = useState<string | undefined>(undefined)
     const numCardsToDisplay = 6
     const [numRows, setNumRows] = useState(null)
+
+    const [foundMatch, setFoundMatch] = useState(false)
+    const [matchedIndex, setMatchedIndex] = useState(-1)
+
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const timeoutRef1 = useRef<NodeJS.Timeout | null>(null);
 
     const  clearBordersAllButtons = () => {
             rightCardRefs.current.forEach((ref) => {    
@@ -77,6 +88,8 @@ import TextCardAzure, {TextCardAzureRefProps} from './TextCardAzure.js';
                 ref?.set_clicked(false)
             })
     }
+
+    
 
     useEffect(() => {
         //console.log("in useEffect props.id = ", props.id)
@@ -160,47 +173,110 @@ import TextCardAzure, {TextCardAzureRefProps} from './TextCardAzure.js';
             }
             //console.log("shuffled_temp = ", shuffled_temp)
             setRightCards(shuffled_temp);
+            counterRef.current?.startCount()
         })
         
     },[props.id])
 
     useEffect(() => {
-        //return () => {
-         //   clearTimeout(myTimeout.current)
-         // }  
-    },[gameover])
+        if (choiceLeft && choiceRight ) {
+            setChoiceLeft(undefined)
+            setChoiceRight(undefined)
+            if (choiceLeft.match_index === choiceRight.match_index) {
+                console.log("MATCHED ", choiceLeft.src, choiceRight.src)
+                setMatchedIndex(choiceLeft.match_index)
+                setFoundMatch(true)
+            }
+            else {
+                //console.log("no match")
+              
+                setFoundMatch(false)
+                /*
+                timeoutRef1.current = setTimeout(() => {
+                    clearBordersAllButtons()
+                  
+                }, 900)
+                */
+               
+            }
+        }
+        /*
+        return () => {
+            if (timeoutRef1.current) {
+                console.log("xxxx clear timeoutRef1.current...")
+                clearTimeout(timeoutRef1.current);
+            }
+        };
+        */
+    },[choiceLeft, choiceRight])
 
+    useEffect (() => {
+        if (foundMatch) {
+            console.log("in useEffect foundMatch")
+            timeoutRef.current = setTimeout(() => {
+                console.log(" ENTRY call back for setTimeout")
+                const matched_left_card_index = leftCards.findIndex((w => w.match_index === matchedIndex));
+                const matched_right_card_index = rightCards.findIndex((w => w.match_index === matchedIndex));
+                const tempArray1 = leftCards.slice(); //get a shallow copy of leftCards
+                tempArray1.splice(matched_left_card_index, 1, { ...leftCardsBank[0], match_index: matchedIndex }); // remove the selected word 
+                // and simultaneously insert the first word of words_bank at the same index
+                setLeftCards(tempArray1)
+                const tempArray2 = rightCards.slice(); // get a shallow copy of rightCards
+                tempArray2.splice(matched_right_card_index, 1, { ...rightCardsBank[0], match_index: matchedIndex }); // remove the selected word 
+                // and simultaneously insert the first word of words_bank at the same index
+                setRightCards(tempArray2)
+                //console.log("... time out")
+                clearBordersAllButtons()
+                leftCardsBank.splice(0, 1)
+                // remove the first element from rightCardsBank
+                rightCardsBank.splice(0, 1)
+                console.log("end of set time out callback, clear ChoiceLeft and ChoiceRight")
+                setChoiceLeft(undefined)
+                setChoiceRight(undefined)
+            }, 700)
+        }
+        
+        return () => {
+            if (timeoutRef.current) {
+                console.log("...clear Timeout timeoutRef.current...")
+                clearTimeout(timeoutRef.current);
+            }
+        };
+    }, [foundMatch, matchedIndex])
+    /*
     useEffect (() => {
         //console.log(" entry useEffect, handle Selection")
             if (choiceLeft && choiceRight ) {
-                //console.log(" 2 choices made")
-                //
-               //handleTest()
+            
                 if (choiceLeft.match_index === choiceRight.match_index) {
                     const matched_left_card_index = leftCards.findIndex((w => w.match_index === choiceRight.match_index));
                     //console.log("matched_card_index = ", matched_left_card_index)
                     const matched_right_card_index = rightCards.findIndex((w => w.match_index === choiceRight.match_index));
                     //console.log("matched_card_index = ", matched_right_card_index)
-                    setTimeout(() => {
-                    const tempArray1 = leftCards.slice(); //get a shallow copy of leftCards
-                    tempArray1.splice(matched_left_card_index, 1, {...leftCardsBank[0], match_index: choiceLeft.match_index}); // remove the selected word 
-                      // and simultaneously insert the first word of words_bank at the same index
-                    setLeftCards(tempArray1)
+                    //timeoutRef.current = setTimeout(() => {
+                    console.log("MATCHED, calling  set time out")
+                    timeoutId = setTimeout(() => {
+                        console.log("inside call back for time out")
+                        const tempArray1 = leftCards.slice(); //get a shallow copy of leftCards
+                        tempArray1.splice(matched_left_card_index, 1, { ...leftCardsBank[0], match_index: choiceLeft.match_index }); // remove the selected word 
+                        // and simultaneously insert the first word of words_bank at the same index
+                        setLeftCards(tempArray1)
 
-                    const tempArray2 = rightCards.slice(); // get a shallow copy of rightCards
-                    tempArray2.splice(matched_right_card_index, 1, {...rightCardsBank[0], match_index: choiceRight.match_index}); // remove the selected word 
-                      // and simultaneously insert the first word of words_bank at the same index
-                    setRightCards(tempArray2)
+                        const tempArray2 = rightCards.slice(); // get a shallow copy of rightCards
+                        tempArray2.splice(matched_right_card_index, 1, { ...rightCardsBank[0], match_index: choiceRight.match_index }); // remove the selected word 
+                        // and simultaneously insert the first word of words_bank at the same index
+                        setRightCards(tempArray2)
                         //console.log("... time out")
                         clearBordersAllButtons()
                         //leftCardRefs.current[matched_left_card_index]?.set_clicked(true)
                         //rightCardRefs.current[matched_right_card_index]?.set_clicked(true)
-                          // remove the first element from leftCardsBank
+                        // remove the first element from leftCardsBank
                         leftCardsBank.splice(0, 1)
                         // remove the first element from rightCardsBank
-                        rightCardsBank.splice(0, 1)      
-             
-                    }, 1500)
+                        rightCardsBank.splice(0, 1)
+                        
+                    }, 700)
+                   // setTimeoutId1(id);
                     setNumMatches(prevNumMatches => prevNumMatches + 1)
                     resetTurn()
                 }
@@ -213,22 +289,33 @@ import TextCardAzure, {TextCardAzureRefProps} from './TextCardAzure.js';
                    
                 }
             }
+            return () => {
+                    if (timeoutId) {
+                        console.log("..non null timeoutId...")
+                        //if (choiceLeft?.match_index === choiceRight?.match_index) {
+                        //clearTimeout(timeoutId); // Cleanup previous timeout
+                        //}
+                    }
+            };
     }, [choiceLeft, choiceRight])
-
+*/
     const resetTurn = () => {
         setChoiceLeft(undefined)
         setChoiceRight(undefined)
         setTurns(prevTurns => prevTurns + 1)
     }
    
-        useEffect(() => {
-            if (numRows) {
-                if (nummatches === numRows) {
-                    setGameOver(true)
-                    //childRef.current.clearCount()
-                }
+    useEffect(() => {
+        if (numRows) {
+            if (nummatches === numRows) {
+                setGameOver(true)
+                const elapsedTime_str = counterRef.current?.stopCount()
+                console.log("elapsedTime = ", elapsedTime_str)
+                setElapsedTime(elapsedTime_str)
+                //childRef.current.clearCount()
             }
-        }, [nummatches, numRows])
+        }
+    }, [nummatches, numRows])
 
     /*
     id: string;
@@ -314,10 +401,17 @@ import TextCardAzure, {TextCardAzureRefProps} from './TextCardAzure.js';
         return (
             <>
                 <div>
-                    {(gameover) ?
+                    {(gameover) ? 
+                        <>
                         <h3 className='mx-10 my-0 text-xl'>Game Over</h3>
+                        <div>Elapsed Time: {elapsedTime}</div>
+                        </>
                         :
-                        <div className='flex flex-row'>
+                        <div className='flex flex-col mx-2'>
+                            <div>{choiceLeft?.src} ** {choiceRight?.src} </div>
+                            <div className='flex flex-row justify-center'>
+                             <div className='bg-red-400 flex justify-center mt-0 my-2 w-1/12'><Counter initialSeconds={0} ref={counterRef} /></div>
+                            </div>
                             <div className="flex justify-center items-center w-full bg-gray-400">
                                 <div className="w-full grid grid-cols-2 gap-4">
                                     <div className="bg-blue-500  items-center justify-start rounded-lg shadow-lg">
@@ -350,11 +444,11 @@ import TextCardAzure, {TextCardAzureRefProps} from './TextCardAzure.js';
                                                     />
                                                     </div>
                                                     :
-                                                <div className='flex flex-col gap-1'>
+                                              
                                                     <TextCardAzure card={card} handleChoice={handleRightCardAzureClick} card_side='right' 
                                                      ref={(el) => (rightCardAzureRefs.current[index] = el)}
                                                     />
-                                                    </div>
+                                              
                                                 }
                                             </div>
                                         ))

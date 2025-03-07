@@ -38,7 +38,6 @@ const TextCard = forwardRef<TextCardRefProps, TextCardComponentProps>(
     if (!props.card.matched ) {
         return (
             <>
-            <div>{clicked.toString()}</div>
             <button className={`${props.card_side} rounded-md p-2 m-1 bg-amber-100 hover:bg-amber-300
             ${clicked ? "border-amber-700 border-2" : "border-transparent"}
             `}

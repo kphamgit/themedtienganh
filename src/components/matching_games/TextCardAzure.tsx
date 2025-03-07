@@ -60,19 +60,22 @@ const TextCardAzure = forwardRef<TextCardAzureRefProps, TextCardAzureComponentPr
 
         const synthesizer = new SpeechSynthesizer(ttSpeechConfig.config, audioConfig);
         synthesizer.speakTextAsync(text_to_speak)
+        
     }
 
     if (!props.card.matched ) {
         return (
             <>
-            <div>{clicked.toString()}</div>
+            { props.card ?
             <button className={`${props.card_side} rounded-md p-2 m-1 bg-amber-100 hover:bg-amber-300
             ${clicked ? "border-amber-700 border-2" : "border-transparent"}
             `}
                 onClick={() => handleClick()}>
                 {props.card.src}
             </button>
-           
+            : null
+
+        }
             </>
         )
     }
