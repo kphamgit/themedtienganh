@@ -1,30 +1,40 @@
 import {useState, forwardRef, useImperativeHandle} from 'react'
-import { CardProps } from './types'
+import { TextCardComponentProps } from './types'
+import { TextCardRefProps } from './types'
 
-export interface TextCardRefProps {
-    //toggleDisabled: () => void;
-    set_clicked: (value: boolean) => void;
-    getText: () => string;
-  }
 
+/*
 interface TextCardComponentProps {
     card: CardProps;
     handleChoice: (card: CardProps) => void;    
-    card_side: string;
 }
+*/
 
 const TextCard = forwardRef<TextCardRefProps, TextCardComponentProps>(
     (props, ref) => {
 
     const [clicked, setClicked] = useState(false);
+    const [bgColor, setBgColor] = useState("bg-amber-100");   
    
         useImperativeHandle(ref, () => ({
             //toggleDisabled,
             set_clicked: (value: boolean) => {
                 setClicked(value)
             },
+            set_bgColor: (color: string) => {
+                /*
+                const card_el = document.getElementById(props.card.id.toString())
+                if (card_el) {
+                    card_el.style.backgroundColor = color
+                }
+                    */
+                //setBgColor(color)
+            },
             getText: () => {
                 return props.card.src
+            },
+            getSide: () => {
+                return props.card.side
             }
         }));
 
@@ -38,7 +48,8 @@ const TextCard = forwardRef<TextCardRefProps, TextCardComponentProps>(
     if (!props.card.matched ) {
         return (
             <>
-            <button className={`${props.card_side} rounded-md p-2 m-1 bg-amber-100 hover:bg-amber-300
+            <div>{props.card.side}</div>
+            <button className={`${props.card.side} rounded-md p-2 m-1 ${bgColor} hover:bg-amber-300
             ${clicked ? "border-amber-700 border-2" : "border-transparent"}
             `}
                 onClick={() => handleClick()}>
@@ -51,42 +62,3 @@ const TextCard = forwardRef<TextCardRefProps, TextCardComponentProps>(
 })  
     
   export default TextCard
-
-
-/*
-  return (
-            <>
-            <div>{clicked.toString()}</div>
-            <button className={`${props.card_side} rounded-md p-2 m-1 bg-amber-100 hover:bg-amber-300
-            ${clicked ? "border-green-300 border-4" : "border-transparent"}
-            `}
-                onClick={(e) => handleClick(e.target as HTMLButtonElement)}>
-                {props.card.src}
-            </button>
-           
-            </>
-        )
-
-
-   <button
-                    
-                      className={`px-4 py-2 rounded-lg text-white ${props.side} font-semibold transition ${
-                        isDisabled
-                          ? "bg-blue-400 cursor-not-allowed"
-                          : "bg-blue-500 hover:bg-blue-600"
-                      }`}
-                     
-                      onClick={e => handleClick(e)}
-                  >
-                      {label}
-                  </button>
-*/
-
-/*
-     <button className={`rounded-md p-2 m-1 bg-amber-100 hover:bg-amber-300
-            ${clicked ? "border-red-300 border-4" : "border-transparent"}
-            `}
-                onClick={(e) => handleClick(e.target)}>
-                {props.card.src}
-            </button>
-*/
