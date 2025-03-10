@@ -178,11 +178,11 @@ export default function Navbar() {
 
               {/* dropdown */}
               {d.children && (
-                <div className="absolute   left-0 mt-3  top-10 hidden w-auto  flex-col bg-bgColorSubCategory  py-3 shadow-md  transition-all group-hover:flex ">
+                <div className="absolute   left-0 mt-2  top-10 hidden w-auto  flex-col bg-bgColor1 py-3 shadow-md  transition-all group-hover:flex ">
                   {d.children.map((ch, i) => (
                     <Link to={ch.link ?? "#"}
                       key={i}
-                      className=" flex cursor-pointer items-center  py-1 pl-4 pr-4  text-textColor1 hover:text-textColorSubCategoryHover  "
+                      className=" flex cursor-pointer items-center  py-1 pl-4 pr-4 bg-bgColor1 text-textColor1 hover:text-textColorSubCategoryHover  "
                     >
                       {/* item */}
                       <span onClick={handleItemClick} className=" whitespace-nowrap ">

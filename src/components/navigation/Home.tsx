@@ -43,44 +43,4 @@ export default function Home() {
   )
 }
 
-/*
- return (
-    <Suspense fallback={<div>Loading...</div>}>
-    <div className='grid grid-cols-12 gap-2'>
-      <div className='col-span-9'>
-      {user.role === 'teacher' ?
-        <HomeTeacher />
-        : (
-        <HomeStudent />
-        )
-      }
-      </div>
-      <div className='col-span-3'>
-      {roomID.length > 0 &&
-        <Room roomID={roomID} />
-      }
-      </div>
-    </div>
-    </Suspense>
-  )
-*/
-
-//export default Home;
-/*
-return (
-  <div className='m-14'>
-    <NavigationBar />
-    <Outlet />
-    {user.role === 'teacher' ?
-      <HomeTeacher />
-      : (
-      <HomeStudent />
-      )
-    }
-
-
-  </div>
-
-)
-*/
 

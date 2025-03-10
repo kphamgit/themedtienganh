@@ -10,7 +10,6 @@ import SendLiveText  from '../live/SendLiveText'
 import { RecordViewTeacher } from './RecordViewTeacher'
 import { SendLivePicture } from '../live/SendLivePicture'
 import { getAClass } from '../../services/list'
-import { NavigationBar } from './NavigationBar'
 import { useSocketContext } from '../../hooks/useSocketContext'
 
 export default function MainTeacher(props: any ) {
@@ -93,12 +92,6 @@ const enable_live_quiz: MouseEventHandler<HTMLButtonElement> = (event) => {
 
   return (
     <div className='m-14 bg-bgColor1'>
-
-      <div>
-
-        <NavigationBar />
-
-      </div>
 
       <div className='mx-1 '>Class Id:<input className='px-2 text-sm rounded-md w-4/12' type="text" value={targetClass}
         onChange={e => setTargetClass(e.target.value)}

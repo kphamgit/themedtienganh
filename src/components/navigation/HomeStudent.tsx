@@ -30,28 +30,3 @@ export default function HomeStudent(props: any ) {
         </div>
   )
 */
-
-/*
-
-  <Lottie animationData={groovyWalkAnimation} loop={true} />//
-     <div className='m-14'>
-          { showLiveRecording ?
-          <LiveAudioRecorder />
-          : 
-          null
-          }
-        </div>
-
-
-
-     <div className='bg-amber-300 col-span-3'>
-            <div className='grid grid-rows-2'>
-            <div className='h-20'><LiveAudioRecorder /></div>
-            
-            </div>
-        </div>
-   <div className='m-3 text-gray-400 bg-slate-200' >
-            <ScoreBoard2 />
-          </div>
-         
-*/

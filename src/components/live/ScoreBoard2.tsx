@@ -20,7 +20,6 @@ import QuestionHelper from '../quiz_attempts/QuestionHelper'
   }
 
 export function ScoreBoard2(props:any) {
-   // export function ScoreBoard2(props:{users: SocketInfo[] | undefined }) {
     //const { data: my_class, loading, error } = useAxiosFetch<ClassProps>({ url: `/classes/${props.classId}`, method: 'get' });
     const {socket, user_name, users} = useContext(SocketContext).SocketState;
     const user = useAppSelector(state => state.user.value)

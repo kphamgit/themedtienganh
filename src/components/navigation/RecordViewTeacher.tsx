@@ -90,7 +90,7 @@ export const RecordViewTeacher: React.FC<Props> = ({ student_names }) => {
 
         const arg:any = { user_name: name, score: liveScoreRefs.current[parseInt(index)].value}
            //alert("emiet emable live picture")
-       socket?.emit('live_score_new', arg)
+        //socket?.emit('live_score_new', arg)
       }
 
       useEffect(() => {

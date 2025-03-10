@@ -127,19 +127,8 @@ export default function LiveQuestion(props: LiveQuestionProps) {
                         total_score: 0, 
                         user_name: user.user_name
                     }
-                    const live_score_new_params: LiveScoreProps = {
-                        question_format: question?.format,
-                        question_number: response.question_number,
-                        question_content: question?.content,
-                        user_answer: my_answer,
-                        answer_key: question?.answer_key,
-                        score: response.score.toString(),
-                        total_score: 0, 
-                        user_name: user.user_name
-                    }
+      
                    socket?.emit('live_score', live_score_params)
-                    //console.log(" in QuizPageLive send live_score_new message params=", live_score_new_params)
-                   socket?.emit('live_score_new', live_score_new_params)
                     counterRef.current?.stopCount()
                 })
                 .catch(error => {

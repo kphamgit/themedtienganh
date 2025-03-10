@@ -3,9 +3,6 @@ import { useEffect, lazy, useState, useRef, ReactNode, useContext} from 'react'
 import { useAppSelector } from '../../redux/store'
 import { Outlet, useNavigate } from 'react-router-dom'
 
-
-//import { ScoreBoard2 } from '../quiz_attempts/ScoreBoard2'
-//import { NavigationBar } from './NavigationBar'
 import { useSocketContext } from '../../hooks/useSocketContext'
 import NavBar from './NavBar'
 import { ThemeContext } from '../../contexts/theme_context/ThemeContext';
@@ -177,53 +174,3 @@ export default function MainStudent(props: any ) {
   )
 }
 
-/*
-   <div>
-        
-       </div>
-      <div>
-         <SRContinuous content="testing" ref={childRef} />
-      </div>
-      <div>
-      <AzureTranscription></AzureTranscription>
-      </div>
-      <div className='bg-bgColor2 text-textColor2'>Student Socket id: {socket.id}</div>
-*/
-
-/*
-`${serviceUrl}/v1/recognize?access_token=${apiKey}`);
-*/
-//       <SpeechToText apiKey='Pd2P9-VfGe-huJgOWQaZ0PwaEnoZISGBD0vcISEZT-Al' serviceUrl='https://api.au-syd.speech-to-text.watson.cloud.ibm.com/instances/bbcafcae-2824-4e97-a564-92b779fa9830/v1/recognize' />
-
-/*
-
-<IBMSTT apiKey='Pd2P9-VfGe-huJgOWQaZ0PwaEnoZISGBD0vcISEZT-Al' serviceUrl='https://api.au-syd.speech-to-text.watson.cloud.ibm.com/instances/bbcafcae-2824-4e97-a564-92b779fa9830/v1/recognize' />
-
- <div>
-      <SpeechToTextComponent></SpeechToTextComponent>
-    </div>
-*/
-
-/*
-   return (
-    <div>
-
-      <div className='grid grid-cols-12 bg-bgColor1'>
-        <div>Main Student</div>
-        <div className='col-span-9 m-10'>
-          <NavigationBar />
-          <Outlet />
-        </div>
-        <div className='col-span-3 m-14'>
-          <div className='m-14'>
-            {showLiveRecording &&
-              <LiveAudioRecorder />
-            }
-          </div>
-        </div>
-      </div>
-
-    </div>
-  )
-         
-*/
