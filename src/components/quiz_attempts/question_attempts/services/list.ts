@@ -33,6 +33,6 @@ else {
       export async function processLiveQuestionAttempt(question_id: number | undefined, user_answer:string): Promise<QuestionAttemptAttributes> {
         const url = `${rootpath}/api/question_attempts/process_live_attempt/${question_id}/`
         const response = await axios.post(url,{user_answer: user_answer})
-        console.log("processLiveQuestionAttempt response data =", response.data)
+        //console.log("processLiveQuestionAttempt response data =", response.data)
         return response.data
       }

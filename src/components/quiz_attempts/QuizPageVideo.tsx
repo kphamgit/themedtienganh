@@ -242,53 +242,49 @@ export default function QuizPageVideo(props:any) {
             <div className='mt-2 ml-10'><Counter initialSeconds={0} ref={counterRef} /></div>
            
             <div className='bg-bgColorQuestionContent mx-10 my-6 flex flex-col rounded-md'>
-                <div className='p-2 rounded-xl'>
-                    
-                    {question && showQuestion &&
-                        <>
-                        <div className='mb-2'>Question: {question.question_number}</div>
-                            <div className='bg-bgColorQuestionContent text-textColor1'>
-                            <ModalPopup />
-                            <div  className='text-textColor2 m-2' dangerouslySetInnerHTML={{ __html: question.instruction }}></div>
-                            <div className='m-2 text-textColorQuestionPrompt'>{question.prompt}</div>
-                           
-                            <div>
-                                {(question.audio_str && question.audio_str.trim().length > 0) &&
-                                    <AzureAudioPlayer text={question.audio_str} />
-                                }
-                                {(question.audio_src && question.audio_src.trim().length > 0) &&
-                                    <audio src={question.audio_src} controls />
-                                }
-                            
-                            </div>
-                      
-                            <div className='mt-3'>
-                            { question.format === 1 ? (
-                                <DynamicWordInputs content={question.content} ref={childRef} />
-                            ) : question.format === 2 ? (
-                                <ButtonSelectCloze content={question.content} ref={childRef} />
-                            ) : question.format === 3 ? (
-                                <ButtonSelect content={question.content} ref={childRef} />
-                            ) : question.format === 4 ? (
-                                <RadioQuestion question={question} ref={childRef} />
-                            ) : question.format === 6 ? (
-                                <WordScrambler content={question.content} ref={childRef} />
-                            ) : question.format === 7 ? (
-                                <SRContinuous content={question.content} ref={childRef} />
-                            ) : question.format === 8 ? (
-                                <WordsSelect content={question.content} ref={childRef} />
-                            ) : question.format === 10 ? (
-                                <DropDowns content={question.content} ref={childRef} />
-                            ) : question.format === 11 ? (
-                                <DynamicLetterInputs content={question.content} ref={childRef} />
-                            ) : (
-                                <div>UNKNOWN question format</div>
-                            )}
-                            </div>
-                            </div>
-                        </>
-                    }
-                </div>
+                    <div className='p-2 rounded-xl'>
+                        {question && showQuestion &&
+                            <>
+                                <div className='mb-2'>Question: {question.question_number}</div>
+                                <div className='bg-bgColorQuestionContent text-textColor1'>
+                                    <ModalPopup />
+                                    <div className='text-textColor2 m-2' dangerouslySetInnerHTML={{ __html: question.instruction }}></div>
+                                    <div className='m-2 text-textColorQuestionPrompt'>{question.prompt}</div>
+                                    <div>
+                                        {(question.audio_str && question.audio_str.trim().length > 0) &&
+                                            <AzureAudioPlayer text={question.audio_str} />
+                                        }
+                                        {(question.audio_src && question.audio_src.trim().length > 0) &&
+                                            <audio src={question.audio_src} controls />
+                                        }
+                                    </div>
+                                    <div className='mt-3'>
+                                        {question.format === 1 ? (
+                                            <DynamicWordInputs content={question.content} ref={childRef} />
+                                        ) : question.format === 2 ? (
+                                            <ButtonSelectCloze content={question.content} ref={childRef} />
+                                        ) : question.format === 3 ? (
+                                            <ButtonSelect content={question.content} ref={childRef} />
+                                        ) : question.format === 4 ? (
+                                            <RadioQuestion question={question} ref={childRef} />
+                                        ) : question.format === 6 ? (
+                                            <WordScrambler content={question.content} ref={childRef} />
+                                        ) : question.format === 7 ? (
+                                            <SRContinuous content={question.content} ref={childRef} />
+                                        ) : question.format === 8 ? (
+                                            <WordsSelect content={question.content} ref={childRef} />
+                                        ) : question.format === 10 ? (
+                                            <DropDowns content={question.content} ref={childRef} />
+                                        ) : question.format === 11 ? (
+                                            <DynamicLetterInputs content={question.content} ref={childRef} />
+                                        ) : (
+                                            <div>UNKNOWN question format</div>
+                                        )}
+                                    </div>
+                                </div>
+                            </>
+                        }
+                    </div>
                 <div>
                     {questionAttemptResponse  &&
                         <>
@@ -317,3 +313,4 @@ export default function QuizPageVideo(props:any) {
     )
 
 }
+

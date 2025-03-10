@@ -80,7 +80,7 @@ export default function LiveQuiz(props: any) {
     //const [currentQuestionNumber, setCurrentQuestionNumber] = useState<number | undefined>()
     //const [answer, setAnswer] = useState<string>()
 
-    const [currentQuestion, setCurrentQuestion] = useState<QuestionProps | undefined>()
+    const [currentQuestionId, setCurrentQuestionId] = useState('')
     const [showQuestion, setShowQuestion] = useState(false)
 
     const [liveQuizId, setLiveQuizId] = useState<string | undefined>('')
@@ -105,26 +105,12 @@ export default function LiveQuiz(props: any) {
  useEffect(() => {
         if (socket) {
         socket.on('live_question', (arg: { quiz_id: string, question_number: string, target_student: string}) => {
-            console.log("live question received...arg=", arg)   
+            //console.log("live question received...arg=", arg)   
             setLiveQuizId(arg.quiz_id)
             setLiveQuestionNumber(arg.question_number)
+            
             setShowQuestion(true)
             setQuestionAttemptResponse(null)
-          /*
-          const temp = {...arg, target_student: user.user_name}
-          socket.emit("live_question_received", temp)
- 
-          if (arg.target_student.trim() === 'everybody') {
-            
-            navigate("/live_quiz", { state: arg })
-          }
-          else if (arg.target_student.trim() === user.user_name?.trim()) {
-            navigate("/live_quiz", { state: arg })
-          }
-          else {
-            console.log(" invalid student target")
-          }
-          */
         })
         return () => {
           socket?.off("live_question")
@@ -138,6 +124,9 @@ export default function LiveQuiz(props: any) {
       setQuestionAttemptResponse(arg)
     }
  
+    const set_question_id = (arg: string) => {
+      setCurrentQuestionId(arg)
+    }
 
 //<audio controls src={audioUrl} />
     return (
@@ -147,14 +136,18 @@ export default function LiveQuiz(props: any) {
                 <div className='col-span-10  bg-blue-300 text-textColor2 text-lg m-10'>
                 <div className='bg-bgColorQuestionContent mx-10 my-6 flex flex-col rounded-md'>
                 { showQuestion ?
-                   <LiveQuestion quiz_id={liveQuizId} question_number={liveQuestionNumber} set_results={set_question_attempt_results} 
+                <>
+                   <LiveQuestion quiz_id={liveQuizId} question_number={liveQuestionNumber} 
+                    set_results={set_question_attempt_results} 
+                    setQuestionId = {set_question_id}
                    />
+                   </>
                    :
                      <div>LIVE QUIZ</div>
                 }
                 { questionAttemptResponse &&
                       <div className='bg-bgColor1'>
-                      <QuestionAttemptResults live_flag={true} question_id = {currentQuestion?.id.toString()} response={questionAttemptResponse }  />
+                      <QuestionAttemptResults live_flag={true} question_id = {currentQuestionId} response={questionAttemptResponse }  />
                      </div>
                 }
                 </div>
@@ -166,34 +159,3 @@ export default function LiveQuiz(props: any) {
         </>
     )
 }
-//      <QuestionAttemptResults live_flag={false} question= {question} response={questionAttemptResponse }  />
-/*
-      <div className='bg-bgColor1 w-auto'>
-                        {questionAttemptResponse ?
-                                 <div className='bg-bgColor1'>
-                                 <QuestionAttemptResults live_flag={true} response={questionAttemptResponse } user_answer={answer} />
-                                </div>
-                            :
-                            <div></div>
-                        }
-                    </div>
-*/
-
-/*
-                  {questionAttemptResponse?
-                        <>
-                         <QuestionAttemptResults live_flag={false} response={questionAttemptResponse } />
-                        </>
-                        :
-                        <div></div>
-                    }
-
-
-
-
- <QuestionAttemptResults live_flag={true} response={questionAttemptResponse} />
-
- <div className='mx-20'>
-            <Counter initialSeconds={0} ref={counterRef}/>
-        </div>
-*/

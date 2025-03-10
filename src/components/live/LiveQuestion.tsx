@@ -34,6 +34,7 @@ interface LiveQuestionProps {
     question_number: string | undefined,
     quiz_id: string | undefined 
     set_results: (question_attempt_results: QuestionAttemptAttributes) => void
+    setQuestionId: (question_id: string) => void
 }
 
 /*
@@ -98,54 +99,22 @@ export default function LiveQuestion(props: LiveQuestionProps) {
       useEffect(() => {
         if (props && question_data) {
             setQuestion(question_data?.question)
-          
+            props.setQuestionId(question_data?.question.id.toString())   
         }
       }, [props, question_data])
-
-/*
-    useEffect(() => {
-        //console.log(quiz_attempt)
-        if (question_response) {
-            //console.log(" in quizpage live question response changed =", question_response)
-            if (!question_response.end_of_quiz) {
-                //console.log("nnnnnnnnn question: ", question_response.question)
-                setCurrentQuestionNumber(question_response.question.question_number)
-                setQuestion(question_response.question)
-                setQuestionAttemptResponse(undefined)
-                setShowSubmitButton(true)
-                counterRef.current?.startCount()
-            }
-            else {
-                //console.log("End Of Quiz")
-                setEndOfQuiz(true)
-            }
-        }
-    },[question_response])
-    */
-    
-
-    /*
-    const handleSubmitNew: MouseEventHandler<HTMLButtonElement> = (event) => {
-        if (audioBlob) {
-            setAudioUrl(URL.createObjectURL(audioBlob));
-          }
-    }
-    */
-
     
     const handleSubmit: MouseEventHandler<HTMLButtonElement> = (event) => {
         const button_el = event.target as HTMLButtonElement  
         button_el.disabled = true
         const my_answer = childRef.current?.getAnswer();
         if (my_answer) {
-            console.log("handle_submit live_question, my_answer=", my_answer)
             // use the ! (exclamation mark) = non-null assertion operator to avoid warning undefined not assignable to string
             processLiveQuestionAttempt(question?.id, my_answer!)
                 .then((response) => {
                     setShowSubmitButton(false)
                     setQuestion(undefined)
                     setQuestionAttemptResponse({question: question, results: response})   
-                    console.log(" in LiveQuestion response=", response)   
+                    //console.log(" in LiveQuestion response=", response)   
                     props.set_results(response)         
 
                     const live_score_params: LiveScoreProps = {
@@ -169,7 +138,7 @@ export default function LiveQuestion(props: LiveQuestionProps) {
                         user_name: user.user_name
                     }
                    socket?.emit('live_score', live_score_params)
-                    console.log(" in QuizPageLive send live_score_new message params=", live_score_new_params)
+                    //console.log(" in QuizPageLive send live_score_new message params=", live_score_new_params)
                    socket?.emit('live_score_new', live_score_new_params)
                     counterRef.current?.stopCount()
                 })

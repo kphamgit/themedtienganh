@@ -56,7 +56,7 @@ export default function MainStudent(props: any ) {
 
     useEffect(() => {
       socket.on('live_quiz', (arg: any) => {
-        console.log("enable_live_quiz received...arg=", arg)
+        //console.log("enable_live_quiz received...arg=", arg)
         navigate("/live_quiz", {state: arg})  
       })
       return () => {

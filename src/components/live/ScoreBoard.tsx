@@ -72,12 +72,12 @@ export function ScoreBoard(props:{classId: string | undefined}) {
 
       if (socket) {
         socket.on('live_question', (arg: { quiz_id: string, question_number: string, target_student: string }) => {
-          console.log("IN score board live_question", arg)
+          //console.log("IN score board live_question", arg)
           if (arg.target_student.trim() === 'everybody' || 
             arg.target_student.trim() === user.user_name?.trim()
             ) {
             for (let my_div of studenDivRefs.current) {
-                console.log(my_div.childNodes[0].childNodes[0].textContent);
+                //console.log(my_div.childNodes[0].childNodes[0].textContent);
                 if (my_div.childNodes[0].childNodes[0].textContent === user.user_name) {
                     my_div.childNodes[0].childNodes[1].childNodes[0].textContent = arg.question_number
                     my_div.childNodes[0].childNodes[1].childNodes[1].textContent = ''   // clear score span
@@ -105,9 +105,9 @@ export function ScoreBoard(props:{classId: string | undefined}) {
           
         })
         socket.on('live_question_acknowledgement', (arg: { quiz_id: string, question_number: string, target_student: string }) => {
-            console.log("IN score board ON live_question_acknowledgement", arg)
+            //console.log("IN score board ON live_question_acknowledgement", arg)
             for (let my_div of studenDivRefs.current) {
-                console.log(my_div.childNodes[0].childNodes[0].textContent);
+                //console.log(my_div.childNodes[0].childNodes[0].textContent);
                 if (my_div.childNodes[0].childNodes[0].textContent === arg.target_student) {
                     my_div.childNodes[0].childNodes[1].childNodes[0].textContent = arg.question_number
                     my_div.childNodes[0].childNodes[1].childNodes[1].textContent = ''   // clear score span

@@ -87,10 +87,9 @@ class QuestionHelper {
     }
 
     format_answer_key = (answer_key: string, format: number | undefined, content: string): string | undefined => {
-        //console.log(" questionHelper format_answer_key(),  format", format)
         if (answer_key) {
             if (format === 1) {
-                console.log("format = ", format)
+                //console.log("format = ", format)
                 const replacements: DynamicObject = {};
                 const answer_parts = answer_key.split('/')
                 answer_parts.forEach( (part, index) => {

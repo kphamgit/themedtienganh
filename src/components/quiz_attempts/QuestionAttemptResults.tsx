@@ -45,7 +45,6 @@ import { useAxiosFetch } from '../../hooks';
     const { data: question, loading, error } =
     useAxiosFetch<QuestionProps>({ url: url, method: 'get' })
     
-
     useEffect(() => {
         if (question?.content) {
             setContent(question.content)
