@@ -1,64 +1,36 @@
-import {useState, forwardRef, useImperativeHandle} from 'react'
+import {useState, useEffect} from 'react'
 import { TextCardComponentProps } from './types'
-import { TextCardRefProps } from './types'
 
+const TextCard: React.FC<TextCardComponentProps> = ({ card, handleChoice }) => {
 
-/*
-interface TextCardComponentProps {
-    card: CardProps;
-    handleChoice: (card: CardProps) => void;    
+    const [disabled, setDisabled] = useState(false)
+  
+    useEffect(() => {
+        // disable card if matched_index is - 1 (set when a match is found and there are no more cards in card banks)
+        if (card.match_index === -1) {
+            setDisabled(true)
+        }
+    }, [card.match_index])
+
+    const handleClick = (target: HTMLButtonElement) => {
+        target.style.border = "2px solid red"
+        handleChoice(card )
 }
-*/
 
-const TextCard = forwardRef<TextCardRefProps, TextCardComponentProps>(
-    (props, ref) => {
-
-    const [clicked, setClicked] = useState(false);
-    const [bgColor, setBgColor] = useState("bg-amber-100");   
-   
-        useImperativeHandle(ref, () => ({
-            //toggleDisabled,
-            set_clicked: (value: boolean) => {
-                setClicked(value)
-            },
-            set_bgColor: (color: string) => {
-                /*
-                const card_el = document.getElementById(props.card.id.toString())
-                if (card_el) {
-                    card_el.style.backgroundColor = color
-                }
-                    */
-                //setBgColor(color)
-            },
-            getText: () => {
-                return props.card.src
-            },
-            getSide: () => {
-                return props.card.side
-            }
-        }));
-
-
-    const handleClick = () => {
-            //console.log("in TextCard handleClick setClicked to true")
-            setClicked(true)
-            props.handleChoice(props.card)
-    }
-
-    if (!props.card.matched ) {
+    if (!card.matched ) {
         return (
             <>
-            <div>{props.card.side}</div>
-            <button className={`${props.card.side} rounded-md p-2 m-1 ${bgColor} hover:bg-amber-300
-            ${clicked ? "border-amber-700 border-2" : "border-transparent"}
+            <button id={card.id}
+                 disabled={disabled} 
+                 className={`${card.side} rounded-md p-2 m-0 bg-amber-200 hover:bg-amber-300
             `}
-                onClick={() => handleClick()}>
-                {props.card.src}
+                onClick={(e) => handleClick(e.currentTarget)}>
+                {card.src}
             </button>
            
             </>
         )
     }
-})  
+}
     
   export default TextCard

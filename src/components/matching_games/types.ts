@@ -1,5 +1,5 @@
 export interface CardProps {
-    
+    id: string;
     src: string;
     matched: boolean;
     match_index: number;
@@ -10,11 +10,7 @@ export interface CardProps {
 // side: string
 
 export interface TextCardRefProps {
-    //toggleDisabled: () => void;
-    set_clicked: (value: boolean) => void;
     set_bgColor: (color: string) => void;
-    getText: () => string;
-    getSide: () => string;
   }
 
 export interface TextCardComponentProps {

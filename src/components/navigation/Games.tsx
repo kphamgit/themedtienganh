@@ -33,7 +33,7 @@ export default function Games() {
             .then((data) => {
                 //console.log("..xxxxxxx.", data)
                 if (data) {
-                   console.log("data = ", data)
+                   //console.log("data = ", data)
                     setGames(data)
                 }
                 //setGames(data)
