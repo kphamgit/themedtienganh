@@ -39,8 +39,8 @@ export default function QuizPageVideo(props:any) {
     const params = useParams<{ sub_category_name: string, quizId: string,  }>();
     const user = useAppSelector(state => state.user.value)
     const url = `quiz_attempts/find_create/${params.quizId}/${user.id}`
-    const [quizAttempt, setQuizAttempt] = useState<QuizAttemptProps | undefined>()
-    const [quizAttemptId, setQuizAttemptId] = useState<string | undefined>()
+    //const [quizAttempt, setQuizAttempt] = useState<QuizAttemptProps | undefined>()
+    //const [quizAttemptId, setQuizAttemptId] = useState<string | undefined>()
 
     //const url = `/quiz_attempts/${params.quizId}/${user.id}`
     //const url = `/http://localhost:5001/api/quiz_attempts/${params.quizId}/${user.id}`
@@ -59,7 +59,7 @@ export default function QuizPageVideo(props:any) {
     const [question, setQuestion] = useState<QuestionProps | undefined>()
     const [questionId, setQuestionId] = useState<string | undefined>()
     const [showQuestion, setShowQuestion] = useState(false)
-    const [showQuestionAttemptResults, setShowQuestionAttemptResults] = useState(false)
+    //const [showQuestionAttemptResults, setShowQuestionAttemptResults] = useState(false)
     const [showNextButton, setShowNextButton] = useState(false)
     const [questionAttemptResponse, setQuestionAttemptResponse] = useState< QuestionAttemptAttributes>()
     const [endOfQuiz, setEndOfQuiz] = useState(false)

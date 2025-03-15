@@ -50,6 +50,7 @@ export default function Games() {
         setIsPopupOpen(true)
     }
 
+    
  
     return (
         <div className="mx-10">

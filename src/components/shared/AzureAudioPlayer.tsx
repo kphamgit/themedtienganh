@@ -42,7 +42,7 @@ export const AzureAudioPlayer = (props: MyProps) => {
         `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-US">
         <voice name="en-US-JaneNeural">
           <prosody rate="-10.00%">
-              a
+              ${props.text}
           </prosody>
         </voice>
         </speak>`

@@ -31,22 +31,26 @@ interface Props {
 useEffect(() => {
   const regExp = /\[.*?\]/g
   const  matches = props.content?.match(regExp);
-  //console.log("aaaa matches =", matches)
-  //[ "[are]", "[thank]"]
-
-  let length_of_longest_word = 1;
+  console.log("aaaa matches =", matches)
+  
+  /* [
+    "[you/he/I]"]
+  */
   if (matches) {
-    for (var i = 0; i < matches.length; i++) {
-      if (matches[i].length > length_of_longest_word) {
+  const match_parts = matches[0].split('/')
+  let length_of_longest_word = 1;
+  if (match_parts) {
+    for (var i = 0; i < match_parts.length; i++) {
+      if (match_parts[i].length > length_of_longest_word) {
         //console.log(" longest", (matches[i].length + 1))
-        length_of_longest_word = matches[i].length + 1
+        length_of_longest_word = match_parts[i].length + 1
         
       }
     }
-    //console.log(" longest",length_of_longest_word)
+    console.log(" longest",length_of_longest_word)
     setMaxLength(length_of_longest_word)
   }
-
+}
   //
 
   //remove the square brackets from matches
@@ -55,7 +59,9 @@ useEffect(() => {
   })
   //console.log("MMMM matches no brackets=", matches_no_brackets)
   // ["are", "thank"]
-  setLabels(matches_no_brackets)
+  if (matches_no_brackets) {
+    setLabels(matches_no_brackets[0].split('/'))
+  }
   //[ "are","<br />","thank"]
 
   // Use a regular expression to split the sentence
@@ -126,9 +132,10 @@ useEffect(() => {
   const handleFocus = (id: string) => setTargetInput(id);
 
     function renderContent(type: string, value: string, id: string, index: number) {
+      console.log("renderContent.....type=", type, "value=", value, "id=", id, "index=", index)
       if (type === 'input') {
         return (<input
-          className='bg-bgColor2 rounded-md cloze_answer p-1 m-1'
+          className='bg-bgColor2 rounded-md cloze_answer p-1 m-1 text-center'
           type="text"
           id={id}
           readOnly={true}
@@ -155,9 +162,12 @@ useEffect(() => {
     }
 
   const handleClick = (selected_text: string) => {
-      //console.log("handleClick.....selected text =", selected_text)
+      console.log("handleClick.....selected text =", selected_text)
+      console.log("targetInput=", targetInput)
       const target_el:HTMLInputElement = document.getElementById(targetInput) as HTMLInputElement
+      console.log("target_el=", target_el)
       if (target_el) {
+        console.log("target_el.textContent=", target_el.textContent)
         target_el.value = selected_text
       }
   }

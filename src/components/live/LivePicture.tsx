@@ -21,7 +21,7 @@ export default function LivePicture(props: any) {
     const location = useLocation();
     const live_picture_data = location.state;
    
-    console.log("MMMMM live picture data", live_picture_data)
+   // console.log("MMMMM live picture data", live_picture_data)
     
     useEffect(() => {
         //setWidth(live_picture_data.width)

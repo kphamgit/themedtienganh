@@ -60,21 +60,5 @@ const TextCardAzure: React.FC<TextCardComponentProps> = ({ card, handleChoice })
     
   export default TextCardAzure
 
-  /*
-    return (
-            <>
-            { card ?
-            <button id={card.id} className={`${card.side} rounded-md p-2 m-1 bg-amber-200 hover:bg-amber-300
-            ${clicked ? "border-amber-600 border-4" : "border-transparent"}
-            `}
-                onClick={() => handleClick()}>
-                {card.src}
-            </button>
-            : null
-
-        }
-            </>
-        )
-  */
 
 

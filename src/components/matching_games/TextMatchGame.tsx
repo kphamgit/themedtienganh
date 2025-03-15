@@ -24,10 +24,6 @@ import { Counter, CounterRef } from '../shared/Counter.js';
     const [choiceLeft, setChoiceLeft] = useState<CardProps | undefined>(undefined)
     const [choiceRight, setChoiceRight] = useState<CardProps | undefined>(undefined)
 
-  
-    const leftCardRefs = useRef<(TextCardRefProps | null)[]>([]);
-    const rightCardRefs = useRef<(TextCardRefProps | null)[]>([]);
-
     const [elapsedTime, setElapsedTime] = useState<string | undefined>(undefined)
     const numCardsToDisplay = 6
     const [numRows, setNumRows] = useState(null)
