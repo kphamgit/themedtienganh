@@ -11,14 +11,27 @@ import { SideStudent } from './SideStudent'
 
 export default function HomeStudent(props: any ) {
 
+   return (
+          <div className='grid grid-cols-12 m-2 bg-bgColor1'>
+              <div className='col-span-9'><MainStudent/></div>
+              <div className='col-span-3'>
+              <div className='flex flex-col justify-between'>
+                <div className=' bg-bgColor3 text-textColor1'><SideStudent /></div>
+                </div>
+              </div>
+          </div>
+      )
   
-  return (
+ 
+}
+
+
+/*
+ return (
         <div className='m-20 bg-bgColor1'>
         
             <div><MainStudent /></div>
            
         </div>
   )
-}
-
-
+*/

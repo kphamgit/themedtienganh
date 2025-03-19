@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import LiveAudioRecorder  from "../shared/LiveAudioRecorder"
 import RoomAudio from '../shared/RoomAudioStudent';
 import { useSocketContext } from '../../hooks/useSocketContext';
-import Lottie from "lottie-react";
+//import Lottie from "lottie-react";
 import telephoneAnimation from "../../telephone.json";
 import ChatPage from '../chat/ChatPage';
 
@@ -43,7 +43,6 @@ export function SideStudent(props: any) {
             {showAcceptButton &&
                 <div className='bg-bgColor2 text-textColor2'>Teacher calling...
                 <div>{roomID}</div>
-                 <Lottie animationData={telephoneAnimation} style={{ width: 150, height: 150 }} loop={true} />
                 <button className='bg-bgColor4 text-textColor2 p-2 rounded-md' onClick={acceptCall}>Accept</button>
                 </div>
             }
@@ -52,6 +51,7 @@ export function SideStudent(props: any) {
                  <RoomAudio roomID = {roomID} />
             </>
             }
+            <LiveAudioRecorder />
            <ChatPage />
         </>
     )

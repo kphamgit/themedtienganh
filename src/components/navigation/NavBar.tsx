@@ -31,88 +31,9 @@ type NavItem = {
   children?: NavItem[];
 };
 
-/*
-{
-    "id": 1,
-    "name": "Grammar",
-    "level": "beginner,basic,intermediate,advanced",
-    "category_number": 1,
-    "sub_categories": [
-        {
-            "id": 7,
-            "name": "First Grammar 1",
-            "level": "beginner,basic,intermediate,advanced",
-            "sub_category_number": 1,
-            "categoryId": 1
-        },
-        {
-            "id": 6,
-            "name": "Class Grammar",
-            "level": "beginner,basic,intermediate,advanced",
-            "sub_category_number": 3,
-            "categoryId": 1
-        },
-    ]
-}
-*/
-
-/*
-const navItems: NavItem[] = [
-  {
-    label: "FFFFFeatures",
-    link: "#",
-    children: [
-      {
-        label: "Todo list",
-        link: "#",
-       
-      },
-      {
-        label: "Calendar",
-        link: "#",
-       
-      },
-      {
-        label: "Reminders",
-        link: "#",
-      
-      },
-      {
-        label: "Planning",
-        link: "#",
-       
-      }
-    ]
-  },
-  {
-    label: "Compnay",
-    link: "#",
-    children: [
-      {
-        label: "History",
-        link: "#"
-      },
-      {
-        label: "Our Team",
-        link: "#"
-      },
-      {
-        label: "Blog",
-        link: "#"
-      }
-    ]
-  },
-  {
-    label: "About",
-    link: "#"
-  }
-];
-*/
-
-export default function Navbar() {
+export default function Navbar(props: {role: string}) {
   const [animationParent] = useAutoAnimate();
   const [isSideMenuOpen, setSideMenue] = useState(false);
-  const { toggleTheme } = useContext(ThemeContext) as ThemeContextInterface;
   const { data: categories } = useAxiosFetch<Category[]>({ url: '/categories', method: 'get' });
   const [navItems, setNavItems] = useState<NavItem[]>([]); 
 
@@ -162,7 +83,7 @@ export default function Navbar() {
         {/* logo */}
         <div className="hidden md:flex items-center gap-0.5 transition-all">
             <div className='text-md bg-bgColor2 text-textColor2  p-2'>
-              <Link to="/homepage">Home</Link>
+              <Link to={`/homepage/${props.role}`} >Home</Link>
             </div>
           {navItems.map((d, i) => (
             <div
@@ -204,14 +125,14 @@ export default function Navbar() {
       {/* right side data */}
       <section className=" hidden md:flex   items-center gap-8 ">
      
+    
         <div className='text-md bg-bgColor2 text-textColor2  p-2'>
               <Link to="/logout">Log out</Link>
-            </div>
+        </div>
 
         <button className="h-fit rounded-xl border-2 border-neutral-400 px-4 py-2 text-neutral-400 transition-all hover:border-black hover:text-black/90">
           Register
         </button>
-      
       </section>
 
       <FiMenu

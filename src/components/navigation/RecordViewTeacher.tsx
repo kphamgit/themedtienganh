@@ -41,8 +41,8 @@ interface MProps {
 
     const loadSrc = () => {
             if (myRef.current) {
-                console.log(myRef.current)
-                console.log("nnn", myRef.current.src)
+                //console.log(myRef.current)
+                //console.log("nnn", myRef.current.src)
                 //if (myRef.current.src && myRef.current.src.length > 0) {
                     myRef.current.load()
                     myRef.current.play()
@@ -64,7 +64,7 @@ interface MProps {
               
                 { newAudioReceived && 
                   <div>
-                    <div><button className='bg-amber-400 rounded-md p-1' onClick={loadSrc}>Play</button></div>
+                    <div><button className='bg-amber-400 rounded-md p-0' onClick={loadSrc}>Play</button></div>
                     </div>
                 }
             <audio id={userName} controls
@@ -101,12 +101,12 @@ export const RecordViewTeacher: React.FC<Props> = ({ student_names }) => {
         <>
          
             {students && students.map((name, index) => (
-                <div key={index} className='flex flex-row gap-2'>
+                <div key={index} className='flex flex-row gap-1'>
                     <div>
                     <AudioControl url='' index={index} uname={name}
                     />
                     </div>
-                    <div className='p-2'>
+                    <div className='p-0'>
                         <input className='bg-blue-200' type="text" size={10}
                             ref={(element) => {
                                 if (element) {
@@ -114,7 +114,7 @@ export const RecordViewTeacher: React.FC<Props> = ({ student_names }) => {
                                 }
                             }}
                         />
-                        <button className='bg-amber-500 rounded-md p-2 mx-2' id={`${name}_${index}`} onClick={send_live_score}>Send Live Score</button>
+                        <button className='bg-amber-500 rounded-md p-1 mx-2' id={`${name}_${index}`} onClick={send_live_score}>Send Live Score</button>
                     </div>
                 </div>
             ))}

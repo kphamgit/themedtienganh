@@ -1,98 +1,60 @@
-import {MouseEventHandler, useEffect, useState} from 'react'
+import { useEffect, useContext} from 'react'
 
 import { useAppSelector } from '../../redux/store'
-import { useNavigate } from 'react-router-dom'
-//import SocketContext from './context/Socket/Context'
-import ReactTextareaAutosize from 'react-textarea-autosize'
+import { Outlet, useNavigate } from 'react-router-dom'
 
-import { SendLiveQuestion } from '../live/SendLiveQuestion'
-import SendLiveText  from '../live/SendLiveText'
-import { RecordViewTeacher } from './RecordViewTeacher'
-import { SendLivePicture } from '../live/SendLivePicture'
-import { getAClass } from '../../services/list'
-import { useSocketContext } from '../../hooks/useSocketContext'
+import Navbar from './NavBar'
+
+import { ThemeContext } from '../../contexts/theme_context/ThemeContext';
+import { ThemeContextInterface } from '../../types';
+
+import { MdDarkMode } from 'react-icons/md'
 
 export default function MainTeacher(props: any ) {
     const user = useAppSelector(state => state.user.value)
-
-    const [targetStudent , setTargetStudent ] = useState<string>('')
-    
-    //const { data: categories, loading, error } = useAxiosFetch<Category[]>({ url: '/categories', method: 'get' });
-    const [gameId, setGameId] = useState<string>()
-    const strings: string[] = ["bg-red-200", "bg-blue-200", "bg-purple-200", "bg-cyan-200", "bg-slate-200",
-  "bg-lime-200", "bg-green-200", "bg-amber-100", "bg-orange-100",  "bg-emerald-200", "bg-sky-200", "bg-indigo-100", "bg-rose-100",
-  "bg-yellow-200", "bg-fuchsia-200", "bg-teal-100",
-  ];
-    const [targetClass , setTargetClass ] = useState<string>('')
-
-    const [liveYouTubeUrl, setLiveYouTubeUrl] = useState('')
-
-    const {socket, user_name, users} = useSocketContext()
-
-    const [classstudents, setClassStudents] = useState<string[] | undefined>()
+    const { toggleTheme } = useContext(ThemeContext) as ThemeContextInterface;
 
     const navigate = useNavigate();
 
+    useEffect(() => {
+      navigate('/homepage/teacher');
+    }, []);
 
-const enableGame = () => {
-   
-  function getRandomString() {
-    const randomIndex = Math.floor(Math.random() * strings.length);
-    return strings[randomIndex];
-  }
-  const randombackground = getRandomString()
-  socket.emit("enable_game", {game_id: gameId, backcolor: randombackground})
-}
+return (
+    <div>
 
-const toggleLiveRecording = () => {
-  socket.emit("toggle_live_recording", {})
-}
-
-
-const send_enable_simple_peer = () => {
-  
- const arg = {to_user: targetStudent}
-    //alert("Home Teacher enable simple peer arg=", arg)
-    //console.log(" ENABLE SIMPLE PEER")
+      <div className=' bg-bgColor1'>
+        <div>
+          <div className='text-xl p-2 flex flex-row justify-start gap-2'>
+            <div><span className='text-textColor1'>Welcome </span> 
+            <span className='text-textColor4'>{user.user_name}</span>
+            <span className='text-textColor1'> to Tieng Anh Tuy Hoa</span></div>
+            <div>
+              <button
+                onClick={toggleTheme}
+                className="rounded-none bg-bgColor1 p-1 text-center text-2xl uppercase tracking-[3px] text-textColor2 transition-all duration-300 ease-in-out hover:rounded-lg"
+              >
+                <MdDarkMode />
+              </button>
+            </div>
+          </div>
+          <Navbar role="teacher" />
+          <Outlet  />
+         
+        </div>
     
-    socket.emit('enable_simple_peer', arg)
-    navigate('/simple_peer')
-}
+      </div>
+      <div>
+        
+      </div>
+   
+    </div>
+  )
 
-useEffect(() => {
-  if (targetClass.length > 0 ) {
-      getAClass(targetClass)
-      .then((response) => {
-          //console.log("users ...", response.users)
-          if (response.users) {
-            const names = response.users.map(usr => usr.user_name); 
-            setClassStudents(names)
-          }
-      })
-      .catch(error => {
-          console.log(error)
-      });
-  }
-},[targetClass])
-
-const send_live_youtube_video: MouseEventHandler<HTMLButtonElement> = (event) => {
-  //console.log("xxxxxxx xxxxxxxxx")
-  const el = event.target as HTMLButtonElement
-  
-  const arg = { target_student: 'everybody', video_url: liveYouTubeUrl, video_duration: 2000000 }
-  socket.emit('live_youtube_video', arg)
-}
-
-const enable_live_quiz: MouseEventHandler<HTMLButtonElement> = (event) => {
-  console.log("enable_live_quiz")
-  //const el = event.target as HTMLButtonElement
-  const arg = {}
-  socket.emit('enable_live_quiz', arg)
-}
-
+/*
   return (
     <div className='m-14 bg-bgColor1'>
-
+    <Navbar />
       <div className='mx-1 '>Class Id:<input className='px-2 text-sm rounded-md w-4/12' type="text" value={targetClass}
         onChange={e => setTargetClass(e.target.value)}
 
@@ -144,4 +106,6 @@ const enable_live_quiz: MouseEventHandler<HTMLButtonElement> = (event) => {
 
     </div>
   )
+    */
+
 }

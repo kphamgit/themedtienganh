@@ -77,7 +77,7 @@ function App() {
               <Routes>
                 <Route path="/logout" element={<Logout onLogout={onLogout} />} />
                 <Route path="/" element={<Home />}>
-                  <Route path="/homepage" element={<HomePage />} />
+                  <Route path="/homepage/:role" element={<HomePage />} />
                   <Route path="/games" element={<Games />} />
                   <Route path="sub_categories_student/:sub_categoryId" element={<SubCategoryPageStudent />} />
                   <Route path="sub_categories/:sub_category_name/quizzes/:quizId" element={<QuizPageVideo />} />
@@ -87,7 +87,7 @@ function App() {
                   <Route path="/simple_peer" element={<SimplePeer />} />
                   <Route path="/live_quiz" element={<LiveQuiz />} />
                   <Route path="/live_game/:game_id/:backcolor" element={<MemoryGame />} />
-                  <Route path="/play_game/:game_id" element={<TextMatchGame />} />
+                
                   <Route path="/live_youtube_video" element={<YoutubeVideoPlayer />} />
                 </Route>
               </Routes>

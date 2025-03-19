@@ -1,4 +1,4 @@
-import { useEffect, lazy, useState, useRef, ReactNode, useContext} from 'react'
+import { useEffect, lazy, useState, useContext} from 'react'
 
 import { useAppSelector } from '../../redux/store'
 import { Outlet, useNavigate } from 'react-router-dom'
@@ -48,7 +48,7 @@ export default function MainStudent(props: any ) {
 
 
     useEffect(() => {
-      navigate('/homepage');
+      navigate('/homepage/student');
     }, []);
 
     useEffect(() => {
@@ -111,9 +111,10 @@ export default function MainStudent(props: any ) {
 
   useEffect(() => {
     socket.on('toggle_live_recording', (arg: {}) => {
-      console.log(" receive disable live recording")
+      console.log(" receive toggle live recording")
       // setShowLiveRecording(!showLiveRecording)
-       setShowLiveRecording(prevShowLiveRecording => !prevShowLiveRecording);
+       //setShowLiveRecording(prevShowLiveRecording => !prevShowLiveRecording);
+       setShowLiveRecording(!showLiveRecording);
     })
     return () => {
       socket?.off("toggle_live_recording")
@@ -147,6 +148,7 @@ export default function MainStudent(props: any ) {
 
       <div className=' bg-bgColor1'>
         <div>
+          <div>{showLiveRecording.toString()}</div>
           <div className='text-xl p-2 flex flex-row justify-start gap-2'>
             <div><span className='text-textColor1'>Welcome </span> 
             <span className='text-textColor4'>{user_name}</span>
@@ -160,7 +162,8 @@ export default function MainStudent(props: any ) {
               </button>
             </div>
           </div>
-          <NavBar />
+          <NavBar role="student" />
+          <div className='m-10 bg-bgColor1 text-textColor1'>{user.message}</div>
           <Outlet  />
          
         </div>

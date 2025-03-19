@@ -12,6 +12,15 @@ import { NameList } from './NameList'
     //const [targetClass , setTargetClass ] = useState<string>('')
     const {socket} = useContext(SocketContext).SocketState;
 
+    const enable_live_quiz: MouseEventHandler<HTMLButtonElement> = (event) => {
+        if (socket) {
+            console.log("enable_live_quiz")
+            //const el = event.target as HTMLButtonElement
+            const arg = {}
+            socket.emit('enable_live_quiz', arg)
+        }
+      }
+
     const send_live_question: MouseEventHandler<HTMLButtonElement> = (event) => {
         if (liveQuizId.length === 0) {
             alert("Enter quiz id")
@@ -39,38 +48,45 @@ import { NameList } from './NameList'
         setTargetStudent(name)
     }
 
-    return (
-        <>
-            <div className='grid grid-row-2'>
-                <NameList parentFunct={handleNameClick} />
+        return (
+            <>
+                <div className='grid grid-row-2 mt-0'>
+                    <NameList parentFunct={handleNameClick} />
 
-            <div className='flex flex-row gap-2 bg-green-50'>
-                <div className='text-md flex flex-row'>
-                    <span className='mx-1'>Live quiz id 1:</span>
-                    <span className='mx-1 '><input className='bg-amber-400 px-2 text-sm rounded-md w-4/12' type="text" value={liveQuizId}
-                        onChange={e => setLiveQuizId(e.target.value)}
-                    /></span>
-                </div>
+                    <div className='flex flex-row gap-1 bg-bgColor2 text-textColor2'>
+                        <div className='text-md flex flex-col'>
+                            <div className='mx-14 m-2'>
+                            <button className='p-1 rounded-md bg-bgColorSubmitBtn text-textColorSubmitBtn mx-2' onClick={enable_live_quiz}>Enable Live Quiz</button>
+                             </div>
+                            <div>
+                            <span className='mx-1 text-textColor3'>Quiz id 1:</span>
+                            <span className='mx-1 '><input className='bg-bgColor4 text-textColor4 px-2 text-sm rounded-md w-4/12' type="text" value={liveQuizId}
+                                onChange={e => setLiveQuizId(e.target.value)}
+                            /></span>
+                            </div>
+  
+                        </div>
 
-                <div className='grid grid-rows-2'>
-                   
-                    <div className='flex flex-row justify-around gap-2 mt-2'>
-                        <span className='mx-1 '>Target student:<input className='bg-amber-300 px-2 text-sm rounded-md w-4/12' type="text" value={targetStudent}
-                            onChange={e => setTargetStudent(e.target.value)}
-                        /></span>
-                      
+                        <div className='grid grid-rows-2'>
+                            <div className='flex flex-row justify-around gap-1'>
+                                <span className='mx-1 text-textColor3 '>Target student:<input className='bg-bgColor4 text-textColor4 px-2 text-sm rounded-md w-4/12' type="text" value={targetStudent}
+                                    onChange={e => setTargetStudent(e.target.value)}
+                                /></span>
+                            </div>
+                            <div className='flex flext-row justify-start mt-1'>
+   
+                                <span className='text-textColor3'>Question number:</span>
+                                <span className='mx-1'><input className='bg-bgColor4 text-textColor4 px-2 text-sm rounded-md w-4/12' type="text" value={questionNumber}
+                                    onChange={e => setQuestionNumber(e.target.value)}
+                                />
+                                </span>
+                                <button className='bg-green-700 text-white rounded-md hover:bg-green-500 p-1 px-2' id={liveQuizId} onClick={send_live_question}>Send</button>
+                            </div>
+                        </div>
+
+
                     </div>
-                    <div className='mt-2'>
-                    <span>Question number:</span>
-                       <span className='mx-1'><input className='bg-amber-300 px-2 text-sm rounded-md w-4/12' type="text" value={questionNumber}
-                           onChange={e => setQuestionNumber(e.target.value)}
-                       />
-                       </span>
-                       <button className='bg-green-700 text-white rounded-md hover:bg-green-500 p-1 px-2' id={liveQuizId} onClick={send_live_question}>Send</button>
-                   </div>
                 </div>
-            </div>
-            </div>
-        </>
-    )
+            </>
+        )
 }

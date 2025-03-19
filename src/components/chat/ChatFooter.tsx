@@ -35,14 +35,14 @@ const ChatFooter = (props: any) => {
   return (
     <div className=' m-1 mt-0'>
   
-        <textarea className='bg-bgColor2 text-textColor2'
+        <textarea className='bg-bgColor1 text-textColor2'
           placeholder="Write message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={(e) => handleKeyDown(e)}
         />
          
-        <div><button className='bg-bgColor3 text-textColor2 p-2 rounded-md' onClick={sendMessage}>Send</button></div>
+        <div><button className='bg-bgColorSubmitBtn text-textColorSubmitBtn p-2 rounded-md' onClick={sendMessage}>Send</button></div>
     
     </div>
   );

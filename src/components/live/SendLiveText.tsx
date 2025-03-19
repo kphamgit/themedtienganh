@@ -88,17 +88,17 @@ export default function SendLiveText(props: any) {
           <div className='m-10'>
       
        </div>
-            <div className='grid grid-row-2'>
+            <div className='grid grid-row-2 bg-bgColor3'>
             <div className='flex flex-row gap-2'>
                 <div className='grid grid-row-2'>
                 <div className='text-md flex flex-row'>
-                    <span className='mx-1 text-textColor1'>Live Text:</span>
-                    <span className='mx-1 '><input className='bg-bgColor2 px-2 text-textColor2 text-sm rounded-md ' type="text" size={60} value={liveText}
+                    <span className='mx-1 text-textColor1 font-bold'>Live Text:</span>
+                    <span className='mx-1 '><input className='bg-bgColor4 px-2 text-textColor4 text-sm rounded-md ' type="text" size={60} value={liveText}
                         onChange={e => setLiveText(e.target.value)}
                         onKeyDown={(e) => handleKeyDown(e)}
                     /></span>
-                     <span><button className='bg-bgColor2 text-white rounded-md hover:bg-green-600 p-1 px-2' onClick={send_live_text}>Send</button></span>
-                     <span><button className='bg-bgColor2 text-white rounded-md hover:bg-amber-600 p-1 px-2' onClick={send_text_complete}>Send Complete</button></span>
+                     <span><button className='bg-bgColorSubmitBtn text-textColorSubmitBtn rounded-md hover:bg-green-600 p-2 px-2 mx-2' onClick={send_live_text}>Send</button></span>
+                     <span><button className='bg-bgColorSubmitBtn text-textColorSubmitBtn rounded-md hover:bg-amber-600 p-2 px-2' onClick={send_text_complete}>Send Complete</button></span>
                 </div>
                 <div className='flex flex-row gap-2'>
                

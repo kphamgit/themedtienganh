@@ -89,7 +89,8 @@ export default function LiveQuiz(props: any) {
     const [questionAttemptResponse, setQuestionAttemptResponse] = useState<QuestionAttemptAttributes | null>(null)
 
     //const [selectedClassId, setSelectedClassId] = useState<string>("2")
-    const {socket, user_name, users} = useContext(SocketContext).SocketState;
+    //const {socket, user_name, users} = useContext(SocketContext).SocketState;
+    const {socket} = useContext(SocketContext).SocketState;
     //const childRef = useRef<ChildRef>(null);
     //const {socket, user_name, users} = useContext(SocketContext).SocketState;
 

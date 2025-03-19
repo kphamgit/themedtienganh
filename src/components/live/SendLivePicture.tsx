@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import SocketContext from '../../contexts/socket_context/Context'
 ////import { getAClass } from './services/list'
-//import { RecordViewTeacher } from '../pages/RecordViewTeacher'
 //import { text } from 'stream/consumers'
 
     type StudentProps = 
@@ -87,14 +86,11 @@ export function SendLivePicture(props: any) {
 
     return (
         <>
-            <div className='grid grid-row-2'>
-           
-  
-                <div className='grid grid-row-2 m-10 bg-green-200'>
+            <div className='mx-14 my-6 grid grid-row-2 bg-bgColor3 text-textColor3'>
                     <div className='grid grid-row-2'>
-                        <div className='mx-10 grid grid-rows-2'>
-                            <div className='mx-1'>Image URL:</div>
-                            <input className='bg-amber-400 px-2 text-sm rounded-md ' type="text" size={60} value={liveUrl}
+                        <div className='grid grid-rows-2'>
+                            <div className='mx-2 font-bold'>Image URL:</div>
+                            <input className='bg-bgColor4 text-textColor4 px-2 text-sm rounded-md ' type="text" size={60} value={liveUrl}
                                     onChange={e => setLiveUrl(e.target.value)}
                                     onKeyDown={(e) => handleKeyDown(e)}
                                 />
@@ -102,26 +98,26 @@ export function SendLivePicture(props: any) {
                             <span className='mx-1 '>
                             
                                 <label>Width:</label>
-                                <input className='bg-amber-400 px-2 text-sm rounded-md ' type="text" size={5} value={width}
+                                <input className='bg-bgColor4 text-textColor4 px-2 text-sm rounded-md ' type="text" size={5} value={width}
                                     onChange={e => setWidth(e.target.value)}
                                 />
                                 <label>Height:</label>
-                                <input className='bg-amber-400 px-2 text-sm rounded-md ' type="text" size={5} value={height}
+                                <input className='bg-bgColor4 text-textColor4 px-2 text-sm rounded-md ' type="text" size={5} value={height}
                                     onChange={e => setHeight(e.target.value)}
                                 />
                                 <label>Audio description:</label>
-                                <input className='bg-amber-400 px-2 text-sm rounded-md ' type="text" size={10} value={audioDescription}
+                                <input className='bg-bgColor4 text-textColor4 px-2 text-sm rounded-md ' type="text" size={10} value={audioDescription}
                                     onChange={e => setAudioDescription(e.target.value)}
                                 />
                                 <label>Personal:</label>
-                                <input className='bg-amber-400 px-2 text-sm rounded-md ' type="text" size={10} value={personal}
+                                <input className='bg-bgColor4 text-textColor4 px-2 text-sm rounded-md ' type="text" size={10} value={personal}
                                     onChange={e => setPersonal(e.target.value)}
                                 />
                             </span>
                             <span><button className='bg-green-700 text-white rounded-md hover:bg-green-600 p-1 px-2' onClick={send_live_picture}>Send</button></span>
                             </div>
                        </div>
-                    </div>
+              
 
                 </div>
             

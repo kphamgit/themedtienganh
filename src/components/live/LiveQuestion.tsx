@@ -8,7 +8,7 @@ import { processLiveQuestionAttempt } from '../quiz_attempts/question_attempts/s
 import { DropDowns } from '../quiz_attempts/question_attempts/DropDowns';
 import { ButtonSelect } from '../quiz_attempts/question_attempts/ButtonSelect';
 import { WordScrambler } from '../quiz_attempts/question_attempts/WordScrambler';
-import { QuestionAttemptResults } from '../quiz_attempts/QuestionAttemptResults';
+//import { QuestionAttemptResults } from '../quiz_attempts/QuestionAttemptResults';
 //import { FaPlayCircle } from "react-icons/fa";
 import { WordsSelect } from '../quiz_attempts/question_attempts/WordsSelect';
 import { RadioQuestion } from '../quiz_attempts/question_attempts/RadioQuestion';
@@ -37,18 +37,6 @@ interface LiveQuestionProps {
     setQuestionId: (question_id: string) => void
 }
 
-/*
-interface QuestionAttemptAttributes {
-    user_answer: string;
-    score: number;
-    question_number: number | undefined;
-    questionId: string | undefined;
-    error_flag: boolean;
-    audio_src: string;
-    completed: boolean;
-    //quizAttemptId: string;
-  }
-*/
   interface LiveScoreProps {
     question_format: number | undefined,
     question_number: number | undefined,
