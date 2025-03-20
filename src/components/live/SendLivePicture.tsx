@@ -25,6 +25,7 @@ export function SendLivePicture(props: any) {
     const [height, setHeight] = useState<string>('100')
     const [audioDescription, setAudioDescription] = useState<string>('')
     const [personal, setPersonal] = useState<string>('')
+    const [text, setText] = useState<string>('')
     //const [targetStudent , setTargetStudent ] = useState<string>('everybody')
     //const [targetClass , setTargetClass ] = useState<string>('')
     const {socket, user_name, users} = useContext(SocketContext).SocketState;
@@ -41,7 +42,7 @@ export function SendLivePicture(props: any) {
     //},[props.user_name])
 
     const send_live_picture= () => {
-        console.log(" in send_live_picture ,,,,,,,,,,,")
+        //console.log(" in send_live_picture ,,,,,,,,,,,")
         if (liveUrl.length === 0 &&  personal.length === 0) {
            
                 alert("Enter picture URL or personal ...")
@@ -63,7 +64,7 @@ export function SendLivePicture(props: any) {
                 socket?.emit('live_picture', arg)
             }
             else {
-                const arg = { picture_url: `${liveUrl}`, type: 'general',description: 'test', audio_description: audioDescription, width: parseInt(width), height: parseInt(height), target_student: 'everybody', target_class: '3' }
+                const arg = { picture_url: `${liveUrl}`, type: 'general',description: `${text}`, audio_description: audioDescription, width: parseInt(width), height: parseInt(height), target_student: 'everybody', target_class: '3' }
                 //console.log("SENNNN arg=", arg)
                 socket?.emit('live_picture', arg)
             }
@@ -112,6 +113,10 @@ export function SendLivePicture(props: any) {
                                 <label>Personal:</label>
                                 <input className='bg-bgColor4 text-textColor4 px-2 text-sm rounded-md ' type="text" size={10} value={personal}
                                     onChange={e => setPersonal(e.target.value)}
+                                />
+                                <label>Text:</label>
+                                <input className='bg-bgColor4 text-textColor4 px-2 text-sm w-1/3 rounded-md ' type="text" size={10} value={text}
+                                    onChange={e => setText(e.target.value)}
                                 />
                             </span>
                             <span><button className='bg-green-700 text-white rounded-md hover:bg-green-600 p-1 px-2' onClick={send_live_picture}>Send</button></span>

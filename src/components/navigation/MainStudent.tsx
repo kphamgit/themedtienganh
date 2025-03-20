@@ -87,19 +87,6 @@ export default function MainStudent(props: any ) {
       }, [socket, navigate, user.user_name])
         
 
-    useEffect(() => {
-   
-        socket.on('live_picture', (arg: { live_text: string, target_student: string, target_class: string }) => {
-           //console.log("....xxxxxx xxxxx xxx .... live_picture message received:", arg)
-           navigate("/live_picture", { state: arg })
-        })
-
-        return () => {
-          socket?.off("live_picture")
-        }
-    },[socket, navigate])
-  
-
   useEffect(() => {
       socket.on('enable_game', (arg: { game_id: string, backcolor: string }) => {
         navigate(`/live_game/${arg.game_id}/${arg.backcolor}`)
@@ -177,3 +164,89 @@ export default function MainStudent(props: any ) {
   )
 }
 
+/*
+    // TextToSpeech.tsx
+    import React, { useState } from 'react';
+
+    const TextToSpeech: React.FC = () => {
+        const [text, setText] = useState('');
+        const [audioUrl, setAudioUrl] = useState<string | null>(null);
+
+        const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+            setText(e.target.value);
+        };
+
+        const handleSpeak = async () => {
+            try {
+                const response = await fetch('http://localhost:3001/synthesize', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text }),
+                });
+
+                if (response.ok) {
+                    const audioBlob = await response.blob();
+                    const url = URL.createObjectURL(audioBlob);
+                    setAudioUrl(url);
+                } else {
+                    console.error('Error synthesizing speech:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error synthesizing speech:', error);
+            }
+        };
+
+        return (
+            <div>
+                <textarea value={text} onChange={handleTextChange} />
+                <button onClick={handleSpeak}>Speak</button>
+                {audioUrl && <audio src={audioUrl} controls />}
+            </div>
+        );
+    };
+
+    export default TextToSpeech;
+*/
+
+/*
+    // server.ts
+    import express from 'express';
+    import { TextToSpeechClient } from '@google-cloud/text-to-speech';
+    import fs from 'fs';
+
+    const app = express();
+    app.use(express.json());
+
+    const client = new TextToSpeechClient({
+        keyFilename: 'path/to/your/serviceAccountKey.json', // Replace with your key file path
+    });
+
+    app.post('/synthesize', async (req, res) => {
+        const { text } = req.body;
+
+        const request = {
+            input: { text: text },
+            voice: { languageCode: 'en-US', ssmlGender: 'NEUTRAL' },
+            audioConfig: { audioEncoding: 'MP3' },
+        };
+
+        try {
+            const [response] = await client.synthesizeSpeech(request);
+            const audioContent = response.audioContent;
+            if (audioContent) {
+                res.send(audioContent);
+            }
+        } catch (error) {
+            console.error('Error synthesizing speech:', error);
+            res.status(500).send('Error synthesizing speech');
+        }
+    });
+
+    const port = 3001;
+    app.listen(port, () => {
+        console.log(`Server is running on port ${port}`);
+    });
+
+*/

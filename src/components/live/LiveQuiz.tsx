@@ -58,28 +58,12 @@ interface QuestionAttemptAttributes {
 */
 
 export default function LiveQuiz(props: any) {
-    //const params = useParams<{ quizId: string, sub_category_name:string ,  startingQuestionId: string }>();
-    //const location = useLocation();
-    //const live_quiz_data = location.state;
-    //console.log(" quizpagelive live quiz data", live_quiz_data)
-
+   
     const user = useAppSelector(state => state.user.value)
-    //const classIds = ['1', '2', '3']
-    //const counterRef = useRef<CounterRef>(null)
-
-    //const url = `/quizzes/${live_quiz_data.quiz_id}/get_question/${live_quiz_data.question_number}`
-
-    //const { data: question_response, loading, error } =
-       // useAxiosFetch<GetQuestionProps>({ url: url, method: 'get' })
-
-    //const [question, setQuestion] = useState<QuestionProps | undefined>()
-    //const [showSubmitButton, setShowSubmitButton] = useState(true)
-    //const [questionAttemptResponse, setQuestionAttemptResponse] = useState<QuestionAttemptAttributes | null>(null)
-    //const [questionAttemptResponse, setQuestionAttemptResponse] = useState<{question: QuestionProps | undefined, results: QuestionAttemptAttributes}>()
-    //const [endOfQuiz, setEndOfQuiz] = useState(false)
-    //const [currentQuestionNumber, setCurrentQuestionNumber] = useState<number | undefined>()
-    //const [answer, setAnswer] = useState<string>()
-
+  
+    const [showLivePicture, setShowLivePicture] = useState(false)
+    const [pictureUrl, setPictureUrl] = useState<string>('')
+    const [pictureText, setPictureText] = useState<string>('')
     const [currentQuestionId, setCurrentQuestionId] = useState('')
     const [showQuestion, setShowQuestion] = useState(false)
 
@@ -88,37 +72,34 @@ export default function LiveQuiz(props: any) {
 
     const [questionAttemptResponse, setQuestionAttemptResponse] = useState<QuestionAttemptAttributes | null>(null)
 
-    //const [selectedClassId, setSelectedClassId] = useState<string>("2")
-    //const {socket, user_name, users} = useContext(SocketContext).SocketState;
     const {socket} = useContext(SocketContext).SocketState;
-    //const childRef = useRef<ChildRef>(null);
-    //const {socket, user_name, users} = useContext(SocketContext).SocketState;
-
-    //const { audioBlob } = useAudioBlobContext();
-   // const [audioUrl, setAudioUrl] = useState('')
-
-    //const navigate = useNavigate()
-   
-    //interface ChildRef {
-    //    getAnswer: () => string | undefined;
-    //  }
-
- useEffect(() => {
-        if (socket) {
-        socket.on('live_question', (arg: { quiz_id: string, question_number: string, target_student: string}) => {
-            //console.log("live question received...arg=", arg)   
-            setLiveQuizId(arg.quiz_id)
-            setLiveQuestionNumber(arg.question_number)
-            
-            setShowQuestion(true)
-            setQuestionAttemptResponse(null)
+ 
+    useEffect(() => {
+      if (socket) {
+        socket.on('live_question', (arg: { quiz_id: string, question_number: string, target_student: string }) => {
+          //console.log("live question received...arg=", arg) 
+          setShowLivePicture(false)
+          
+          setLiveQuizId(arg.quiz_id)
+          setLiveQuestionNumber(arg.question_number)
+          setShowQuestion(true)
+          setQuestionAttemptResponse(null)
+        })
+        socket.on('live_picture', (arg: any) => {
+          console.log("... .... live_picture message received:")
+          setPictureUrl(arg.picture_url)
+          setPictureText(arg.description)
+          setShowLivePicture(true)
+          setShowQuestion(false)
+          setQuestionAttemptResponse(null)
         })
         return () => {
           socket?.off("live_question")
+          socket?.off("live_picture")
         }
-        }
-    },[socket, user.user_name, user.classId])
-    
+      }
+    }, [socket, user.user_name, user.classId])
+
     const set_question_attempt_results = (arg: any) => {
       //console.log("set_question_attempt_results: ", arg)
       setShowQuestion(false)
@@ -151,6 +132,13 @@ export default function LiveQuiz(props: any) {
                       <QuestionAttemptResults live_flag={true} question_id = {currentQuestionId} response={questionAttemptResponse }  />
                      </div>
                 }
+                { showLivePicture &&
+                      <div className='bg-bgColor1'>
+                     
+                      <img src={pictureUrl} alt="Live Picture" />
+                      <div>{pictureText}</div>
+                     </div>
+                }
                 </div>
                 </div>
                 <div className=' col-span-2 bg-bgColor1 text-textColor2 text-lg'>
@@ -160,3 +148,4 @@ export default function LiveQuiz(props: any) {
         </>
     )
 }
+//  

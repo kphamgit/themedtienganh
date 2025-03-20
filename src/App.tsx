@@ -83,9 +83,11 @@ function App() {
                   <Route path="sub_categories/:sub_category_name/quizzes/:quizId" element={<QuizPageVideo />} />
                   
                   <Route path="/live_text" element={<LiveText />} />
-                  <Route path="/live_picture" element={<LivePicture />} />
+                 
                   <Route path="/simple_peer" element={<SimplePeer />} />
-                  <Route path="/live_quiz" element={<LiveQuiz />} />
+                  <Route path="/live_quiz" element={<LiveQuiz />} >
+                      <Route path="live_picture" element={<LivePicture />} />
+                  </Route>
                   <Route path="/live_game/:game_id/:backcolor" element={<MemoryGame />} />
                 
                   <Route path="/live_youtube_video" element={<YoutubeVideoPlayer />} />
