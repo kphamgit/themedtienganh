@@ -1,9 +1,10 @@
 //import WordMatchGame from "../live/WordMatchingGame";
 import { useEffect, useState } from "react";
 import { getAllGames } from "../../services/list";
-import { TextMatchGame } from "../matching_games/TextMatchGame";
+import ContinuousMemoryGame  from "../matching_games/ContinuousMemoryGame";
 //import { Link } from "react-router-dom";
 import Popup from "reactjs-popup";
+import MemoryGame from "../matching_games/MemoryGame";
 //import WordMatchingGame from "../live/WordMatchingGame";
 //import WordMatchingGame from "../live/WordMatchingGame";
 
@@ -60,7 +61,7 @@ export default function Games() {
                         <div className="bg-cyan-400 p-6 w-3/12 rounded-lg shadow-lg">
                        
                             <div>
-                                <TextMatchGame id={gameId}></TextMatchGame>
+                                <MemoryGame id={gameId}></MemoryGame>
                             </div>
                             <button
                                 onClick={() => setIsPopupOpen(false)}

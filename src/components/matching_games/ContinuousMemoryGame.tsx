@@ -1,17 +1,26 @@
 import {useEffect, useRef, useState} from 'react'
 //import { MatchCard } from './MatchCard.js';
 import  TextCard from './TextCard.js';
-import { TextCardRefProps } from './types'
-import { CardProps } from './types';
+import { TextCardRefProps } from './types.js'
+import { CardProps } from './types.js';
 //import { Link, useParams } from 'react-router-dom';
 import { getAGameNew } from '../../services/list.js';
 import TextCardAzure from './TextCardAzure.js';
 import { Counter, CounterRef } from '../shared/Counter.js';
+import ImageCard from './ImageCard.js';
 
-    export function TextMatchGame(props: {id: string}) {
+type AppProps = {
+    data: any;
+  }; 
+
+interface ElapsedTime {
+    minutes: number, seconds: number
+  }
+
+    //export function TextMatchGame(props: {data: any}) {
+    const ContinuousMemoryGame: React.FC<AppProps> = ({data}) => {
         const [leftCards , setLeftCards] = useState<CardProps[]>([])
         const [rightCards , setRightCards] = useState<CardProps[]>([])
-
         const counterRef = useRef<CounterRef>(null)
    
     const [leftCardsBank , setLeftCardsBank] = useState<CardProps[]>([])
@@ -24,56 +33,27 @@ import { Counter, CounterRef } from '../shared/Counter.js';
     const [choiceLeft, setChoiceLeft] = useState<CardProps | undefined>(undefined)
     const [choiceRight, setChoiceRight] = useState<CardProps | undefined>(undefined)
 
-    const [elapsedTime, setElapsedTime] = useState<string | undefined>(undefined)
+    const [elapsedTime, setElapsedTime] = useState<ElapsedTime | undefined>(undefined)
     const numCardsToDisplay = 6
     const [numRows, setNumRows] = useState(null)
 
-    useEffect(() => {
-        //console.log("in useEffect props.id = ", props.id)
-        getAGameNew(props.id)
-        .then ((response) => {
-            //console.log("response = ", response)
-            //setLeftLanguage(response.source_language)
-            //setRightLanguage(response.target_language)
-
-              const left_array = response.base.split('/').map((str:string, index:number) => {
+            useEffect(() => {
+              const left_array = data.base.split('/').map((str:string, index:number) => {
                 return (
-                    {id: (index+1).toString(), src: str, matched: false, match_index: index, language: response.source_language, side: 'left' }
+                    {id: (index+1).toString(), src: str, matched: false, match_index: index, language: data.source_language, side: 'left' }
                 )
               });
               //console.log("left_array  = ", left_array)
               setNumRows(left_array.length)
 
-              const right_array = response.target.split('/').map((str:string, index:number) => {
+              const right_array = data.target.split('/').map((str:string, index:number) => {
                 return (
-                  {id: (index + left_array.length + 1).toString(), src: str, matched: false, match_index: index, language: response.target_language, side: 'right' }
+                  {id: (index + left_array.length + 1).toString(), src: str, matched: false, match_index: index, language: data.target_language, side: 'right' }
                 )
               });
-              //console.log("right_array = ", right_array)
-
                // Combine both arrays into an array of arrays of pairs
             let combined = left_array.map((item:any, index:number) => [item, right_array[index]]);
             //combined is an array of (two-member) arrays
-            /*
-     combined =  [[   {
-        "src": "fade",
-        "matched": false,
-        "match_index": 6,
-        "language": "en"
-        "side": "left"
-    },
-    {
-        "src": "Mờ dần",
-        "matched": false,
-        "match_index": 6,
-        "language": "vn",
-        "side": "right"
-    }
-]
-    ...
-            ]
-            */
-
               //console.log("combined = ", combined)
             // Shuffle using Fisher-Yates algorithm
             for (let i = combined.length - 1; i > 0; i--) {
@@ -100,9 +80,7 @@ import { Counter, CounterRef } from '../shared/Counter.js';
             //console.log("shuffled_temp = ", shuffled_temp)
             setRightCards(shuffled_temp);
             counterRef.current?.startCount()
-        })
-        
-    },[props.id])
+        }, [data])
 
     useEffect(() => {
         //console.log("in useEffect choiceLeft = ", choiceLeft)
@@ -111,6 +89,7 @@ import { Counter, CounterRef } from '../shared/Counter.js';
         let timeoutId_wrong_answer: NodeJS.Timeout | null = null;
         if (choiceLeft && choiceRight) {
             if (choiceLeft?.match_index === choiceRight?.match_index) {
+                //console.log("******* match")
                 //setMatchedIndex(choiceLeft.match_index);
                 timeoutId_correct_answer = setTimeout(() => {
                     //console.log("ENTRY set time out callback correct answer, ")
@@ -209,17 +188,8 @@ import { Counter, CounterRef } from '../shared/Counter.js';
         }
     }, [nummatches, numRows])
 
-    /*
-    id: string;
-    src: string;
-    matched: boolean;
-    match_index: number;
-    language: string;
-    */
-
-    
     const handleCardClick = (card: CardProps) => {
-        //AddClickedCardRefToPair(card)
+        //console.log("in handleCardClick card = ", card)
         if (card.side === 'left') {
             //console.log("LEFT card clicked. SetChoiceLeft card = ", card)
             setChoiceLeft(card)
@@ -230,6 +200,29 @@ import { Counter, CounterRef } from '../shared/Counter.js';
         }
     }
 
+    const showCard = (card: CardProps) => {
+        if (card.language === 'n/a') {
+            return (
+                <div className='flex flex-col gap-1'>
+                    <ImageCard card={card} handleChoice={handleCardClick} />
+                </div>
+            )
+        }
+        else if (card.language === 'vn') 
+                return (
+                    <div className='flex flex-col gap-1'>
+                        <TextCard card={card} handleChoice={handleCardClick} />
+                    </div>
+                 )
+            else {
+                return (
+                    <div className='flex flex-col gap-1'>
+                        <TextCardAzure card={card} handleChoice={handleCardClick} />
+                    </div>
+                )
+            }
+    }
+    
 
         return (
             <>
@@ -237,7 +230,7 @@ import { Counter, CounterRef } from '../shared/Counter.js';
                     {(gameover) ? 
                         <>
                         <h3 className='mx-10 my-0 text-xl'>Game Over</h3>
-                        <div>Elapsed Time: {elapsedTime}</div>
+                        <div>Elapsed Time: {elapsedTime?.minutes} minutes {elapsedTime?.seconds} seconds</div>
                         </>
                         :
                         <div className='flex flex-col mx-2'>
@@ -246,7 +239,7 @@ import { Counter, CounterRef } from '../shared/Counter.js';
                             </div>
                             <div className="flex justify-center items-center w-full bg-gray-400">
                                 <div className="w-full grid grid-cols-2 gap-4">
-                                    <div className="bg-blue-500  items-center justify-start rounded-lg shadow-lg">
+                                    <div className="bg-blue-500 rounded-lg shadow-lg flex flex-col justify-evenly">
                                         {leftCards.map( (card, index) => (
                                             <div key={index} className='m-2 w-900px'>
                                                 {card.language === 'vn' ?
@@ -262,19 +255,11 @@ import { Counter, CounterRef } from '../shared/Counter.js';
                                         ))
                                         }
                                     </div>
-                                    <div className="bg-blue-500  items-center justify-start rounded-lg shadow-lg">
+                                    <div className="bg-blue-500 items-center justify-evenly rounded-lg shadow-lg">
                                         {rightCards.map( (card, index) => (
                                          <div key={index} className='m-2 w-900px'>
-                                         {card.language === 'vn' ?
-                                             <div className='flex flex-col gap-1'>
-                                                <TextCard card={card} handleChoice={handleCardClick}/>
-                                             </div>
-                                             :
-                                             <div className='flex flex-col gap-1'>
-                                                <TextCardAzure card={card} handleChoice={handleCardClick}/>
-                                            </div>
-                                         }
-                                     </div>
+                                            {showCard(card)}
+                                        </div>
                                         ))
                                         }
                                     </div>
@@ -287,3 +272,5 @@ import { Counter, CounterRef } from '../shared/Counter.js';
             </>
         )
 }
+
+export default ContinuousMemoryGame

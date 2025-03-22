@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Card } from '../shared/Card';
-
-import { getAGame } from '../../services/list';
-//import TtSpeechProvider from './context/AzureTtsContext';
 import { useParams } from 'react-router-dom';
 import { Counter } from '../shared/Counter';
 import { CounterRef } from '../shared/Counter';
@@ -17,11 +14,32 @@ export interface CardProps {
   handle_choice?: (card: CardProps) => void;
 }
 
+type AppProps = {
+  data: any;
+}; 
+/*
+{
+    "id": 1,
+    "name": "The earth",
+    "game_number": 1,
+    "level": "beginner, basic",
+    "continuous": false,
+    "base": "the earth/the stream/the river/the sea/the hill/the mountain/the flower/the snow",
+    "target": "earth.jpeg/stream.jpeg/river.jpeg/sea.jpeg/hill.jpeg/mountain.jpeg/plant.jpeg/snow.jpeg",
+    "source_language": "",
+    "target_language": "n/a",
+    "video_url": "https://www.youtube.com/watch?v=t6PKcnTGVX4",
+    "video_duration": 51000,
+    "unitId": null
+}
+*/
+
 interface ElapsedTime {
   minutes: number, seconds: number
 }
 
-const MemoryGame: React.FC = () => {
+//const App: React.FC<AppProps> = ({ message })//
+const ShortMemoryGame: React.FC<AppProps> = ({data}) => {
   const [cards, setCards] = useState<CardProps[]>([]);
   const [name, setName] = useState<string>('')
   const [choiceOne, setChoiceOne] = useState<CardProps>()
@@ -49,8 +67,6 @@ const MemoryGame: React.FC = () => {
   };
  
   useEffect(() => {
-    getAGame(params.game_id)
-      .then((data: any) => {
         //console.log("XXXXXYYYYYY", data)
         setName(data.name)
         let myArray1 = data.base.split('/').map((str: string, index: number) => {
@@ -78,16 +94,16 @@ const MemoryGame: React.FC = () => {
         setCards(shuffledCards);
         //console.log(" set GameStarted to true")
         setGameOver(false)
-      })
-  }, [params.game_id])
+      
+  }, [data])
 
   useEffect(() => {
     if (numMatches === 8) {
       //console.log(" num matdhes = 1")
         setClickCount(0)
         setNumMatches(0)
-        const elapsed_time: ElapsedTime | undefined = counterRef.current?.stopCount()
-        setElapsedTime(elapsed_time)
+        //const elapsed_time: ElapsedTime | undefined = counterRef.current?.stopCount()
+        setElapsedTime(counterRef.current?.stopCount())
         setTimeout(() => setGameOver(true), 1300)
         
     }
@@ -173,6 +189,5 @@ useEffect(() => {
   );
 };
 
-export default MemoryGame;
+export default ShortMemoryGame;
 
-//    // { elapsedTime?.minutes > 0 && 

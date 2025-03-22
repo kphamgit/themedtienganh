@@ -135,7 +135,7 @@ export default function MainStudent(props: any ) {
 
       <div className=' bg-bgColor1'>
         <div>
-          <div>{showLiveRecording.toString()}</div>
+          
           <div className='text-xl p-2 flex flex-row justify-start gap-2'>
             <div><span className='text-textColor1'>Welcome </span> 
             <span className='text-textColor4'>{user_name}</span>
@@ -150,7 +150,7 @@ export default function MainStudent(props: any ) {
             </div>
           </div>
           <NavBar role="student" />
-          <div className='m-10 bg-bgColor1 text-textColor1'>{user.message}</div>
+       
           <Outlet  />
          
         </div>

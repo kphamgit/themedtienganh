@@ -8,7 +8,7 @@ import { Logout } from "./auth/Logout";
 import SocketContextComponent from "./contexts/socket_context/Component";
 import HomePage from "./components/navigation/HomePage";
 import Games from "./components/navigation/Games";
-import { TextMatchGame } from "./components/matching_games/TextMatchGame";
+//import TextMatchGame from "./components/matching_games/TextMatchGame";
 //import LiveQuiz from "./components/live/LiveQuiz";
 //import TakeLiveQuiz from "./components/live/TakeLiveQuiz";
 //import { SendLiveText } from "./components/live/SendLiveText";
@@ -23,7 +23,7 @@ const SimplePeer = lazy(() => import('./components/shared/SimplePeer'))
 const QuizPageVideo  = lazy(() => import('./components/quiz_attempts/QuizPageVideo'));
 const TtSpeechProvider = lazy(() => import("./contexts/azure/AzureTtsContext"))
 //const CategoryPage = lazy(() => import("./components/navigation/CategoryPage"))//
-const MemoryGame = lazy(() => import("./components/live/MemoryGame"))//
+const LiveMemoryGame = lazy(() => import("./components/live/LiveMemoryGame"))//
 const LivePicture = lazy(() => import("./components/live/LivePicture"))//
 const LiveQuiz = lazy(() => import("./components/live/LiveQuiz"))////
 const YoutubeVideoPlayer = lazy(() => import("./components/shared/YoutubeVideoPlayer"))////
@@ -83,12 +83,11 @@ function App() {
                   <Route path="sub_categories/:sub_category_name/quizzes/:quizId" element={<QuizPageVideo />} />
                   
                   <Route path="/live_text" element={<LiveText />} />
-                 
                   <Route path="/simple_peer" element={<SimplePeer />} />
                   <Route path="/live_quiz" element={<LiveQuiz />} >
                       <Route path="live_picture" element={<LivePicture />} />
                   </Route>
-                  <Route path="/live_game/:game_id/:backcolor" element={<MemoryGame />} />
+                  <Route path="/live_game/:game_id/:backcolor" element={<LiveMemoryGame />} />
                 
                   <Route path="/live_youtube_video" element={<YoutubeVideoPlayer />} />
                 </Route>

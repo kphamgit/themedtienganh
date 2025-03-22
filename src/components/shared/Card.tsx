@@ -1,5 +1,5 @@
 import { MouseEventHandler, useContext, useEffect, useState } from "react";
-import { CardProps } from "../live/MemoryGame";
+import { CardProps } from "../matching_games/MemoryGame";
 import { TtSpeechContext } from "../../contexts/azure";
 import {
   SpeechSynthesizer, AudioConfig,
