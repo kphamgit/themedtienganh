@@ -8,7 +8,8 @@ import {
   useSensor,
   useSensors,
   DragOverEvent,
-  DragStartEvent
+  DragStartEvent,
+  TouchSensor
 } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { v4 as uuidv4 } from "uuid";
@@ -58,18 +59,37 @@ const [allItems, setAllItems] = useState<{ [key: string]: ItemProps[] }>({
 
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeLabel, setActiveLabel] = useState<string | null>(null);
+  const [maxTouchPoints, setMaxTouchPoints] = useState<number>(0);
 
+  useEffect(() => {
+    //console.log("max touch points = ", navigator.maxTouchPoints)
+    setMaxTouchPoints(navigator.maxTouchPoints)
+  },[])
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: { delay: 200, tolerance: 1000 }
-      //kpham: keep these number big like this. If they are too small, the sensor sometimes will not detect the mouse click on the draggable item
-      //Many trials and errors to get the sensor to work
-  }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates
-    })
-  );
+    let sensors;
+    if (maxTouchPoints > 0) {
+        useSensor(TouchSensor, {
+            activationConstraint: { delay: 200, tolerance: 1000 }
+            //kpham: keep these number big like this. If they are too small, the sensor sometimes will not detect the mouse click on the draggable item
+            //Many trials and errors to get the sensor to work
+        }),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates
+        })
+    }
+    else {
+    sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: { delay: 200, tolerance: 1000 }
+            //kpham: keep these number big like this. If they are too small, the sensor sometimes will not detect the mouse click on the draggable item
+            //Many trials and errors to get the sensor to work
+        }),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates
+        })
+    );
+    }
+ 
 
   useEffect(() => {
     //console.log("in WordScrambler")
@@ -117,7 +137,7 @@ const [allItems, setAllItems] = useState<{ [key: string]: ItemProps[] }>({
     const item_index = allItems[container_id].findIndex((item) => item.id === item_id);
     //console.log("item_index=", item_index);
    
-    //look for this item in the items1 array using root
+    //look for this item in the container from which it was clicked
     const the_item = allItems[container_id].find((item) => item.id === item_id);
     //console.log("handleSortableItemClick found item =", the_item);
     if (container_id === "root") {
@@ -137,16 +157,16 @@ const [allItems, setAllItems] = useState<{ [key: string]: ItemProps[] }>({
           }));
     }
     else { //container1
-      //console.log("container1 clicked,  item label =", the_item?.label);
-      //look for the item in the root array with the same label as the_item and enable it
-      const item_in_root = allItems.root.find((item) => item.label === the_item?.label);
-      //console.log("item_in_root=", item_in_root);
+      //look for a disabled item in the root array with the same label as the clicked item 
+      const item_in_root = allItems.root.find((item) => (item.label === the_item?.label && item.disable === true));
+      //console.log("found item_in_root=", item_in_root);
         if (item_in_root) {
+            //enable the item in the root array
             setAllItems((prev) => ({
                 ...prev,
-                root: prev.root.map((item) => item.label === the_item?.label ? { ...item, disable: false } : item),
+                root: prev.root.map((item) => item.id === item_in_root.id ? { ...item, disable: false } : item),
             }));
-            //at the same time, remove the item from the container1 array
+            //at the same time, remove the clicked item from the container1 array
             setAllItems((prev) => ({
                 ...prev,
                 container1: prev.container1.filter((item) => item.id !== item_id)
@@ -158,6 +178,7 @@ const [allItems, setAllItems] = useState<{ [key: string]: ItemProps[] }>({
 
   return (
     <div style={wrapperStyle}>
+        <div>{maxTouchPoints}</div>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCorners}
