@@ -6,7 +6,6 @@ import { ChildRef, DynamicWordInputs } from './question_attempts/DynamicWordInpu
 import { ButtonSelectCloze } from './question_attempts/ButtonSelecCloze';
 import { ButtonSelect } from './question_attempts/ButtonSelect';
 import { RadioQuestion } from './question_attempts/RadioQuestion';
-import { WordScrambler } from './question_attempts/WordScrambler';
 import { SRContinuous } from './question_attempts/SRContinuous';
 import { WordsSelect } from './question_attempts/WordsSelect';
 import { DropDowns } from './question_attempts/DropDowns';
@@ -21,6 +20,8 @@ import { useAxiosFetch } from '../../hooks';
 
 import Popup from 'reactjs-popup';
 import ModalPopup from '../shared/ModalPopup';
+//import DragAndDropList from './question_attempts/DragAndDropList';
+import DragDrop from './question_attempts/dragdrop/DragDrop';
 
 interface PageParamsProps {
     page_num: number
@@ -96,7 +97,7 @@ export default function QuizPageVideo(props:any) {
     //console.log(" in QuizPageVideo get_next_question createQuestionAttempt......")
     createQuestionAttempt(data!.quiz_attempt.id)
         .then((response) => {
-            //console.log(" in QuizPageVideo do_next_question_attempt createQuestionAttempt..... response=", response)
+            //console.log(" in QuizPageVideo do_next_question_attempt createQuestionAttempt, response=", response)
             if (response.end_of_quiz) {
                 setEndOfQuiz(true)
             }
@@ -268,7 +269,7 @@ export default function QuizPageVideo(props:any) {
                                         ) : question.format === 4 ? (
                                             <RadioQuestion question={question} ref={childRef} />
                                         ) : question.format === 6 ? (
-                                            <WordScrambler content={question.content} ref={childRef} />
+                                            <DragDrop content={question.content} ref={childRef} />
                                         ) : question.format === 7 ? (
                                             <SRContinuous content={question.content} ref={childRef} />
                                         ) : question.format === 8 ? (
@@ -314,3 +315,7 @@ export default function QuizPageVideo(props:any) {
 
 }
 
+/*
+          ) : question.format === 6 ? (
+            <WordScrambler content={question.content} ref={childRef} />
+*/

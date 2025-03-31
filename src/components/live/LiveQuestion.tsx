@@ -7,7 +7,7 @@ import { DynamicWordInputs } from '../quiz_attempts/question_attempts/DynamicWor
 import { processLiveQuestionAttempt } from '../quiz_attempts/question_attempts/services/list';
 import { DropDowns } from '../quiz_attempts/question_attempts/DropDowns';
 import { ButtonSelect } from '../quiz_attempts/question_attempts/ButtonSelect';
-import { WordScrambler } from '../quiz_attempts/question_attempts/WordScrambler';
+//import { WordScrambler } from '../quiz_attempts/question_attempts/WordScrambler';
 //import { QuestionAttemptResults } from '../quiz_attempts/QuestionAttemptResults';
 //import { FaPlayCircle } from "react-icons/fa";
 import { WordsSelect } from '../quiz_attempts/question_attempts/WordsSelect';
@@ -22,6 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import { CounterRef } from '../shared/Counter';
 import { DynamicLetterInputs } from '../quiz_attempts/question_attempts/DynamicLetterInputs';
 import { useAudioBlobContext } from '../../contexts/AudioBlobContext'
+import DragDrop from '../quiz_attempts/question_attempts/dragdrop/DragDrop';
 
 
 type GetQuestionProps = {
@@ -173,7 +174,7 @@ export default function LiveQuestion(props: LiveQuestionProps) {
                             ) : question.format === 4 ? (
                                 <RadioQuestion question={question} ref={childRef} />
                             ) : question.format === 6 ? (
-                                <WordScrambler content={question.content} ref={childRef} />
+                                <DragDrop content={question.content} ref={childRef} />
                             ) : question.format === 7 ? (
                                 <SRContinuous content={question.content} ref={childRef} />
                             ) : question.format === 8 ? (
