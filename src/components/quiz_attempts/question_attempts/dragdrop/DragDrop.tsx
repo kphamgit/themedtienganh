@@ -66,19 +66,19 @@ const [allItems, setAllItems] = useState<{ [key: string]: ItemProps[] }>({
     setMaxTouchPoints(navigator.maxTouchPoints)
   },[])
 
+    /*
     let sensors;
     if (maxTouchPoints > 0) {
         useSensor(TouchSensor, {
-            activationConstraint: { delay: 200, tolerance: 1000 }
+            activationConstraint: { delay: 100, tolerance: 500 }
             //kpham: keep these number big like this. If they are too small, the sensor sometimes will not detect the mouse click on the draggable item
             //Many trials and errors to get the sensor to work
-        }),
-        useSensor(KeyboardSensor, {
-            coordinateGetter: sortableKeyboardCoordinates
-        })
+        });
     }
-    else {
-    sensors = useSensors(
+    */
+    //else {
+
+    const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: { delay: 200, tolerance: 1000 }
             //kpham: keep these number big like this. If they are too small, the sensor sometimes will not detect the mouse click on the draggable item
@@ -88,7 +88,7 @@ const [allItems, setAllItems] = useState<{ [key: string]: ItemProps[] }>({
             coordinateGetter: sortableKeyboardCoordinates
         })
     );
-    }
+    
  
 
   useEffect(() => {
