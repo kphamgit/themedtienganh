@@ -68,6 +68,7 @@ export default function SortableItem(props: SortableItemProps) {
     setNodeRef,
     transform,
     transition,
+    
    
   } = useSortable({ id: props.id , disabled: props.disable});
 
@@ -84,7 +85,8 @@ export default function SortableItem(props: SortableItemProps) {
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition
+    transition,
+    touchAction: "none",
   };
 
   return (
