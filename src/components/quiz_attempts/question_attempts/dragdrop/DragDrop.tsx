@@ -59,38 +59,27 @@ const [allItems, setAllItems] = useState<{ [key: string]: ItemProps[] }>({
 
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeLabel, setActiveLabel] = useState<string | null>(null);
-  const [maxTouchPoints, setMaxTouchPoints] = useState<number>(0);
+
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { delay: 200, tolerance: 1000 }
+      //kpham: keep these number big like this. If they are too small, the sensor sometimes will not detect the mouse click on the draggable item
+      //Many trials and errors to get the sensor to work
+  }),
+  useSensor(TouchSensor, {
+    activationConstraint: { delay: 200, tolerance: 1000 }
+    //kpham: keep these number big like this. If they are too small, the sensor sometimes will not detect the mouse click on the draggable item
+    //Many trials and errors to get the sensor to work
+}),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates
+    })
+  );
 
   useEffect(() => {
-    //console.log("max touch points = ", navigator.maxTouchPoints)
-    setMaxTouchPoints(navigator.maxTouchPoints)
+    console.log("max touch points = ", navigator.maxTouchPoints)
   },[])
-
-    
-    //let sensors;
-    //if (maxTouchPoints > 0) {
-     //   useSensor(TouchSensor);
-   // }
-    
-    //else {
-  
-    const sensors = useSensors(
-        useSensor(TouchSensor)
-    );
-
-    /*
-    const sensors = useSensors(
-        useSensor(PointerSensor, {
-            activationConstraint: { delay: 200, tolerance: 1000 }
-            //kpham: keep these number big like this. If they are too small, the sensor sometimes will not detect the mouse click on the draggable item
-            //Many trials and errors to get the sensor to work
-        }),
-        useSensor(KeyboardSensor, {
-            coordinateGetter: sortableKeyboardCoordinates
-        })
-    );
-    */
- 
 
   useEffect(() => {
     //console.log("in WordScrambler")
@@ -158,6 +147,7 @@ const [allItems, setAllItems] = useState<{ [key: string]: ItemProps[] }>({
           }));
     }
     else { //container1
+
       //look for a disabled item in the root array with the same label as the clicked item 
       const item_in_root = allItems.root.find((item) => (item.label === the_item?.label && item.disable === true));
       //console.log("found item_in_root=", item_in_root);
@@ -179,7 +169,6 @@ const [allItems, setAllItems] = useState<{ [key: string]: ItemProps[] }>({
 
   return (
     <div style={wrapperStyle}>
-        <div>{maxTouchPoints}</div>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCorners}
