@@ -40,7 +40,7 @@ export function Item(props: ItemProps) {
  return <button 
    className={clsx(
     "px-4 py-2 rounded",
-    disableState ? "bg-gray-400 cursor-not-allowed" : "bg-green-400 hover:bg-green-500"
+    disableState ? "bg-gray-400 text-gray-400 cursor-not-allowed" : "bg-green-400 hover:bg-green-500"
    )}
   //return <button className="flex flex-row justify-center bg-red-300 m-1 p-2 rounded-md" 
   
@@ -95,7 +95,7 @@ export default function SortableItem(props: SortableItemProps) {
       {...attributes} 
       {...listeners}
       //onClick={(e) => handleAddItem()}
-      className="flex flex-row p-1 bg-amber-400 justify-center mx-1 rounded-md"
+      className="flex flex-row p-1 bg-amber-500 justify-center mx-1 rounded-md"
       >
       <Item id={props.id} label={props.label} disable={props.disable} parent_function={handleItemClick} />
     </div>

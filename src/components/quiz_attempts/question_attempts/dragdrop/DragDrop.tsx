@@ -176,13 +176,14 @@ const [allItems, setAllItems] = useState<{ [key: string]: ItemProps[] }>({
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 align-top">
       
-        <div><Container id="container1" 
+        <div className="flex flex-row justify-start bg-blue-300"><Container id="container1" 
             items={allItems.container1} 
             parent_function={handleSortableItemClick} />
         </div>
-        <div><Container id="root" items={allItems.root} parent_function={handleSortableItemClick} /></div>
+        <div className="flex flex-row bg-orange-300">
+          <Container id="root" items={allItems.root} parent_function={handleSortableItemClick} /></div>
         </div>
         <DragOverlay>{activeId && activeLabel ? <Item id={activeId} label={activeLabel} /> : null}</DragOverlay>
       </DndContext>

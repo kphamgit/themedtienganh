@@ -42,8 +42,8 @@ export default function Container(props: ContainerProps) {
      
       <div ref={setNodeRef} 
         className={clsx(
-            "flex flex-row m-10 p-1",
-            id === 'container1' ? "bg-amber-100 h-2/5" : "bg-green-100"
+            "flex flex-row m-10 p-1 flex-wrap justify-items-start",
+            id === 'container1' ? "bg-gray-100" : "bg-cyan-100"
           )}
         >
         
