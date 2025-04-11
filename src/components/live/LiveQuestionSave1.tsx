@@ -28,19 +28,14 @@ import { useLiveQuestionAttemptResults } from '../../hooks/useLiveQAResults';
 import { useMutation } from '@tanstack/react-query';
 import { fetchLiveQuestionAttemptResults } from '../api/fetchLiveQAResults';
 import { processLiveQuestion } from './processLiveQuestion';
-import { QuestionAttemptAttributes, QuestionProps } from '../quiz_attempts/types';
 
 
 
 interface LiveQuestionProps {
-    question: QuestionProps | undefined,
-    set_question_attempt_result: (question_attempt_results: QuestionAttemptAttributes) => void
-}
-
-/*
- question_number: string | undefined,
+    question_number: string | undefined,
     quiz_id: string | undefined 
-*/
+    set_question_attempt_result: (question_attempt_results: LiveQuestionAttemptAttributes) => void
+}
 
   interface LiveScoreProps {
     question_format: number | undefined,
@@ -54,16 +49,16 @@ interface LiveQuestionProps {
   }
 
 
-export default function LiveQuestion(props: LiveQuestionProps) {
-    //const { data, error, isLoading } = useLiveQuestion(props.quiz_id, props.question_number)
+export default function LiveQuestionSave1(props: LiveQuestionProps) {
+    const { data, error, isLoading } = useLiveQuestion(props.quiz_id, props.question_number)
 
-
+    
     const user = useAppSelector(state => state.user.value)
     const counterRef = useRef<CounterRef>(null)
 
     const [showSubmitButton, setShowSubmitButton] = useState(true)
 
-    //const [questionAttemptResponse, setQuestionAttemptResponse] = useState<{question: QuestionProps | undefined, results: LiveQuestionAttemptAttributes}>()
+    const [questionAttemptResponse, setQuestionAttemptResponse] = useState<{question: QuestionProps | undefined, results: LiveQuestionAttemptAttributes}>()
     const [endOfQuiz, setEndOfQuiz] = useState(false)
  
     const childRef = useRef<ChildRef>(null);
@@ -89,9 +84,9 @@ export default function LiveQuestion(props: LiveQuestionProps) {
         const my_answer = childRef.current?.getAnswer();
         if (my_answer) {
             setSubmitEnabled(true)
-            console.log("handleSubmit format = ", props.question?.format)
-            if (props.question) {
-                const result = processLiveQuestion(props.question.format.toString(), props.question.answer_key, my_answer)
+            console.log("handleSubmit format = ", data?.question.format)
+            if (data?.question) {
+                const result = processLiveQuestion(data.question.format.toString(), data.question.answer_key, my_answer)
                 console.log("handleSubmit result = ", result)
                 if (result) {
                     props.set_question_attempt_result(result);
@@ -111,14 +106,14 @@ export default function LiveQuestion(props: LiveQuestionProps) {
       useEffect(() => {
         if (result) {
             setShowSubmitButton(false)
-            setQuestionAttemptResponse({question: props.question, results: result})   
+            setQuestionAttemptResponse({question: data?.question, results: result})   
             props.set_question_attempt_result(result)   
             const live_score_params: LiveScoreProps = {
-                question_format: props.question?.format,
+                question_format: data?.question?.format,
                 question_number: result.question_number,
-                question_content: props.question?.content,
+                question_content: data?.question?.content,
                 user_answer: childRef.current?.getAnswer(),
-                answer_key: props.question?.answer_key,
+                answer_key: data?.question?.answer_key,
                 score: result.score.toString(),
                 total_score: 0, 
                 user_name: user.user_name
@@ -138,42 +133,42 @@ export default function LiveQuestion(props: LiveQuestionProps) {
                 
                     <div className='text-textColor2 bg-bgColor1 p-2 rounded-xl ml-12 mr-2 mt-3'>
                        
-                        { props.question &&
+                        { data?.question &&
                             <>
-                              <div className='mb-2'>Question: {props.question.question_number}</div>
+                              <div className='mb-2'>Question: {data?.question.question_number}</div>
                             <div className='bg-bgColorQuestionContent text-textColor1'>
                             
-                            <div  className='text-textColor2' dangerouslySetInnerHTML={{ __html: props.question.instruction }}></div>
-                            <div className='m-2 text-textColor3'>{props.question.prompt}</div>
+                            <div  className='text-textColor2' dangerouslySetInnerHTML={{ __html: data?.question.instruction }}></div>
+                            <div className='m-2 text-textColor3'>{data?.question.prompt}</div>
                             <div>
-                                {(props.question.audio_str && props.question.audio_str.trim().length > 0) &&
-                                    <AzureAudioPlayer text={props.question.audio_str} />
+                                {(data?.question.audio_str && data?.question.audio_str.trim().length > 0) &&
+                                    <AzureAudioPlayer text={data?.question.audio_str} />
                                 }
-                                {(props.question.audio_src && props.question.audio_src.trim().length > 0) &&
-                                    <audio src={props.question.audio_src} controls />
+                                {(data?.question.audio_src && data?.question.audio_src.trim().length > 0) &&
+                                    <audio src={data?.question.audio_src} controls />
                                 }
                             
                             </div>
                       
                             <div className='mt-3'>
-                            { props.question.format === 1 ? (
-                                <DynamicWordInputs content={props.question.content} ref={childRef} />
-                            ) : props.question.format === 2 ? (
-                                <ButtonSelectCloze content={props.question.content} ref={childRef} />
-                            ) : props.question.format === 3 ? (
-                                <ButtonSelect content={props.question.content} ref={childRef} />
-                            ) : props.question.format === 4 ? (
-                                <RadioQuestion question={props.question} ref={childRef} />
-                            ) : props.question.format === 6 ? (
-                                <DragDrop content={props.question.content} ref={childRef} />
-                            ) : props.question.format === 7 ? (
-                                <SRContinuous content={props.question.content} ref={childRef} />
-                            ) : props.question.format === 8 ? (
-                                <WordsSelect content={props.question.content} ref={childRef} />
-                            ) : props.question.format === 10 ? (
-                                <DropDowns content={props.question.content} ref={childRef} />
-                            ) : props.question.format === 11 ? (
-                                <DynamicLetterInputs content={props.question.content} ref={childRef} />
+                            { data?.question.format === 1 ? (
+                                <DynamicWordInputs content={data?.question.content} ref={childRef} />
+                            ) : data?.question.format === 2 ? (
+                                <ButtonSelectCloze content={data?.question.content} ref={childRef} />
+                            ) : data?.question.format === 3 ? (
+                                <ButtonSelect content={data?.question.content} ref={childRef} />
+                            ) : data?.question.format === 4 ? (
+                                <RadioQuestion question={data?.question} ref={childRef} />
+                            ) : data?.question.format === 6 ? (
+                                <DragDrop content={data?.question.content} ref={childRef} />
+                            ) : data?.question.format === 7 ? (
+                                <SRContinuous content={data?.question.content} ref={childRef} />
+                            ) : data?.question.format === 8 ? (
+                                <WordsSelect content={data?.question.content} ref={childRef} />
+                            ) : data?.question.format === 10 ? (
+                                <DropDowns content={data?.question.content} ref={childRef} />
+                            ) : data?.question.format === 11 ? (
+                                <DynamicLetterInputs content={data?.question.content} ref={childRef} />
                             ) : (
                                 <div>UNKNOWN question format</div>
                             )}

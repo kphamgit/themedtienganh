@@ -8,14 +8,12 @@ import { Logout } from "./auth/Logout";
 import SocketContextComponent from "./contexts/socket_context/Component";
 import HomePage from "./components/navigation/HomePage";
 import Games from "./components/navigation/Games";
-//import TextMatchGame from "./components/matching_games/TextMatchGame";
-//import LiveQuiz from "./components/live/LiveQuiz";
-//import TakeLiveQuiz from "./components/live/TakeLiveQuiz";
-//import { SendLiveText } from "./components/live/SendLiveText";
-//import { SendLivePicture } from "./components/live/SendLivePicture";
-//import YoutubeVideoPlayer from "./components/shared/YoutubeVideoPlayer";
-//import { LiveText } from "./components/live/LiveText";
-//import { LivePicture } from "./components/live/LivePicture";
+
+import { useAppDispatch } from "./redux/store"
+
+import { setRootPath } from "./redux/rootpath";
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const Home = lazy(() => import("./components/navigation/Home"))
 const SubCategoryPageStudent = lazy(() => import("./components/navigation/SubCategoryStudent"))
@@ -28,6 +26,9 @@ const LivePicture = lazy(() => import("./components/live/LivePicture"))//
 const LiveQuiz = lazy(() => import("./components/live/LiveQuiz"))////
 const YoutubeVideoPlayer = lazy(() => import("./components/shared/YoutubeVideoPlayer"))////
 const LiveText = lazy(() => import("./components/live/LiveText"))////
+
+
+ const queryClient = new QueryClient()
 
 
 function getAuthFromSessionStorage() {
@@ -44,13 +45,25 @@ function App() {
     //const {socket, uid, users, user_uuids} = useContext(SocketContext).SocketState;
     const [auth, setAuth] = useState(getAuthFromSessionStorage());
     
+    let rootpath = ''
+    if (process.env.NODE_ENV === "production") {
+      rootpath = 'https://kphamenglish-f26e8b4d6e4b.herokuapp.com'
+      //rootpath = 'https://www.tienganhtuyhoa.com'
+    }
+    else if (process.env.NODE_ENV === "development") {
+      rootpath = 'http://localhost:5001'
+
+    }
+    else {
+      console.log("invalid NODE_ENV ")
+    }
+    const dispatch = useAppDispatch();
+    dispatch(setRootPath({value: rootpath}))
 
     const onLogin = (userToken: string) => {
         setAuth(userToken)
         //also persits auth state in session Storage so that user is still logged after a page refresh
         sessionStorage.setItem('auth', JSON.stringify(userToken));
-        //console.log("onLogin go to front page")
-        
       }
 
       if (!auth) {
@@ -72,7 +85,7 @@ function App() {
       <SocketContextComponent>
         <Suspense fallback={<div>Loading...</div>}>
           <TtSpeechProvider>
-
+            <QueryClientProvider client={queryClient}>
             <BrowserRouter>
               <Routes>
                 <Route path="/logout" element={<Logout onLogout={onLogout} />} />
@@ -93,7 +106,7 @@ function App() {
                 </Route>
               </Routes>
             </BrowserRouter>
-
+            </QueryClientProvider>
           </TtSpeechProvider>
         </Suspense>
       </SocketContextComponent>

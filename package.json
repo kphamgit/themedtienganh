@@ -15,6 +15,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@formkit/auto-animate": "^0.8.2",
     "@reduxjs/toolkit": "^2.3.0",
+    "@tanstack/react-query": "^5.72.0",
     "@types/node": "^22.8.1",
     "@types/simple-peer": "^9.11.8",
     "@types/uuid": "^10.0.0",

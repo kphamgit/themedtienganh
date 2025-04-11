@@ -7,7 +7,7 @@ interface DynamicObject {
 class QuestionHelper {
    //(question, props.user_answer)
     format_user_answer = (answer: string | undefined, answer_key: string, format: number | undefined, content: string): string | undefined => {
-        //console.log(" questionHelper format_answer,  format", format)
+        console.log(" questionHelper format_user_answer,  format", format, " user answer = ", answer, " answer_key = ", answer_key)
         if (answer) {
             if (format === 1) {
                 const replacements: DynamicObject = {};
@@ -88,7 +88,8 @@ class QuestionHelper {
 
     format_answer_key = (answer_key: string, format: number | undefined, content: string): string | undefined => {
         if (answer_key) {
-            if (format === 1) {
+            console.log("YYYYY format_answer_key ansswer key = ", answer_key, "format = ", format)
+            if (format === 1) {  //cloze
                 //console.log("format = ", format)
                 const replacements: DynamicObject = {};
                 const answer_parts = answer_key.split('/')

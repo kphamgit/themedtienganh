@@ -23,8 +23,10 @@ import SocketContext from '../../contexts/socket_context/Context';
 //import { useAudioBlobContext } from '../../contexts/AudioBlobContext'
 import { ScoreBoard } from './ScoreBoard';
 import LiveQuestion from './LiveQuestion';
-import { QuestionAttemptAttributes, QuestionProps } from '../quiz_attempts/types';
+//import { QuestionAttemptAttributes, QuestionProps } from '../quiz_attempts/types';
 import { QuestionAttemptResults } from '../quiz_attempts/QuestionAttemptResults';
+import { QuestionAttemptAttributes, QuestionProps } from '../quiz_attempts/types';
+import { useLiveQuestion } from '../../hooks/useLiveQuestion';
 //import {QuestionAttemptResponseProps} from '../components/services/list'
 
 /*
@@ -57,15 +59,28 @@ interface QuestionAttemptAttributes {
   }
 */
 
+/*
+interface LiveQuestionAttemptResultsProps {
+  user_answer: string;
+  score: number;
+  error_flag: boolean;
+ 
+}
+*/
+
 export default function LiveQuiz(props: any) {
    
     const user = useAppSelector(state => state.user.value)
   
+    const [getQuestionEnabled, setGetQuestionEnabled] = useState(false)
+
     const [showLivePicture, setShowLivePicture] = useState(false)
     const [pictureUrl, setPictureUrl] = useState<string>('')
     const [pictureText, setPictureText] = useState<string>('')
-    const [currentQuestionId, setCurrentQuestionId] = useState('')
+ 
     const [showQuestion, setShowQuestion] = useState(false)
+
+    const [question, setQuestion] = useState<QuestionProps | undefined>(undefined)
 
     const [liveQuizId, setLiveQuizId] = useState<string | undefined>('')
     const [liveQuestionNumber, setLiveQuestionNumber] = useState<string | undefined>('')
@@ -74,12 +89,23 @@ export default function LiveQuiz(props: any) {
 
     const {socket} = useContext(SocketContext).SocketState;
  
+    const { data, error, isLoading } = useLiveQuestion(liveQuizId, liveQuestionNumber, getQuestionEnabled)
+
+    useEffect(() => {
+      if (data) {
+        //console.log("LiveQuiz data = ", data)
+        setQuestion(data.question)
+      }
+    }
+    , [data])
+      
     useEffect(() => {
       if (socket) {
         socket.on('live_question', (arg: { quiz_id: string, question_number: string, target_student: string }) => {
-          //console.log("live question received...arg=", arg) 
+          console.log("live question received...arg=", arg) 
+          setGetQuestionEnabled(true)  //retrieve the question from the server
+
           setShowLivePicture(false)
-          
           setLiveQuizId(arg.quiz_id)
           setLiveQuestionNumber(arg.question_number)
           setShowQuestion(true)
@@ -100,16 +126,24 @@ export default function LiveQuiz(props: any) {
       }
     }, [socket, user.user_name, user.classId])
 
-    const set_question_attempt_results = (arg: any) => {
+    const set_question_attempt_results = (arg: QuestionAttemptAttributes) => {
       //console.log("set_question_attempt_results: ", arg)
+      //setLiveQuizId(arg.quiz_id)
       setShowQuestion(false)
       setQuestionAttemptResponse(arg)
     }
  
-    const set_question_id = (arg: string) => {
-      setCurrentQuestionId(arg)
-    }
+    //const set_question_id = (arg: string) => {
+     // setCurrentQuestionId(arg)
+   // }
+  /*
+  interface LiveQuestionProps {
+      question: QuestionProps | undefined,
+      set_question_attempt_result: (question_attempt_results: QuestionAttemptAttributes) => void
+  } 
+   */
 
+// <LiveQuestion quiz_id={liveQuizId} question_number={liveQuestionNumber} 
 //<audio controls src={audioUrl} />
     return (
         <>
@@ -119,17 +153,20 @@ export default function LiveQuiz(props: any) {
                 <div className='bg-bgColorQuestionContent mx-10 my-6 flex flex-col rounded-md'>
                 { showQuestion ?
                 <>
-                   <LiveQuestion quiz_id={liveQuizId} question_number={liveQuestionNumber} 
-                    set_results={set_question_attempt_results} 
-                    setQuestionId = {set_question_id}
+                   <LiveQuestion question={question}
+                    set_question_attempt_result={set_question_attempt_results} 
+                    
                    />
                    </>
                    :
-                     <div>LIVE QUIZ</div>
+                     <div>Live Quiz</div>
                 }
                 { questionAttemptResponse &&
                       <div className='bg-bgColor1'>
-                      <QuestionAttemptResults live_flag={true} question_id = {currentQuestionId} response={questionAttemptResponse }  />
+                      <QuestionAttemptResults 
+                        live_flag={true} 
+                        question= {question}
+                        response={questionAttemptResponse }  />
                      </div>
                 }
                 { showLivePicture &&
@@ -149,3 +186,4 @@ export default function LiveQuiz(props: any) {
     )
 }
 //  
+// <QuestionAttemptResults live_flag={true} question_id = {currentQuestionId} response={questionAttemptResponse }  />

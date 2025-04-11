@@ -88,12 +88,8 @@ answer          | varchar(255) | YES  |     | NULL    |                |
 export interface QuestionAttemptAttributes {
   user_answer: string;
   score: number;
-  question_number: number | undefined;
-  questionId: string | undefined;
   error_flag: boolean;
-  audio_src: string;
-  completed: boolean;
-  //quizAttemptId: string;
+  
 }
 
  export interface InputLetterRef {

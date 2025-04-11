@@ -1,4 +1,4 @@
-import { MouseEventHandler, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLocation, useParams } from 'react-router-dom';
 import { useAppSelector } from '../../redux/store';
 import { QuestionAttemptAttributes, QuestionProps, QuizAttemptProps } from './types';
@@ -32,9 +32,6 @@ import { useQuestion } from '../../hooks/useQuestion';
 import { useQuestionAttemptResults } from '../../hooks/useQuestionAttemptResults';
 
 import { processLiveQuestion } from '../live/processLiveQuestion';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateQuestionAttempt } from '../api/updateQuestionAttempt';
-import { FaSlideshare } from 'react-icons/fa';
 
 interface PageParamsProps {
     page_num: number
@@ -48,7 +45,7 @@ interface VideoProps {
     video_pages: PageParamsProps[]
   }
 
-export default function QuizPageVideo(props:any) {
+export default function QuizPageVideoNew(props:any) {
     
     const params = useParams<{ sub_category_name: string, quizId: string,  }>();
     //const user = useAppSelector(state => state.user.value)
@@ -64,8 +61,6 @@ export default function QuizPageVideo(props:any) {
     const [showSubmitButton, setShowSubmitButton] = useState<boolean>(false)
 
     const [question, setQuestion] = useState<QuestionProps | undefined>()
-    const [questionAttemptId, setQuestionAttemptId] = useState<string | undefined>()
-
     const [questionId, setQuestionId] = useState<string | undefined>()
     const [showQuestion, setShowQuestion] = useState(false)
     //const [showQuestionAttemptResults, setShowQuestionAttemptResults] = useState(false)
@@ -90,102 +85,121 @@ export default function QuizPageVideo(props:any) {
    
    const { data } = useQuizAttempt(params.quizId!, user?.id?.toString() ?? "")
 
-   const queryClient = useQueryClient()
+   console.log("QuizPageVideo xxx  data quiz attempt = ", data)
 
-   useEffect(() => {
-        if (data) {
-            //console.log("QuizPageVideo data = ", data)
-            setQuestion(data.question)
-            setQuestionAttemptId(String(data.question_attempt_id))
+   const {data: my_question} = useLiveQuestion(data?.quiz_attempt.quizId.toString(), data?.question_attempt?.question_number!.toString())
+
+    console.log("QuizPageVideo my_question = ", my_question)
+
+    useEffect(() => {
+        if (my_question) {
+            setQuestion(my_question.question)
         }
-    }, [data])
+    }, [my_question])
 
-//  res.send({ quiz_attempt, question: next_question, question_attempt_id: question_attempt.id })
-   //console.log("QuizPageVideo xxx  data  = ", data)
+    const {data: next} = useQuestion("47", testCount.toString(), nextQuestionEnabled)
 
-   const { data: questionAttemptData } = useQuestionAttempt(data?.quiz_attempt.id.toString()!, nextQuestionEnabled)
-/*
-   res.send({
-          end_of_quiz: results?.end_of_quiz,
-          question: results?.question as unknown as QuestionProps,
-          question_attempt_id: question_attempt.id
-        })
-*/
-
-   useEffect(() => {
-        if (questionAttemptData) {
-            //console.log("QuizPageVideo questionAttemptData = ", questionAttemptData)
-            setQuestion(questionAttemptData.question)
-            setQuestionAttemptId(String(questionAttemptData.question_attempt_id))
-            setNextQuestionEnabled(false)
+    useEffect(() => {
+        if (next) {
+            console.log("QuizPageVideo next question = ", next)
+            setQuestion(next.question)
         }
-   }, [questionAttemptData])
-   
+    }, [next])
     
     const get_next_question = async () => {
-        console.log("get_next_question")
+        setTestCount(testCount + 1)
         setNextQuestionEnabled(true)
     }
 
-    /*
- id: string,   //question attempt id
-    user_answer: string,
-    score: string,
-    error_flag: boolean
-    */
-// queryKey: ['question_attempt', quiz_attempt_id],
-    const mutation = useMutation({
-        mutationFn: ({  user_answer }: { user_answer: string }) =>
-          updateQuestionAttempt(questionAttemptId ? String(questionAttemptId) : "", user_answer, "5", false),
-        onSuccess: (response) => {
-            console.log('✅ Get live question attempt results:', response)
-            //queryClient.invalidateQueries(['question_attempt', questionAttemptId])
-            
-   /*
-     {
-    "user_answer": "  ee",
+    const clear_question = async () => {
+        setQuestion(undefined)
+        
+    }
+    const process_question = async () => {
+        //console.log("HEEERE process_question")
+        //setProcessAttemptEnabled(true)
+        const result = processLiveQuestion(question?.format.toString(), question?.answer_key, "my_ansser")
+        console.log("QuizPageVideo process_question result = ", result)
+        /*
+{
+    "user_answer": "my_ansser",
+    "answer_key": "",
     "score": 0,
-    "questionId": "1062",
-    "error_flag": true,
-    "audio_src": "",
-    "completed": true
+    "error_flag": true
 }
-      */
-            
-            setShowSubmitButton(false)
-            props.set_question_attempt_result(data)   
-            
-          }
-      })
-
-      
-      const handleSubmit: MouseEventHandler<HTMLButtonElement> = (event) => {
-        const button_el = event.target as HTMLButtonElement    
-        //button_el.disabled = true
-        //const my_answer = childRef.current?.getAnswer();
-        const my_answer = "test"
-        if (my_answer) {
-            mutation.mutate({
-                user_answer: my_answer})
+        */
+    }
+    
+    const {data: question_attempt_results} = useQuestionAttemptResults(data?.quiz_attempt.id?.toString() ?? "", "my answer", processAttemptEnabled)
+    
+    useEffect(() => {
+        if (question_attempt_results) {
+            //setQuestionAttemptResponse(question_attempt_results)
+            console.log("QuizPageVideo question_attempt_results = ", question_attempt_results)
+            //setProcessAttemptEnabled(false)
         }
-      }
-      
+    }, [question_attempt_results])
+    //console.log("QuizPageVideo question_attempt_response = ", questionAttemptResponse)
+
+  // const quiz_attempt_id = data?.quiz_attempt.id
+
+   //const {data: question_attempt} = useQuestionAttempt(quiz_attempt_id!.toString())
+ 
+   //console.log("QuizPageVideo question_attempt = ", question_attempt)
+
+   /*
+{
+    "id": 2513,
+    "completion_status": "uncompleted",
+    "score": 0,
+    "userId": 15,
+    "questions_exhausted": false,
+    "errorneous_questions": "",
+    "quizId": 77,
+    "createdAt": "2025-03-31T22:35:48.000Z",
+    "updatedAt": "2025-03-31T22:35:48.000Z",
+    "question_attempts": [
+        {
+            "id": 32421,
+            "answer": null,
+            "score": 0,
+            "question_number": 1,
+            "questionId": 1339,
+            "error_flag": false,
+            "audio_src": "",
+            "completed": false,
+            "quizAttemptId": 2513
+        }
+    ]
+}
+   */
+
 
     return (
         <>
-            <div>
-                Question: {question?.content}
-            </div>
-            <div className='flex flex-col items-center'>
-                <button onClick={() => {
-                    get_next_question()
-                }}>Get Next Question</button>
-            </div>
+       { data && 
+         <>
+         { question && 
+             <div>question id {question?.content} </div>
+         }
+        <div>
+         <button onClick={() => {
+            get_next_question()
+         }}>Get Next Question</button>
+        </div>
+        <div>
+        <button onClick={() => {
+            clear_question()
+         }}>Clear Question</button>
+        </div>
+        <div>
+        <button onClick={() => {
+            process_question()
+         }}>Process Question</button>
+        </div>
+        </>
+        }
 
-            <div className='flex flex-col items-center'>
-            <button className='m-4 bg-red-400' onClick={(e) => handleSubmit(e)}>SSSubmit</button>
-            </div>
-            
         </>
     )
 
