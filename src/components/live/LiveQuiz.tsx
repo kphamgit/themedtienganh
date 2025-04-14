@@ -102,7 +102,7 @@ export default function LiveQuiz(props: any) {
     useEffect(() => {
       if (socket) {
         socket.on('live_question', (arg: { quiz_id: string, question_number: string, target_student: string }) => {
-          console.log("live question received...arg=", arg) 
+          //console.log("live question received...arg=", arg) 
           setGetQuestionEnabled(true)  //retrieve the question from the server
 
           setShowLivePicture(false)
@@ -112,7 +112,7 @@ export default function LiveQuiz(props: any) {
           setQuestionAttemptResponse(null)
         })
         socket.on('live_picture', (arg: any) => {
-          console.log("... .... live_picture message received:")
+          //console.log("... .... live_picture message received:")
           setPictureUrl(arg.picture_url)
           setPictureText(arg.description)
           setShowLivePicture(true)
@@ -127,24 +127,12 @@ export default function LiveQuiz(props: any) {
     }, [socket, user.user_name, user.classId])
 
     const set_question_attempt_results = (arg: QuestionAttemptAttributes) => {
-      //console.log("set_question_attempt_results: ", arg)
+      //console.log("LiveQuz: set_question_attempt_results: arg= ", arg)
       //setLiveQuizId(arg.quiz_id)
       setShowQuestion(false)
       setQuestionAttemptResponse(arg)
     }
  
-    //const set_question_id = (arg: string) => {
-     // setCurrentQuestionId(arg)
-   // }
-  /*
-  interface LiveQuestionProps {
-      question: QuestionProps | undefined,
-      set_question_attempt_result: (question_attempt_results: QuestionAttemptAttributes) => void
-  } 
-   */
-
-// <LiveQuestion quiz_id={liveQuizId} question_number={liveQuestionNumber} 
-//<audio controls src={audioUrl} />
     return (
         <>
           
@@ -186,4 +174,3 @@ export default function LiveQuiz(props: any) {
     )
 }
 //  
-// <QuestionAttemptResults live_flag={true} question_id = {currentQuestionId} response={questionAttemptResponse }  />

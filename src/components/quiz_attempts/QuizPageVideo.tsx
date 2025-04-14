@@ -14,27 +14,23 @@ import { DynamicLetterInputs } from './question_attempts/DynamicLetterInputs';
 import { AzureAudioPlayer } from '../shared/AzureAudioPlayer';
 
 import ReactPlayer from 'react-player';
-import { createQuestionAttempt, processQuestionAttempt } from './question_attempts/services/list';
+
 import { Counter, CounterRef } from '../shared/Counter';
-import { useAxiosFetch } from '../../hooks';
+
 
 //import Popup from 'reactjs-popup';
 import ModalPopup from '../shared/ModalPopup';
-//import DragAndDropList from './question_attempts/DragAndDropList';
+
 import DragDrop from './question_attempts/dragdrop/DragDrop';
 
 import { useQuizAttempt } from '../../hooks/useQuizAttempt';
 import { useQuestionAttempt } from '../../hooks/useQuestionAttempt';
 
-import { QuestionAttemptProps } from './types';
-import { useLiveQuestion } from '../../hooks/useLiveQuestion';
-import { useQuestion } from '../../hooks/useQuestion';
-import { useQuestionAttemptResults } from '../../hooks/useQuestionAttemptResults';
 
-import { processLiveQuestion } from '../live/processLiveQuestion';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { processQuestion } from '../live/processQuestion';
+import { useMutation } from '@tanstack/react-query';
 import { updateQuestionAttempt } from '../api/updateQuestionAttempt';
-import { FaSlideshare } from 'react-icons/fa';
+import { QuestionAttemptResults } from './QuestionAttemptResults';
 
 interface PageParamsProps {
     page_num: number
@@ -66,9 +62,8 @@ export default function QuizPageVideo(props:any) {
     const [question, setQuestion] = useState<QuestionProps | undefined>()
     const [questionAttemptId, setQuestionAttemptId] = useState<string | undefined>()
 
-    const [questionId, setQuestionId] = useState<string | undefined>()
     const [showQuestion, setShowQuestion] = useState(false)
-    //const [showQuestionAttemptResults, setShowQuestionAttemptResults] = useState(false)
+  
     const [showNextButton, setShowNextButton] = useState(false)
     const [questionAttemptResponse, setQuestionAttemptResponse] = useState< QuestionAttemptAttributes>()
     const [endOfQuiz, setEndOfQuiz] = useState(false)
@@ -76,83 +71,65 @@ export default function QuizPageVideo(props:any) {
 
     const counterRef = useRef<CounterRef>(null)
 
-    const [answer, setAnswer] = useState<string>()
-
     const [playing, setPlaying] = useState(false);
 
-    const [quizAttemptId, setQuizAttemptId] = useState<string | undefined>(undefined)
-    
    // const videoParams:VideoProps = location.state
 
    const [nextQuestionEnabled, setNextQuestionEnabled] = useState(false)
-   const [testCount, setTestCount] = useState(1)
-   const [ processAttemptEnabled, setProcessAttemptEnabled] = useState(false)
-   
+  
    const { data } = useQuizAttempt(params.quizId!, user?.id?.toString() ?? "")
-
-   const queryClient = useQueryClient()
 
    useEffect(() => {
         if (data) {
             //console.log("QuizPageVideo data = ", data)
             setQuestion(data.question)
+            setShowSubmitButton(true)
             setQuestionAttemptId(String(data.question_attempt_id))
+            setEndOfQuiz(false)
+            setShowQuestion(true)
+            
         }
+      
     }, [data])
 
-//  res.send({ quiz_attempt, question: next_question, question_attempt_id: question_attempt.id })
-   //console.log("QuizPageVideo xxx  data  = ", data)
-
    const { data: questionAttemptData } = useQuestionAttempt(data?.quiz_attempt.id.toString()!, nextQuestionEnabled)
-/*
-   res.send({
-          end_of_quiz: results?.end_of_quiz,
-          question: results?.question as unknown as QuestionProps,
-          question_attempt_id: question_attempt.id
-        })
-*/
 
    useEffect(() => {
         if (questionAttemptData) {
             //console.log("QuizPageVideo questionAttemptData = ", questionAttemptData)
-            setQuestion(questionAttemptData.question)
-            setQuestionAttemptId(String(questionAttemptData.question_attempt_id))
-            setNextQuestionEnabled(false)
+            if (questionAttemptData.end_of_quiz) {
+                setEndOfQuiz(true)
+            }
+            else {
+                setQuestion(questionAttemptData.question)
+                setQuestionAttemptId(String(questionAttemptData.question_attempt_id))
+                setNextQuestionEnabled(false)   // disable the useQuestionAttempt hook
+                setShowNextButton(false)
+                setShowSubmitButton(true)
+                setShowQuestion(true)
+               
+            }
         }
+      
    }, [questionAttemptData])
    
     
     const get_next_question = async () => {
-        console.log("get_next_question")
-        setNextQuestionEnabled(true)
+        setShowNextButton(false)
+        setShowQuestion(false)
+        setQuestionAttemptResponse(undefined)
+        setNextQuestionEnabled(true)  // trigger the useQuestionAttempt hook to get the next question
     }
 
-    /*
- id: string,   //question attempt id
-    user_answer: string,
-    score: string,
-    error_flag: boolean
-    */
-// queryKey: ['question_attempt', quiz_attempt_id],
     const mutation = useMutation({
-        mutationFn: ({  user_answer }: { user_answer: string }) =>
-          updateQuestionAttempt(questionAttemptId ? String(questionAttemptId) : "", user_answer, "5", false),
+        mutationFn: ({  user_answer, score, error_flag }: { user_answer: string, score: string | undefined, error_flag: boolean | undefined  }) =>
+          updateQuestionAttempt(questionAttemptId ? String(questionAttemptId) : "", user_answer, score, error_flag),
         onSuccess: (response) => {
-            console.log('✅ Get live question attempt results:', response)
-            //queryClient.invalidateQueries(['question_attempt', questionAttemptId])
-            
-   /*
-     {
-    "user_answer": "  ee",
-    "score": 0,
-    "questionId": "1062",
-    "error_flag": true,
-    "audio_src": "",
-    "completed": true
-}
-      */
-            
+            //console.log('✅ Get XXXXXXX question attempt results:', response)
+            setShowNextButton(true)
             setShowSubmitButton(false)
+            setShowQuestion(false)
+            setQuestionAttemptResponse(response)
             props.set_question_attempt_result(data)   
             
           }
@@ -162,38 +139,98 @@ export default function QuizPageVideo(props:any) {
       const handleSubmit: MouseEventHandler<HTMLButtonElement> = (event) => {
         const button_el = event.target as HTMLButtonElement    
         //button_el.disabled = true
-        //const my_answer = childRef.current?.getAnswer();
-        const my_answer = "test"
-        if (my_answer) {
-            mutation.mutate({
-                user_answer: my_answer})
+        const the_answer = childRef.current?.getAnswer()
+        //console.log("handleSubmit the_answer = ", the_answer)
+        if ((the_answer!.trim()).length > 0) {
+            const result = processQuestion(question?.format?.toString() ?? "", question?.answer_key ?? "", the_answer ?? "")
+            //console.log("handleSubmit result = ", result)
+            if (result) { // update the question attempt on the server
+                mutation.mutate({
+                    user_answer: result?.user_answer,
+                    score: result?.score.toString(),
+                    error_flag: result?.error_flag
+                })
+            }
+        }
+        else {
+            alert(" Please enter an answer")
+            button_el.disabled = false
         }
       }
-      
+    
+    if (endOfQuiz) {
+        return (
+            <div className='flex flex-col items-center'>
+                <div className='m-4'>
+                    <h1>End of Quiz</h1>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <>
-            <div>
-                Question: {question?.content}
-            </div>
-            <div className='flex flex-col items-center'>
-                <button onClick={() => {
+        <div className='bg-gradient-to-b from-bgColorQuestionAttempt to-green-100 flex flex-col mx-40 mt-4 rounded-md'>
+          <div className='bg-bgColorQuestionContent mx-10 my-6 flex flex-col rounded-md'>
+                    {showQuestion ?
+                    <>   
+                    
+                               <div className='text-textColor2 m-2' dangerouslySetInnerHTML={{ __html: question?.instruction ?? '' }}></div>
+                                    <div className='m-2 text-textColorQuestionPrompt'>{question?.prompt}</div>
+                                    <div>
+                                        {(question?.audio_str && question.audio_str.trim().length > 0) &&
+                                            <AzureAudioPlayer text={question.audio_str} />
+                                        }
+                                        {(question?.audio_src && question.audio_src.trim().length > 0) &&
+                                            <audio src={question.audio_src} controls />
+                                        }
+                                    </div>
+                        <div className='mt-3'>
+                            {question?.format === 1 ? (
+                                <DynamicWordInputs content={question.content} ref={childRef} />
+                            ) : question?.format === 2 ? (
+                                <ButtonSelectCloze content={question.content} ref={childRef} />
+                            ) : question?.format === 3 ? (
+                                <ButtonSelect content={question.content} ref={childRef} />
+                            ) : question?.format === 4 ? (
+                                <RadioQuestion question={question} ref={childRef} />
+                            ) : question?.format === 6 ? (
+                                <DragDrop content={question.content} ref={childRef} />
+                            ) : question?.format === 7 ? (
+                                <SRContinuous content={question.content} ref={childRef} />
+                            ) : question?.format === 8 ? (
+                                <WordsSelect content={question.content} ref={childRef} />
+                            ) : question?.format === 10 ? (
+                                <DropDowns content={question.content} ref={childRef} />
+                            ) : question?.format === 11 ? (
+                                <DynamicLetterInputs content={question.content} ref={childRef} />
+                            ) : (
+                                null
+                            )}
+                        </div>
+                        </>
+                        :
+                        questionAttemptResponse &&
+                        <div><QuestionAttemptResults
+                            live_flag={false}
+                            question={question}
+                            response={questionAttemptResponse} /></div>
+                    }
+            <div className='flex flex-col items-start'>
+            { showNextButton &&
+                <button className='bg-green-500 p-2 mt-2 rounded-md' onClick={() => {
                     get_next_question()
-                }}>Get Next Question</button>
+                }}>Next</button>
+            }
+            {showSubmitButton &&
+                <button className='m-4 bg-amber-500 p-2 rounded-md' onClick={(e) => handleSubmit(e)}>Submit</button>
+            }
             </div>
 
-            <div className='flex flex-col items-center'>
-            <button className='m-4 bg-red-400' onClick={(e) => handleSubmit(e)}>SSSubmit</button>
             </div>
-            
+            </div>
         </>
     )
 
 }
 
-/*
-   <QuestionAttemptResults live_flag={false} question_id= {questionId} response={questionAttemptResponse }  />
-
-          ) : question.format === 6 ? (
-            <WordScrambler content={question.content} ref={childRef} />
-*/

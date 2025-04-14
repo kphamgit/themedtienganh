@@ -1,5 +1,6 @@
 //import { QuestionAttemptAttributes, QuestionAttemptProps } from "../quiz_attempts/types";
 import { store } from "../../redux/store";
+import { QuestionAttemptAttributes } from "../quiz_attempts/types";
 //import { RootState } from "../../../../redux/store";
 
 /*
@@ -32,14 +33,24 @@ export const fetchQuestionAttempt = async (quiz_id: string | undefined, question
   //quizAttemptId: string;
 }
 
+/*
+
+export interface QuestionAttemptAttributes {
+  user_answer: string;
+  score: number;
+  error_flag: boolean;
+  
+}
+*/
+
 export const updateQuestionAttempt = async (
     id: string,   //question attempt id
     user_answer: string,
-    score: string,
-    error_flag: boolean
-): Promise<void> => {
+    score: string | undefined,
+    error_flag: boolean | undefined
+): Promise<QuestionAttemptAttributes> => {
     // server will decide the next question to fetch
-    console.log("XXXXXX IN updateQuestionAttempt question attempt id = ", id, "user answer", user_answer)
+    //console.log("XXXXXX IN updateQuestionAttempt question attempt id = ", id, "user answer", user_answer)
     const rootpath = store.getState().rootpath.value
     
     const url = `${rootpath}/api/question_attempts/${id}/update`;
@@ -55,8 +66,9 @@ export const updateQuestionAttempt = async (
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const data = await response.json();
-    console.log("data", data)
-    return data;
+    //const data = await response.json();
+    //console.log("data", data)
+    //return data;
+    return {user_answer, score: Number(score), error_flag: error_flag} as QuestionAttemptAttributes
   }
 

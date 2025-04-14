@@ -21,13 +21,14 @@ import  QuestionHelper from './QuestionHelper';
         const [displayedUserAnswer, setDisplayedUserAnswer] = useState('')
         const [displayedAnswerKey, setDisplayedAnswerKey] = useState('')
      
-    //console.log("QuestionAttemptResults props.quiz_id =", props.quiz_id, "**** ",  props.question_number)
+    //console.log("QuestionAttemptResults ENTRY, props = ", props)
      //const { data, error, isLoading } = useLiveQuestion(props.quiz_id, props.question_number)
     
    
     useEffect(() => {  
         if (props.response.user_answer) {
-            let displayed_user_answer = ''
+            //console.log("HERE IN useEffect user_answer = ", props.response.user_answer)
+            let displayed_user_answer = props.response.user_answer
             if (props?.question?.format === 4) { //radio
                 switch (props.response.user_answer) {
                     case 'choice1':
@@ -50,7 +51,7 @@ import  QuestionHelper from './QuestionHelper';
         }
 
         if (props.question?.answer_key) {
-            let displayed_answer_key = ''
+            let displayed_answer_key = props.question?.answer_key
             if (props?.question?.format === 4) { //radio
                 switch (props.question?.answer_key) {
                     case 'choice1':
@@ -191,7 +192,7 @@ import  QuestionHelper from './QuestionHelper';
                         }
                     </>
                     :
-                    <div className='text-lg text-textColorFaSmile mx-2'>
+                    <div className='flex flex-row justify-center text-lg text-textColorFaSmile mx-2'>
                         <FaSmile />
                     </div>
                 }

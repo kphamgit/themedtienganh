@@ -7,7 +7,7 @@ type FetchQuestionProps = {
 
 }
 
-export const fetchLiveQuestion = async (quiz_id: string | undefined, question_number: string | undefined):
+export const fetchQuestion = async (quiz_id: string | undefined, question_number: string | undefined):
     
     Promise<FetchQuestionProps> => {
     const rootpath = store.getState().rootpath.value

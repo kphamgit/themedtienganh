@@ -3,9 +3,9 @@ import { fetchLiveQuestion } from '../components/api/fetchLiveQuestion';
 //import { QuestionProps } from '../quiz_attempts/types';
 
 export const useLiveQuestion = (quiz_id: string | undefined, question_number: string | undefined, enabled: boolean) => {
-  console.log("useLiveQuestion quiz_id = ", quiz_id)
-  console.log("useLiveQuestion question_number = ", question_number)
-  console.log("useLiveQuestion enabled = ", enabled)
+  //console.log("useLiveQuestion quiz_id = ", quiz_id)
+  //console.log("useLiveQuestion question_number = ", question_number)
+  //console.log("useLiveQuestion enabled = ", enabled)
   return useQuery({
     queryKey: ['live_question', quiz_id, question_number],
     queryFn: () => fetchLiveQuestion(quiz_id, question_number),

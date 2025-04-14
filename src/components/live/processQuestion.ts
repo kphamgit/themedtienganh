@@ -1,18 +1,8 @@
-import { QuestionProps } from "../quiz_attempts/types";
 
 //export const processLiveQuestion = (answer_key:string, user_answer: string) => {
 
-export const processLiveQuestion = (format: string | undefined, answer_key: string | undefined, user_answer: string) => {
-  //console.log("processLiveQuestion question", question)
-  //console.log("processLiveQuestion question", question.question)
- /* 
-  const question_type = question.question.question_type;
-  const question_id = question.question.id;
-  const quiz_attempt_id = question.quiz_attempt_id;
-  const quiz_id = question.quiz_id;
-  const quiz_question_number = question.quiz_question_number;
-  const quiz_question_id = question.quiz_question_id;
-  */
+export const processQuestion = (format: string | undefined, answer_key: string | undefined, user_answer: string | undefined) => {
+  
   const default_results = {
     user_answer: '', 
     score: 0, 
@@ -27,11 +17,11 @@ export const processLiveQuestion = (format: string | undefined, answer_key: stri
    let error = false;
    let score = 0
    if (answer_key != user_answer)  {
-    console.log("process_button_select error: ")
+    //console.log("process_button_select error: ")
       error = true
    }
    else {
-    console.log("process_button_select NO error: ")
+    //console.log("process_button_select NO error: ")
         score += 5;
    }      
     return { ...default_results,
@@ -49,12 +39,12 @@ const process_cloze = (answer_key:string, user_answer: string ) => {
     //console.log("in process_cloze user answer :",user_answer);
     //console.log("in process_cloze answer key array = ", answer_keys_array);
     let user_answer_parts = user_answer.trim().split('/')
-    console.log("user_answer_parts = ", user_answer_parts)
+    //console.log("user_answer_parts = ", user_answer_parts)
     let answer_key_parts = answer_key.split('/')
-    console.log("answer_key_parts = ", answer_key_parts)
+    //console.log("answer_key_parts = ", answer_key_parts)
 
     user_answer_parts.forEach( (u_answer, index) => {
-        console.log("u answer = ", u_answer)
+        //console.log("u answer = ", u_answer)
         //console.log("answer key = "+answer_key_parts[index])
         let a_key = answer_key_parts[index]
         //console.log("akey = ", a_key)
@@ -63,7 +53,7 @@ const process_cloze = (answer_key:string, user_answer: string ) => {
         }
 
         if (a_key?.indexOf('*') >= 0 ) { //there are several possible answers
-            console.log(" multiple answers")
+            //console.log(" multiple answers")
             let possible_answers = a_key.split('*')
             //console.log("possible_answers: ",possible_answers)
             possible_answers.forEach ( (possible_answer: string) => {
@@ -78,7 +68,7 @@ const process_cloze = (answer_key:string, user_answer: string ) => {
         }
     })
 
-    console.log("process_cloze error = ", error)
+    //console.log("process_cloze error = ", error)
     if (!error) {
         score = 5
     }        
@@ -112,7 +102,7 @@ const compare_cloze_answers = (user_answer: string, answer_key: string) => {
 
 const process_radio = (question: any, user_answer: string) => {  // 4
 
-    console.log("process_radio user answer = ", user_answer)
+    //console.log("process_radio user answer = ", user_answer)
     let error = false;
   let score = 0
   if (answer_key != user_answer)  {
@@ -131,6 +121,7 @@ const process_radio = (question: any, user_answer: string) => {  // 4
 }
 
 const process_words_scramble = (answer_key: string , user_answer:string) => {
+    //console.log("process_words_scramble user answer = ", user_answer)
     let searchRegExp = /\//g;
     let replaceWith = '';
 //kevin: programming notes: replaceAll doesn't work on the server,
@@ -189,42 +180,42 @@ const process_words_select = (answer_key: string, user_answer: string) => {
 
          }
 }
-
+//console.log("processLiveQuestion format = ", format)
 switch (format) {
     case '1': // cloze
         return process_cloze(
             answer_key!,
-            user_answer
+            user_answer!
         );
     case '3': // button select
         return process_button_select(
             answer_key!,
-            user_answer
+            user_answer!
         );
     case '4': // radio
         return process_radio(
             answer_key,
-            user_answer
+            user_answer!
         );
-    case '6': // word scramble
+    case '7': // word scramble
         return process_words_scramble(
             answer_key!,
-            user_answer
+            user_answer!
         );
     case '8': // words select
         return process_words_select(
             answer_key!,
-            user_answer
+            user_answer!
         );
     case '10': // 
         return process_cloze(
             answer_key!,
-            user_answer
+            user_answer!
         );
     case '11': // dropdown
         return process_cloze(
             answer_key!,
-            user_answer
+            user_answer!
         );
     default:
         // Handle other cases or do nothing

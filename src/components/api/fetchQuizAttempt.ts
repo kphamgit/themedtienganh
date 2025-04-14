@@ -73,7 +73,7 @@ export type FetchQuizAttemptProps = {
       Promise<FetchQuizAttemptProps> => {
       const rootpath = store.getState().rootpath.value
       const url = `${rootpath}/api/quiz_attempts/find_create/${quiz_id}/${user_id}`;
-      console.log("fetchQuizAttempt url", url)
+      //console.log("in fetchQuizAttempt url", url)
       
       const response = await fetch(url);
       if (!response.ok) throw new Error("Failed to fetch quiz attempt");

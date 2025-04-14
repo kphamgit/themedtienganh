@@ -26,6 +26,7 @@ export const SRContinuous = forwardRef<ChildRef, Props>((props, ref) => {
     } = useSpeechRecognition();
     
     const getAnswer = () => {
+        console.log("getAnswer called, transcript = ", transcript)
         return transcript
     }
 

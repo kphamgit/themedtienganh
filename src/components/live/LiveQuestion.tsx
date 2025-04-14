@@ -4,7 +4,7 @@ import { useAppSelector } from '../../redux/store';
 //import { useAxiosFetch } from '../../hooks';
 //import { LiveQuestionAttemptAttributes, QuestionProps } from '../quiz_attempts/types';
 import { DynamicWordInputs } from '../quiz_attempts/question_attempts/DynamicWordInputs';
-import { processLiveQuestionAttempt } from '../quiz_attempts/question_attempts/services/list';
+
 import { DropDowns } from '../quiz_attempts/question_attempts/DropDowns';
 import { ButtonSelect } from '../quiz_attempts/question_attempts/ButtonSelect';
 //import { WordScrambler } from '../quiz_attempts/question_attempts/WordScrambler';
@@ -23,11 +23,7 @@ import { CounterRef } from '../shared/Counter';
 import { DynamicLetterInputs } from '../quiz_attempts/question_attempts/DynamicLetterInputs';
 import { useAudioBlobContext } from '../../contexts/AudioBlobContext'
 import DragDrop from '../quiz_attempts/question_attempts/dragdrop/DragDrop';
-import { useLiveQuestion } from '../../hooks/useLiveQuestion';
-import { useLiveQuestionAttemptResults } from '../../hooks/useLiveQAResults';
-import { useMutation } from '@tanstack/react-query';
-import { fetchLiveQuestionAttemptResults } from '../api/fetchLiveQAResults';
-import { processLiveQuestion } from './processLiveQuestion';
+import { processQuestion } from './processQuestion';
 import { QuestionAttemptAttributes, QuestionProps } from '../quiz_attempts/types';
 
 
@@ -57,6 +53,8 @@ interface LiveQuestionProps {
 export default function LiveQuestion(props: LiveQuestionProps) {
     //const { data, error, isLoading } = useLiveQuestion(props.quiz_id, props.question_number)
 
+    const {socket, user_name, users} = useContext(SocketContext).SocketState;
+
 
     const user = useAppSelector(state => state.user.value)
     const counterRef = useRef<CounterRef>(null)
@@ -67,7 +65,7 @@ export default function LiveQuestion(props: LiveQuestionProps) {
     const [endOfQuiz, setEndOfQuiz] = useState(false)
  
     const childRef = useRef<ChildRef>(null);
-    //const {socket, user_name, users} = useContext(SocketContext).SocketState;
+   
 
     const { audioBlob } = useAudioBlobContext();
     //const [audioUrl, setAudioUrl] = useState('')
@@ -91,10 +89,21 @@ export default function LiveQuestion(props: LiveQuestionProps) {
             setSubmitEnabled(true)
             console.log("handleSubmit format = ", props.question?.format)
             if (props.question) {
-                const result = processLiveQuestion(props.question.format.toString(), props.question.answer_key, my_answer)
+                const result = processQuestion(props.question.format.toString(), props.question.answer_key, my_answer)
                 console.log("handleSubmit result = ", result)
                 if (result) {
                     props.set_question_attempt_result(result);
+                    const live_score_params: LiveScoreProps = {
+                        question_format: props.question?.format,
+                        question_number: props.question.question_number,
+                        question_content: props.question?.content,
+                        user_answer: childRef.current?.getAnswer(),
+                        answer_key: props.question?.answer_key,
+                        score: result.score.toString(),
+                        total_score: 0, 
+                        user_name: user.user_name
+                    }
+                    socket?.emit('live_score', live_score_params) 
                 } else {
                     console.error("Result is undefined");
                 }
