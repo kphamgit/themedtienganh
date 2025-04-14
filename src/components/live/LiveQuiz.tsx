@@ -26,7 +26,7 @@ import LiveQuestion from './LiveQuestion';
 //import { QuestionAttemptAttributes, QuestionProps } from '../quiz_attempts/types';
 import { QuestionAttemptResults } from '../quiz_attempts/QuestionAttemptResults';
 import { QuestionAttemptAttributes, QuestionProps } from '../quiz_attempts/types';
-import { useLiveQuestion } from '../../hooks/useLiveQuestion';
+import { useQuestion } from '../../hooks/useQuestion';
 //import {QuestionAttemptResponseProps} from '../components/services/list'
 
 /*
@@ -89,7 +89,7 @@ export default function LiveQuiz(props: any) {
 
     const {socket} = useContext(SocketContext).SocketState;
  
-    const { data, error, isLoading } = useLiveQuestion(liveQuizId, liveQuestionNumber, getQuestionEnabled)
+    const { data, error, isLoading } = useQuestion(liveQuizId, liveQuestionNumber, getQuestionEnabled)
 
     useEffect(() => {
       if (data) {
