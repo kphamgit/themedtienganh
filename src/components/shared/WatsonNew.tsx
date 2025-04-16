@@ -60,7 +60,7 @@ const IBMSTTNew: React.FC<IBMSTTProps> = ({ apiKey, serviceUrl }) => {
       <h2 className="text-xl font-bold mb-2">IBM Watson Speech-to-Text</h2>
       <p className="mb-4">{transcript || "Start speaking..."}</p>
       <button onClick={isRecording ? stopRecording : startRecording}>
-        {isRecording ? "Stop Recording" : "Start Recording"}
+        {isRecording ? "Stop Watson Recording" : "Start Watson Recording"}
       </button>
     </div>
   );

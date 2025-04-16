@@ -75,8 +75,9 @@ export async function getAClass(id: string): Promise<ClassProps> {
     return response.data
   
   }
+
   export async function upload_form_data_to_s3(formData: any, config: any) {
-    const url = `${rootpath}/api/upload_s3/do_upload_single` 
+    const url = `${rootpath}/api/upload/do_upload_single_s3` 
     //console.log(" in list upload..url =", url)
     //console.log("form data: ", formData)
     /*

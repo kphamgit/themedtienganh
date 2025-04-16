@@ -52,7 +52,7 @@ const AzureTranscription: React.FC = () => {
         <div>
             <h1>Azure Speech to to Text</h1>
             <button onClick={isRecording ? stopRecognition : startRecognition}>
-                {isRecording ? 'Stop Recording' : 'Start Recording'}
+                {isRecording ? 'Stop Azure Recording' : 'Start Azure Recording'}
             </button>
             <p>{transcript}</p>
         </div>

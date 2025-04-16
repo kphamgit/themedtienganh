@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 //import Room from '../shared/Room'
-import LiveAudioRecorder  from "../shared/LiveAudioRecorder"
+import LiveAudioRecorderSave  from "../shared/LiveAudioRecorderSave"
 import RoomAudio from '../shared/RoomAudioStudent';
 import { useSocketContext } from '../../hooks/useSocketContext';
 //import Lottie from "lottie-react";
-import telephoneAnimation from "../../telephone.json";
+//import telephoneAnimation from "../../telephone.json";
 import ChatPage from '../chat/ChatPage';
 
 export function SideStudent(props: any) {
@@ -51,7 +51,7 @@ export function SideStudent(props: any) {
                  <RoomAudio roomID = {roomID} />
             </>
             }
-            <LiveAudioRecorder />
+            <LiveAudioRecorderSave />
            <ChatPage />
         </>
     )

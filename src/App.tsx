@@ -1,7 +1,7 @@
 import {  useState, lazy, Suspense } from "react";
 //import { ThemeContext } from "./contexts/theme_context";
 //import { ThemeContextInterface } from "./types";
-import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 //import { Home } from "./components/navigation/Home";
 import { Login } from "./auth/Login";
 import { Logout } from "./auth/Logout";
@@ -20,7 +20,6 @@ const SubCategoryPageStudent = lazy(() => import("./components/navigation/SubCat
 const SimplePeer = lazy(() => import('./components/shared/SimplePeer'))
 const QuizPageVideo  = lazy(() => import('./components/quiz_attempts/QuizPageVideo'));
 const TtSpeechProvider = lazy(() => import("./contexts/azure/AzureTtsContext"))
-//const CategoryPage = lazy(() => import("./components/navigation/CategoryPage"))//
 const LiveMemoryGame = lazy(() => import("./components/live/LiveMemoryGame"))//
 const LivePicture = lazy(() => import("./components/live/LivePicture"))//
 const LiveQuiz = lazy(() => import("./components/live/LiveQuiz"))////
@@ -117,36 +116,3 @@ function App() {
 
 // <Route path="/room/:roomID" element={<Room />} />
 export default App;
-
-/*
-return (
-    <>
-      <SocketContextComponent>
-        <Suspense fallback={<div>Loading...</div>}>
-          <TtSpeechProvider>
-
-            <BrowserRouter>
-              <Routes>
-                <Route path="/logout" element={<Logout onLogout={onLogout} />} />
-                <Route path="/" element={<Home />}>
-                  <Route path="/categories/:categoryId" element={<CategoryPage />}>
-                    <Route path="sub_categories_student/:sub_categoryId" element={<SubCategoryPageStudent />} />
-                    <Route path="sub_categories/:sub_category_name/quizzes/:quizId" element={<QuizPageVideo />} />
-                  </Route>
-                  <Route path="/front_page" element={<FrontPage />} />
-                  <Route path="/live_text" element={<LiveText />} />
-                  <Route path="/live_picture" element={<LivePicture />} />
-                  <Route path="/simple_peer" element={<SimplePeer />} />
-                  <Route path="/live_quiz" element={<LiveQuiz />} />
-                  <Route path="/live_game/:game_id/:backcolor" element={<MemoryGame />} />
-                  <Route path="/live_youtube_video" element={<YoutubeVideoPlayer />} />
-                </Route>
-              </Routes>
-            </BrowserRouter>
-
-          </TtSpeechProvider>
-        </Suspense>
-      </SocketContextComponent>
-    </>
-  );
-*/

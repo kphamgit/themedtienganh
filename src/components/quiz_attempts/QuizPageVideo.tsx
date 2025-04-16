@@ -31,6 +31,7 @@ import { processQuestion } from '../live/processQuestion';
 import { useMutation } from '@tanstack/react-query';
 import { updateQuestionAttempt } from '../api/updateQuestionAttempt';
 import { QuestionAttemptResults } from './QuestionAttemptResults';
+import axios from 'axios';
 
 interface PageParamsProps {
     page_num: number
@@ -50,6 +51,9 @@ export default function QuizPageVideo(props:any) {
     //const user = useAppSelector(state => state.user.value)
     const user = useAppSelector(state => state.user.value)
     //console.log("QuizPageVideo wwwww user = ", user)
+
+    //google text to speech test
+    const [audioSrc, setAudioSrc] = useState<string | null>(null);
 
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   
@@ -78,6 +82,8 @@ export default function QuizPageVideo(props:any) {
    const [nextQuestionEnabled, setNextQuestionEnabled] = useState(false)
   
    const { data } = useQuizAttempt(params.quizId!, user?.id?.toString() ?? "")
+
+   const rootpath = useAppSelector(state => state.rootpath.value)
 
    useEffect(() => {
         if (data) {
@@ -158,6 +164,16 @@ export default function QuizPageVideo(props:any) {
         }
       }
     
+    const playAudio = async () => {
+        console.log("playAudio  = ", )
+        const response = await axios.post('http://localhost:5001/api/tts/text_to_speech',{
+            text: question?.audio_str,
+           // voice: "en-US-JennyNeural",
+        })
+        //console.log("response data audioContent= ", response.data.audioContent)
+        const audioSrc = `data:audio/mp3;base64,${response.data.audioContent}`;
+        setAudioSrc(audioSrc);
+    }
     if (endOfQuiz) {
         return (
             <div className='flex flex-col items-center'>
@@ -168,10 +184,38 @@ export default function QuizPageVideo(props:any) {
         )
     }
 
+    
+    useEffect(() => {
+       
+        const fetchAudio = async () => {
+            //const url = 'http://localhost:5001/api/tts/text_to_speech'
+            const url = `${rootpath}/api/tts/text_to_speech`
+           // console.log("playAudio url = ", url)
+            //console.log("playAudio question.audio_str = ", question?.audio_str)
+            const response = await axios.post(url,{
+                text: question?.audio_str,
+               // voice: "en-US-JennyNeural",
+            })
+            //console.log("response data audioContent= ", response.data.audioContent)
+            const audioSrc = `data:audio/mp3;base64,${response.data.audioContent}`;
+            setAudioSrc(audioSrc);
+        };
+        if (question?.audio_str && question.audio_str.trim().length > 0) {
+            fetchAudio();
+        }
+    },[question?.audio_str])
+    
+
     return (
         <>
         <div className='bg-gradient-to-b from-bgColorQuestionAttempt to-green-100 flex flex-col mx-40 mt-4 rounded-md'>
           <div className='bg-bgColorQuestionContent mx-10 my-6 flex flex-col rounded-md'>
+            <div>
+                
+                {audioSrc && (
+                    <audio src={audioSrc} controls />
+                )}
+            </div>
                     {showQuestion ?
                     <>   
                     

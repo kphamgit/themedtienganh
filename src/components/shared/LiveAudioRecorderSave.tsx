@@ -1,7 +1,7 @@
 //import { Outlet } from "react-router-dom";
 //import VoiceRecorder from "../components/VoiceRecorder";
 
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { LiveAudioVisualizer } from 'react-audio-visualize';
 import { AudioRecorder, useAudioRecorder } from 'react-audio-voice-recorder';
 import { upload_form_data_to_s3 } from '../../services/list'
@@ -10,76 +10,7 @@ import { useAppSelector } from "../../redux/store";
 import { v4 as uuidv4 } from 'uuid';
 import { useAudioBlobContext } from "../../contexts/AudioBlobContext";
 
-
-const AudioRecorder1: React.FC = () => {
-  const [recording, setRecording] = useState(false);
-  const [transcript, setTranscript] = useState('');
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunks = useRef<Blob[]>([]);
-
-  const user = useAppSelector(state => state.user.value)
-
-  const startRecording = async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const recorder = new MediaRecorder(stream);
-    mediaRecorderRef.current = recorder;
-
-    recorder.ondataavailable = (event) => {
-      audioChunks.current.push(event.data);
-    };
-
-    recorder.onstop = async () => {
-      const audioBlob = new Blob(audioChunks.current, { type: 'audio/webm' });
-      audioChunks.current = [];
-
-     
-
-      const formData = new FormData();
-      const s3_file_path =  `audios/recordings/${user.user_name}`
-     
-      formData.append("s3_file_path", s3_file_path)
-      formData.append('audio', audioBlob, 'speech.webm');
-      
-
-      //const url = `${rootpath}/api/upload_s3/do_upload_single` 
-      ///api/upload/do_upload_openai',
-      const response = await fetch('http://localhost:5001/api/upload/do_upload_openai', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const data = await response.json();
-      setTranscript(data.text);
-    };
-
-    recorder.start();
-    setRecording(true);
-  };
-
-  const stopRecording = () => {
-    mediaRecorderRef.current?.stop();
-    setRecording(false);
-  };
-
-  return (
-    <div>
-      <button onClick={recording ? stopRecording : startRecording}>
-        {recording ? 'Stop Recording' : 'Start Recording'}
-      </button>
-
-      {transcript && (
-        <div>
-          <h3>Transcription:</h3>
-          <p>{transcript}</p>
-        </div>
-      )}
-    </div>
-  );
-};
-
-//export default AudioRecorder;
-
-export default function LiveAudioRecorder(props: any) {
+export default function LiveAudioRecorderSave(props: any) {
     const user = useAppSelector(state => state.user.value)
     const [blob, setBlob] = useState<Blob>();
     const recorder = useAudioRecorder();
@@ -144,10 +75,20 @@ export default function LiveAudioRecorder(props: any) {
             <div className="grid grid-rows gap-1">
            
               <div className="flex flex-row justify-center">
-                <AudioRecorder1
+                <AudioRecorder
+                    onRecordingComplete={setBlob}
+                    recorderControls={recorder}
                 />
               </div>
-        
+              <div className="mx-2">
+                {recorder.mediaRecorder && (
+                    <LiveAudioVisualizer
+                        mediaRecorder={recorder.mediaRecorder}
+                        width={200}
+                        height={50}
+                    />
+                )}
+              </div>
             </div>
             <div className="flex flex-col justify-center">
             {blob 

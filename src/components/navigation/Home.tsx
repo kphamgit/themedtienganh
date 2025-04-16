@@ -5,11 +5,6 @@ import  HomeStudent  from './HomeStudent'
 //const HomeTeacher = lazy(() => import("./HomeTeacher"))
 //const HomeStudent = lazy(() => import("./HomeStudent"))
 
-interface SocketInfo {
-  socket_id: string | undefined;
-  user_name: string;
-
-}
 
 /*
 function getAuthFromSessionStorage() {

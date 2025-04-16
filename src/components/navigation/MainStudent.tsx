@@ -1,4 +1,4 @@
-import { useEffect, lazy, useState, useContext} from 'react'
+import { useEffect, useState, useContext} from 'react'
 
 import { useAppSelector } from '../../redux/store'
 import { Outlet, useNavigate } from 'react-router-dom'
@@ -15,9 +15,9 @@ import { MdDarkMode } from 'react-icons/md';
 
 //import IBMSTT from '../shared/WatsonSpeechRecognition'
 
-interface ChildRef {
-  getAnswer: () => string | undefined;
-}
+//interface ChildRef {
+  //getAnswer: () => string | undefined;
+//}
 
 
 
@@ -98,7 +98,7 @@ export default function MainStudent(props: any ) {
 
   useEffect(() => {
     socket.on('toggle_live_recording', (arg: {}) => {
-      console.log(" receive toggle live recording")
+      //console.log(" receive toggle live recording")
       // setShowLiveRecording(!showLiveRecording)
        //setShowLiveRecording(prevShowLiveRecording => !prevShowLiveRecording);
        setShowLiveRecording(!showLiveRecording);
@@ -108,9 +108,9 @@ export default function MainStudent(props: any ) {
     }
 }, [socket, showLiveRecording ])
 
-  const pollyFunc = (selected_text: string) => {
-      console.log("in polly function")
-  }
+  //const pollyFunc = (selected_text: string) => {
+     // console.log("in polly function")
+  //}
 
   /*
     <Route path="/logout" element={<Logout onLogout={onLogout} />} />
