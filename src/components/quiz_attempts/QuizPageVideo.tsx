@@ -143,13 +143,14 @@ export default function QuizPageVideo(props:any) {
 
       
       const handleSubmit: MouseEventHandler<HTMLButtonElement> = (event) => {
+        console.log("handleSubmit ")
         const button_el = event.target as HTMLButtonElement    
         //button_el.disabled = true
         const the_answer = childRef.current?.getAnswer()
-        //console.log("handleSubmit the_answer = ", the_answer)
+        console.log("handleSubmit the_answer = ", the_answer)
         if ((the_answer!.trim()).length > 0) {
             const result = processQuestion(question?.format?.toString() ?? "", question?.answer_key ?? "", the_answer ?? "")
-            //console.log("handleSubmit result = ", result)
+              console.log("handleSubmit result = ", result)
             if (result) { // update the question attempt on the server
                 mutation.mutate({
                     user_answer: result?.user_answer,

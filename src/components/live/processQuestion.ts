@@ -3,6 +3,7 @@
 
 export const processQuestion = (format: string | undefined, answer_key: string | undefined, user_answer: string | undefined) => {
   
+    console.log("processQuestion format = ", format)
   const default_results = {
     user_answer: '', 
     score: 0, 
@@ -197,7 +198,7 @@ switch (format) {
             answer_key,
             user_answer!
         );
-    case '7': // word scramble
+    case '6': // word scramble
         return process_words_scramble(
             answer_key!,
             user_answer!

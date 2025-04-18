@@ -1,15 +1,14 @@
 
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { IoIosArrowDown } from "react-icons/io";
 
 import { FiMenu } from "react-icons/fi";
-import { AiOutlineClose } from "react-icons/ai";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Link } from "react-router-dom";
-import { MdDarkMode } from "react-icons/md";
-import { ThemeContext } from "../../contexts/theme_context/ThemeContext"; 
-import { ThemeContextInterface } from "../../types";
+//import { MdDarkMode } from "react-icons/md";
+//import { ThemeContext } from "../../contexts/theme_context/ThemeContext"; 
+//import { ThemeContextInterface } from "../../types";
 import { useAxiosFetch } from "../../hooks";
 
 type Category = {

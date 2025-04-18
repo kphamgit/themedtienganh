@@ -295,15 +295,16 @@ export default function QuizPageVideoSave(props:any) {
                     }
                 </div>
             </div>
-            <div className='mx-10'>
-            {showNextButton ?
-                <button className='bg-bgColor2 mt-0 text-lg text-textColor2 p-1 rounded-md' onClick={do_next_question_attempt}>Next</button>
-                :
-                ( showSubmitButton &&
-                <button className='bg-bgColorSubmitBtn mt-0 text-textColorSubmitBtn text-lg p-2 rounded-md mb-2' onClick={handleSubmit}>Submit</button>
-                )
-            }
-            </div>
+                <div className='mx-10'>
+                    {showNextButton 
+                        ?
+                        <button className='bg-bgColor2 mt-0 text-lg text-textColor2 p-1 rounded-md' onClick={do_next_question_attempt}>Next</button>
+                        :
+                        (showSubmitButton &&
+                            <button className='bg-bgColorSubmitBtn mt-0 text-textColorSubmitBtn text-lg p-2 rounded-md mb-2' onClick={handleSubmit}>Submit</button>
+                        )
+                    }
+                </div>
             
             </div>
 
