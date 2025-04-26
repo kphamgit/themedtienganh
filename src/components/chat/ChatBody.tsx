@@ -1,10 +1,6 @@
 import { useRef, useEffect } from 'react';
+import { MessageProps } from './ChatPage';
 
-interface MessageProps {
-    id: string,
-    name: string,
-    text: string
-  }
 
 const ChatBody = (props: {messages: MessageProps[]}) => {
 
@@ -17,15 +13,18 @@ const ChatBody = (props: {messages: MessageProps[]}) => {
     scrollToBottom()
   }, [props.messages])
 
+  // {{console.log("message in ChatBody=", message)}}
   return (
     <>
       {/*This shows messages sent from you*/}
-      <div className='m-1 h-40 text-sm bg-bgColor2 text-textColor2 overflow-scroll'>
+      <div className='m-1 h-40 text-sm bg-white text-textColor2 overflow-scroll'>
       <div>
-        {props.messages.map((message) =>
-            <div key={message.id}>
+        {props.messages.map((message) => {
+          
+           return (<div key={message.id} className='m-1'>
                 <p ref={messagesEndRef}>{message.name}: {message.text}</p>
-            </div>
+            </div> )
+          }
         )}
       </div>
       </div>

@@ -68,7 +68,7 @@ export function SideTeacher(props: any) {
             <div className=' bg-bgColor1 text-textColor1'><NameList parentFunct={handleNameClick} /></div>
 
             <div><RoomAudioTeacher /></div>
-            <ChatPage />
+          
             <div className='mx-1 bg-bgColor2 text-textColor2'>Class Id:<input className='px-2 text-sm rounded-md w-4/12' type="text" value={targetClass}
                  onChange={e => setTargetClass(e.target.value)}
             /></div>

@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext} from 'react'
 
 import { useAppSelector } from '../../redux/store'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
 
 import { useSocketContext } from '../../hooks/useSocketContext'
 import NavBar from './NavBar'
@@ -107,39 +107,20 @@ export default function MainStudent(props: any ) {
       socket?.off("toggle_live_recording")
     }
 }, [socket, showLiveRecording ])
-
-  //const pollyFunc = (selected_text: string) => {
-     // console.log("in polly function")
-  //}
-
-  /*
-    <Route path="/logout" element={<Logout onLogout={onLogout} />} />
-                 <Route path="/" element={<Home />}>
-                   
-                   <Route path="sub_categories_student/:sub_categoryId" element={<SubCategoryPageStudent />} />
-                   <Route path="sub_categories/:sub_category_name/quizzes/:quizId" element={<QuizPageVideo />} />
-                   
-                   <Route path="/front_page" element={<FrontPage />} />
-                   <Route path="/live_text" element={<LiveText />} />
-                   <Route path="/live_picture" element={<LivePicture />} />
-                   <Route path="/simple_peer" element={<SimplePeer />} />
-                   <Route path="/live_quiz" element={<LiveQuiz />} />
-                   <Route path="/live_game/:game_id/:backcolor" element={<MemoryGame />} />
-                   <Route path="/live_youtube_video" element={<YoutubeVideoPlayer />} />
-                 </Route>
-               </Routes>
-  */
-
+  
   return (
     <div>
 
-      <div className=' bg-bgColor1'>
+      <div className=' bg-bgColor1 text-textColor2'>
         <div>
-          
-          <div className='text-xl p-2 flex flex-row justify-start gap-2'>
-            <div><span className='text-textColor1'>Welcome </span> 
-            <span className='text-textColor4'>{user_name}</span>
-            <span className='text-textColor1'> to Tieng Anh Tuy Hoa</span></div>
+
+          <div className='text-lg p-2 flex flex-row justify-start gap-3 items-center'>
+            <div className='text-textColor1'>Welcome
+              <span className='text-textColor4'> {user_name}</span>
+              <span className='text-textColor1'> to Tieng Anh Tuy Hoa</span></div>
+            <div className='text-md bg-amber-500 text-textColor2  px-2 rounded-md'>
+              <Link to="/logout">Log out</Link>
+            </div>
             <div>
               <button
                 onClick={toggleTheme}

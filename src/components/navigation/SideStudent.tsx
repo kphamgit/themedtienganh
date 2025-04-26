@@ -20,7 +20,7 @@ export function SideStudent(props: any) {
           console.log("Side , receive chat invite...arg =", arg)
           //console.log("receive chat invite...user_name =", user_name)
           if (arg.target_student.trim() === user_name?.trim()) {
-            console.log("Side , receive chat invite...room id =", arg.room_id)
+            //console.log("Side , receive chat invite...room id =", arg.room_id)
             setRoomID(arg.room_id)
             setShowAcceptButton(true)
           }

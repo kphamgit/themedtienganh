@@ -6,13 +6,22 @@ export default function HomePage() {
     //const params = useParams<{ role: string }>();
     const params = useParams<{role: string}>()
 
+    
     return (
         <>
             {params.role === 'teacher' ?
                 <TeacherControl />
                 :
-                <div className="flex flex-row bg-bgColor1 text-textColor1 justify-center text-4xl">Home</div>
-            }
+                (
+                  <>
+                <div className="flex flex-row bg-bgColor4 text-textColor4 justify-center text-4xl h-screen">
+                     Home 
+                  
+                </div>
+            
+               </>
+                )
+              }
         </>
     )
 }

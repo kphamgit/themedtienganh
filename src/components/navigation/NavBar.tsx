@@ -122,7 +122,19 @@ export default function Navbar(props: {role: string}) {
       </section>
 
       {/* right side data */}
-      <section className=" hidden md:flex   items-center gap-8 ">
+   
+    </div>
+  );
+}
+
+/*
+   <button className="h-fit text-neutral-400 transition-all hover:text-black/90">
+          Login
+        </button>
+*/
+
+/*
+   <section className=" hidden md:flex   items-center gap-8 ">
      
     
         <div className='text-md bg-bgColor2 text-textColor2  p-2'>
@@ -138,12 +150,4 @@ export default function Navbar(props: {role: string}) {
         onClick={openSideMenu}
         className="cursor-pointer text-4xl md:hidden"
       />
-    </div>
-  );
-}
-
-/*
-   <button className="h-fit text-neutral-400 transition-all hover:text-black/90">
-          Login
-        </button>
 */

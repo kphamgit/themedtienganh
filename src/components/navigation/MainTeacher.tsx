@@ -1,7 +1,7 @@
 import { useEffect, useContext} from 'react'
 
 import { useAppSelector } from '../../redux/store'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
 
 import Navbar from './NavBar'
 
@@ -29,6 +29,10 @@ return (
             <div><span className='text-textColor1'>Welcome </span> 
             <span className='text-textColor4'>{user.user_name}</span>
             <span className='text-textColor1'> to Tieng Anh Tuy Hoa</span></div>
+                 <div className='text-md bg-bgColor2 text-textColor2  p-1'>
+                          <Link to="/logout">Log out</Link>
+                    </div>
+            
             <div>
               <button
                 onClick={toggleTheme}

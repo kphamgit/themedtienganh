@@ -17,8 +17,8 @@ import ReactPlayer from 'react-player';
 
 import { Counter, CounterRef } from '../shared/Counter';
 
+import { ModalHandle } from '../shared/ModalPopup';
 
-//import Popup from 'reactjs-popup';
 import ModalPopup from '../shared/ModalPopup';
 
 import DragDrop from './question_attempts/dragdrop/DragDrop';
@@ -47,6 +47,8 @@ interface VideoProps {
 
 export default function QuizPageVideo(props:any) {
     
+    const modalRef = useRef<ModalHandle>(null);
+
     const params = useParams<{ sub_category_name: string, quizId: string,  }>();
     //const user = useAppSelector(state => state.user.value)
     const user = useAppSelector(state => state.user.value)
@@ -143,14 +145,14 @@ export default function QuizPageVideo(props:any) {
 
       
       const handleSubmit: MouseEventHandler<HTMLButtonElement> = (event) => {
-        console.log("handleSubmit ")
+        //console.log("handleSubmit ")
         const button_el = event.target as HTMLButtonElement    
         //button_el.disabled = true
         const the_answer = childRef.current?.getAnswer()
-        console.log("handleSubmit the_answer = ", the_answer)
+        //console.log("handleSubmit the_answer = ", the_answer)
         if ((the_answer!.trim()).length > 0) {
             const result = processQuestion(question?.format?.toString() ?? "", question?.answer_key ?? "", the_answer ?? "")
-              console.log("handleSubmit result = ", result)
+              //console.log("handleSubmit result = ", result)
             if (result) { // update the question attempt on the server
                 mutation.mutate({
                     user_answer: result?.user_answer,
@@ -165,6 +167,7 @@ export default function QuizPageVideo(props:any) {
         }
       }
     
+    /*
     const playAudio = async () => {
         console.log("playAudio  = ", )
         const response = await axios.post('http://localhost:5001/api/tts/text_to_speech',{
@@ -175,6 +178,8 @@ export default function QuizPageVideo(props:any) {
         const audioSrc = `data:audio/mp3;base64,${response.data.audioContent}`;
         setAudioSrc(audioSrc);
     }
+    */
+
     if (endOfQuiz) {
         return (
             <div className='flex flex-col items-center'>
@@ -206,11 +211,20 @@ export default function QuizPageVideo(props:any) {
         }
     },[question?.audio_str])
     
+    const openHelpModal = () => {
+        //if (modalRef.current) {
+          //  modalRef.current.updateValue(true);
+       // }
+    };
+
 
     return (
         <>
         <div className='bg-gradient-to-b from-bgColorQuestionAttempt to-green-100 flex flex-col mx-40 mt-4 rounded-md'>
           <div className='bg-bgColorQuestionContent mx-10 my-6 flex flex-col rounded-md'>
+            <ModalPopup ref={modalRef}
+            />
+            <button onClick={openHelpModal}>Open modal</button>
             <div>
                 
                 {audioSrc && (

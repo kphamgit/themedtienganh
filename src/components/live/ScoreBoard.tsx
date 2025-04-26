@@ -151,11 +151,11 @@ export function ScoreBoard(props:{classId: string | undefined}) {
     return (
         <>
             {my_class &&
-                <div className='bg-bgColor1 text-textColor3'>
+                <div className='bg-amber-500 text-textColor3'>
                     <div className='text-textColor3 p-1'>Live Score Board</div>
                     <div>
                         {my_class.users.map((student, index) => (
-                            <div className='bg-bgColor3 mb-2 main_student_div' key={index} ref={(el) => {
+                            <div className='bg-bgColor3 mb-2 main_student_div px-3' key={index} ref={(el) => {
                                 if (el) {
                                     studenDivRefs.current[index] = el;
                                 }

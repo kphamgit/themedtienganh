@@ -4,6 +4,7 @@ import { store } from "../../redux/store";
 
   export const fetchQuestionAttempt = async (quiz_attempt_id: string): Promise<QuestionAttemptProps> => {
       const rootpath = store.getState().rootpath.value
+     
       const url = `${rootpath}/api/quiz_attempts/${quiz_attempt_id}/create_next_question_attempt`;
       const response = await fetch(url);
       if (!response.ok) throw new Error("Failed to fetch  question attempt");

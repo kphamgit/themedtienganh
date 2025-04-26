@@ -135,9 +135,9 @@ export default function LiveQuiz(props: any) {
  
     return (
         <>
-          
-            <div className='bg-white grid grid-cols-12 justify-start'>
-                <div className='col-span-10  bg-blue-300 text-textColor2 text-lg m-10'>
+          <div className='flex justify-center bg-blue-200 text-textColor2 w-screen mx-2'>
+            <div className='bg-yellow-100 grid grid-cols-12'>
+                <div className='col-span-10  bg-blue-300 text-textColor2 text-lg m-5'>
                 <div className='bg-bgColorQuestionContent mx-10 my-6 flex flex-col rounded-md'>
                 { showQuestion ?
                 <>
@@ -169,6 +169,7 @@ export default function LiveQuiz(props: any) {
                 <div className=' col-span-2 bg-bgColor1 text-textColor2 text-lg'>
                     <ScoreBoard classId={user.classId?.toString() } />
                 </div>
+            </div>
             </div>
         </>
     )

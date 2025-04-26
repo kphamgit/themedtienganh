@@ -48,6 +48,7 @@ export default function SubCategoryPageStudent(props:any) {
     }
 
     return (
+        <>
         <div className= "flex flex-col flex-wrap h-[1100px] w-full/3 border">
             {sub_category && sub_category.units.map(unit => (
                
@@ -70,6 +71,8 @@ export default function SubCategoryPageStudent(props:any) {
               
             ))}
         </div>
+      
+       </>
     );
 
    /*

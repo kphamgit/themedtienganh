@@ -146,6 +146,26 @@ const process_words_scramble = (answer_key: string , user_answer:string) => {
         }
 }
 
+const process_speech_recognition = (answer_key: string , user_answer:string) => {
+    //console.log("process_speech_recognition  answer_key = ", answer_key)
+    //console.log("process_speech_recognition user answer = ", user_answer)
+    let error = false;
+    let score = 0
+    if (answer_key != user_answer)  {
+        error = true
+    }
+    else {
+        score += 5;
+    }
+    return { ...default_results,
+        user_answer: user_answer,
+        score: score,
+        error_flag: error,
+  
+        }
+}
+
+
 const process_words_select = (answer_key: string, user_answer: string) => {
     let error = false;
     let score = 0
@@ -200,6 +220,11 @@ switch (format) {
         );
     case '6': // word scramble
         return process_words_scramble(
+            answer_key!,
+            user_answer!
+        );
+    case '7': // word scramble
+        return process_speech_recognition(
             answer_key!,
             user_answer!
         );
