@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 //import Room from '../shared/Room'
-import LiveAudioRecorderSave  from "../shared/LiveAudioRecorderSave"
+import LiveAudioRecorderSave  from "../shared/LiveAudioRecorder"
 import RoomAudio from '../shared/RoomAudioStudent';
 import { useSocketContext } from '../../hooks/useSocketContext';
 //import Lottie from "lottie-react";
@@ -52,7 +52,7 @@ export function SideStudent(props: any) {
             </>
             }
             <LiveAudioRecorderSave />
-           <ChatPage />
+          
         </>
     )
 }

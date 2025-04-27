@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 //import { ThemeContext } from "../../contexts/theme_context/ThemeContext"; 
 //import { ThemeContextInterface } from "../../types";
 import { useAxiosFetch } from "../../hooks";
+import LiveAudioRecorderSave from "../shared/LiveAudioRecorder";
 
 type Category = {
   id: number;
@@ -76,12 +77,12 @@ export default function Navbar(props: {role: string}) {
             >
 */
   return (
-    <div className="flex  max-w-7xl justify-between px-4 py-0 text-sm">
+    <div className="flex  max-w-7xl justify-between px-5 py-0">
       {/* left side  */}
       <section ref={animationParent} className="flex items-center gap-10">
         {/* logo */}
         <div className="hidden md:flex items-center gap-0.5 transition-all">
-            <div className='text-md bg-bgColor2 text-textColor2  p-2'>
+            <div className='text-md bg-bgColor2 text-textColor2  p-2 text-sm font-bold'>
               <Link to={`/homepage/${props.role}`} >Home</Link>
             </div>
           {navItems.map((d, i) => (
@@ -89,7 +90,7 @@ export default function Navbar(props: {role: string}) {
               key={i}
               className="relative group py-3 transition-all "
             >
-              <p className="bg-bgColorCategory text-textColor1 flex cursor-pointer p-2  items-center group-hover:text-textColor4 " >
+              <p className="bg-bgColorCategory text-textColor1 flex cursor-pointer p-2  items-center group-hover:text-textColor4 text-sm " >
                 <span>{d.label}</span>
                 {d.children && (
                   <IoIosArrowDown className=" rotate-180  transition-all group-hover:rotate-0" />
@@ -98,7 +99,7 @@ export default function Navbar(props: {role: string}) {
 
               {/* dropdown */}
               {d.children && (
-                <div className="absolute   left-0 mt-2  top-10 hidden w-auto  flex-col bg-bgColor1 py-3 shadow-md  transition-all group-hover:flex ">
+                <div className="absolute  left-0 mt-3  top-10 hidden w-auto  flex-col bg-bgColor1 py-3 shadow-md text-sm transition-all group-hover:flex ">
                   {d.children.map((ch, i) => (
                     <Link to={ch.link ?? "#"}
                       key={i}
@@ -114,9 +115,10 @@ export default function Navbar(props: {role: string}) {
               )}
             </div>
           ))}
-            <div className='text-md bg-bgColor2 text-textColor2  p-2'>
+            <div className='text-md bg-bgColor4 text-textColor4 text-sm p-2'>
               <Link to="/games">Games</Link>
             </div>
+            
         </div>
         {/* navitems */}
       </section>

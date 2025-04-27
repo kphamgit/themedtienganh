@@ -76,18 +76,14 @@ export async function getAClass(id: string): Promise<ClassProps> {
   
   }
 
-  export async function upload_form_data_to_s3(formData: any, config: any) {
+  export async function upload_form_data_to_s3(formData: any, config: any): Promise<any> {
     const url = `${rootpath}/api/upload/do_upload_single_s3` 
-    //console.log(" in list upload..url =", url)
+    //onsole.log(" in upload_form_data_to_s3 ... url =", url)
     //console.log("form data: ", formData)
-    /*
-     axios.post(url, formData, config).then((response) => {
-       return response;
-     });
-     */
      try {
       const response = await axios.post(url, formData, config);
-      console.log(response.data);
+      //console.log(response.data);
+      return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
         // Handle specific Axios errors

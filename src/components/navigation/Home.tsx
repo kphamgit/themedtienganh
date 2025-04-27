@@ -1,4 +1,4 @@
-import { useAppSelector, useAppDispatch} from '../../redux/store'
+import { useAppSelector} from '../../redux/store'
 import HomeTeacher  from './HomeTeacher'
 import  HomeStudent  from './HomeStudent'
 import { useEffect, useRef, useState } from 'react';
@@ -22,7 +22,7 @@ export default function Home() {
       //console.log("in ChatPage socket id"+ socket.id)
       //socket.on('chat_message', (data) => setMessages([...messages, data]));
       socket.on('chat_message', (data) => {
-        console.log("xxxx is Chat Open=", chatPageRef.current?.get_isChatOpen())
+        //console.log("xxxx is Chat Open=", chatPageRef.current?.get_isChatOpen())
      
         if (user.role === "teacher") {
           return
@@ -59,7 +59,7 @@ export default function Home() {
       }
      
       <div className="fixed bottom-20 right-5 ">
-        <div className="bg-amber-400 rounded-md p-0">
+        <div className="bg-blue-400 rounded-md p-0">
             <ChatPage id={message?.id} name={message?.name} role={message?.role} text={message?.text} ref={chatPageRef} />
         </div>
       </div>

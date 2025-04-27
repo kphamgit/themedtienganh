@@ -1,14 +1,14 @@
 //import { useEffect, useState} from 'react'
 
 //import { useSocketContext } from '../../hooks/useSocketContext'
-import { useEffect, useRef, useState } from 'react';
+//import { useRef, useState } from 'react';
 import { useSocketContext } from '../../hooks/useSocketContext';
-import ModalPopup, { ModalHandle } from '../shared/ModalPopup'
+//import { ModalHandle } from '../shared/ModalPopup'
 //import ModalPopupSave from '../shared/ModalPopupSave'
 import MainStudent from './MainStudent'
-import { SideStudent } from './SideStudent'
-import Accordion from '../shared/Accordion';
-import ChatPage, { MessageProps } from '../chat/ChatPage';
+//import { SideStudent } from './SideStudent'
+//import Accordion from '../shared/Accordion';
+////import ChatPage, { MessageProps } from '../chat/ChatPage';
 
 //import groovyWalkAnimation from "../../groovywalk.json"
 
@@ -18,12 +18,12 @@ import ChatPage, { MessageProps } from '../chat/ChatPage';
 export default function HomeStudent(props: any ) {
 
   const {socket} = useSocketContext()
-const [message, setMessage] = useState<MessageProps>({id: "1", name: "test", role: "teacher", text: "test from test"});
+
   
 
   //const {chatMessage, setChatMessage} = 
 
-  const modalPopupRef = useRef<ModalHandle>(null);
+  //const modalPopupRef = useRef<ModalHandle>(null);
 
  
 /*

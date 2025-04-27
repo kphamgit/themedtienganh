@@ -49,7 +49,7 @@ export default function SubCategoryPageStudent(props:any) {
 
     return (
         <>
-        <div className= "flex flex-col flex-wrap h-[1100px] w-full/3 border">
+        <div className= "flex flex-col flex-wrap h-[1100px] w-full/3 border mx-12 mr-5">
             {sub_category && sub_category.units.map(unit => (
                
                     <div key={unit.id} className='bg-bgColor1 text-textColor2 flex items-center justify-start m-1 border"'>

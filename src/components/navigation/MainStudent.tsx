@@ -8,6 +8,7 @@ import NavBar from './NavBar'
 import { ThemeContext } from '../../contexts/theme_context/ThemeContext';
 import { ThemeContextInterface } from '../../types';
 import { MdDarkMode } from 'react-icons/md';
+import LiveAudioRecorder from '../shared/LiveAudioRecorder'
 //import AzureTranscription from '../shared/AzureTranscription'
 //import { SRContinuous } from '../quiz_attempts/question_attempts/SRContinuous'
 //import WatsonSpeechRecognition from '../shared/WatsonSpeechRecognition'
@@ -130,8 +131,16 @@ export default function MainStudent(props: any ) {
               </button>
             </div>
           </div>
-          <NavBar role="student" />
-       
+          <div className='grid grid-cols-12 m-3'>
+            <div className='col-span-8 bg-bgColor2 text-textColor2 text-lg m-1'>
+              <NavBar role="student" />
+            </div>
+            <div className='col-span-4 bg-bgColor2 text-textColor2 text-lg m-1'>
+            <div className='flex flex-row justify-start items-center wrap'>
+              <LiveAudioRecorder />
+            </div>
+            </div>
+          </div>
           <Outlet  />
          
         </div>
@@ -147,6 +156,8 @@ export default function MainStudent(props: any ) {
 
 /*
     // TextToSpeech.tsx
+//<div className='flex flex-row justify-stretch gap-3 items-center'>
+
     import React, { useState } from 'react';
 
     const TextToSpeech: React.FC = () => {
