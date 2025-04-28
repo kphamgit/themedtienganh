@@ -131,14 +131,14 @@ export default function MainStudent(props: any ) {
               </button>
             </div>
           </div>
-          <div className='grid grid-cols-12 m-3'>
-            <div className='col-span-8 bg-bgColor2 text-textColor2 text-lg m-1'>
+          <div className='grid grid-cols-12 m-1'>
+            <div className='col-span-9 bg-bgColor2 text-textColor2 text-lg m-1'>
               <NavBar role="student" />
             </div>
-            <div className='col-span-4 bg-bgColor2 text-textColor2 text-lg m-1'>
-            <div className='flex flex-row justify-start items-center wrap'>
+            <div className='col-span-3 bg-cyan-200 text-textColor2 text-lg m-1'>
+          
               <LiveAudioRecorder />
-            </div>
+        
             </div>
           </div>
           <Outlet  />
