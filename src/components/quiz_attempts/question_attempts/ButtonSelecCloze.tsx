@@ -216,13 +216,13 @@ useEffect(() => {
       }
     }
 
-    const handleClick = (selected_text: string, droppedIndex: number) => {
-      //console.log("handleClick.....selected text =", selected_text, "droppedIndex=", droppedIndex)
+    const handleClick = (selected_text: string, droppedIndex: number, available: boolean) => {
+      console.log("handleClick...droppedIndex=", droppedIndex)
       //console.log("targetInput=", targetInput)
       // update the available state corresponding to droppedIndex in the dropBoxes array
       const updatedDropBoxes = dropBoxes.map((dropBox, index) => {
         if (index === droppedIndex) {
-          return { ...dropBox, available: false }; // Mark the dropbox as unavailable
+          return { ...dropBox, available: available }; // Mark the dropbox as unavailable
         }
         return dropBox;
       });

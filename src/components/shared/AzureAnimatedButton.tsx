@@ -13,7 +13,7 @@ export interface AzureButtonProps {
     voice_text?: string;
     button_text: string | undefined;
     dropBoxes?: DropBoxProps[] | undefined;
-    parentFunc: (selected_text: string, droppedIndex: number) => void
+    parentFunc: (selected_text: string, droppedIndex: number, available: boolean) => void
   }
   
 export const AzureAnimatedButton = (props: AzureButtonProps) => {
@@ -22,20 +22,40 @@ export const AzureAnimatedButton = (props: AzureButtonProps) => {
     //const handleClick: MouseEventHandler<HTMLSpanElement> = (event) => {
       const buttonRef = useRef<HTMLButtonElement>(null);
 
+      const [dropped, setDropped] = useState<boolean>(false);
+      const [droppedIndex, setDroppedIndex] = useState<number>(-1); // >=0 means dropped
+      const [myBoundingRect, setMyBoundingRect] = useState<DOMRect | null>(null);
+      const [myVerticalOffset, setMyVerticalOffset] = useState<number>(0); //offset from the dropbox top
+      const [myHorizontalOffset, setMyHorizontalOffset] = useState<number>(0); //offset from the dropbox left
+
       const [verticalOffsets, setVerticalOffsets] = useState<number[]>([]);
       const [horizontalOffsets, setHorizontalOffsets] = useState<number[]>([]);
  
+      const printBoundingRect = () => {
+        if (myBoundingRect) {
+          console.log("Bounding rectangle:", myBoundingRect);
+          console.log('Button left:', myBoundingRect.left);
+          console.log('Button top:', myBoundingRect.top);
+        } else {
+          console.log("Bounding rectangle is null");
+        }
+      };
+
       useEffect(() => {
-        // Log the dropBoxes prop whenever it changes  
-        //console.log("******** AzureButton, props.dropBoxes changed:SIZE =", props.dropBoxes?.length);
-        //console.log("******** AzureButton, props.dropBoxes changed: dropBo ", props.dropBoxes);
-        // If you want to do something with the dropBoxes, you can add logic here
+        if (buttonRef.current) {
+          const rect = buttonRef.current.getBoundingClientRect();
+          setMyBoundingRect(rect);
+        }
+      }, [buttonRef.current]); // Run once on mount
+
+      /*
+      useEffect(() => {
         if (props.dropBoxes) {
           if (props.dropBoxes.length > 0 && buttonRef.current) {
             //console.log("DropBoxes:", props.dropBoxes);
             //console.log(" dropBox y : ", props.dropBoxes[0].rect.top);
             props.dropBoxes.forEach((dropBox, index) => {
-              const rect = buttonRef.current!.getBoundingClientRect();
+              const rect = buttonRef.current!.getBoundingClientRect();        
               const buttonWidth = rect.width;
               //console.log('Button width:', buttonWidth);
               const dropboxWidth = dropBox.rect.width;
@@ -50,7 +70,6 @@ export const AzureAnimatedButton = (props: AzureButtonProps) => {
                 newOffsets[index] = offsetX + sideMarginHorizontal;
                 return newOffsets;
               });
-
               const buttonHeight = rect.height;
               //console.log('Button width:', buttonWidth);
               const dropboxHeight = dropBox.rect.height;
@@ -68,22 +87,109 @@ export const AzureAnimatedButton = (props: AzureButtonProps) => {
           }
         }
       }, [props.dropBoxes]);
+*/
+    
+      useEffect(() => {
+        if (props.dropBoxes) {
+          props.dropBoxes.forEach((dropBox, index) => {
+            const rect = buttonRef.current!.getBoundingClientRect();        
+            const buttonWidth = rect.width;
+            const dropboxWidth = dropBox.rect.width;
+            const sideMarginHorizontal = (dropboxWidth - buttonWidth) / 2;
+            const offsetX = dropBox.rect.left - rect.left;
+            setHorizontalOffsets(prevOffsets => {
+              const newOffsets = [...prevOffsets];
+              newOffsets[index] = offsetX + sideMarginHorizontal;
+              return newOffsets;
+            });
+            const buttonHeight = rect.height;
+            const dropboxHeight = dropBox.rect.height;
+            const sideMarginVertical = (dropboxHeight - buttonHeight) / 2;
+            const offsetY = dropBox.rect.top - rect.top;
+            setVerticalOffsets(prevOffsets => {
+              const newOffsets = [...prevOffsets];
+              newOffsets[index] = offsetY + sideMarginVertical;
+              return newOffsets;
+            });
+          })
+        }
+      }, [props.dropBoxes, myBoundingRect]);
 
     const handleClick: MouseEventHandler<HTMLButtonElement> = (event) => {
        // look in dropboxes to check for first available slot
+       if (dropped) {
+        console.log("Button already dropped droppedIndex = ",droppedIndex," return to original position");
+        if (buttonRef.current) {
+          console.log("buttonRef.current")
+          // Move the button to the first available dropbox position
+          //buttonRef.current.style.transform = `translate(0-${horizontalOffsets[droppedIndex]}px, 0-${verticalOffsets[droppedIndex]}px)`;
+          // Call the parent function with the button text and dropped index
+          buttonRef.current.style.transform = `translate(0px, 0px)`;
+          // so that it can update the available state of the dropbox
+          setDropped(false);
+          setDroppedIndex(-1);
+          // release the corresponding dropbox
+         // props.dropBoxes![droppedIndex].available = true;
+          props.parentFunc(props.button_text!, droppedIndex, true)
+        }
+        return;
+       }
        const availableDropBox = props.dropBoxes?.find(dropBox => dropBox.available);
         if (availableDropBox) {
-          //console.log("available dropbox found", availableDropBox)
+          console.log("available dropbox found")
           const droppedIndex = props.dropBoxes!.indexOf(availableDropBox);
           console.log("dropped index", droppedIndex)
-          
-          
-          if (buttonRef.current) {
+          if (buttonRef.current && myBoundingRect) {
+            //props.dropBoxes?.forEach((dropBox, index) => {
+              // calculate the offsets for the buttons from the dropboxes
+              const buttonWidth = myBoundingRect.width;
+              //console.log('Button width:', buttonWidth);
+              const dropboxWidth = availableDropBox.rect.width;
+              //console.log('DropBox width:', dropboxWidth);
+              const sideMarginHorizontal = (dropboxWidth - buttonWidth!) / 2;
+              //console.log('Side Margin:', sideMargin);
+
+              const offsetX = availableDropBox.rect.left - myBoundingRect.left;
+           
+              //setVerticalOffset(offsetY);
+              /*
+              setHorizontalOffsets(prevOffsets => {
+                const newOffsets = [...prevOffsets];
+                newOffsets[droppedIndex] = offsetX + sideMarginHorizontal;
+                return newOffsets;
+              });
+              */
+              const buttonHeight = myBoundingRect.height;
+              //console.log('Button width:', buttonWidth);
+              const dropboxHeight = availableDropBox.rect.height;
+              //console.log('DropBox width:', dropboxWidth);
+              const sideMarginVertical = (dropboxHeight - buttonHeight!) / 2;
+              //console.log('Side Margin:', sideMargin);
+
+              const offsetY = availableDropBox.rect.top - myBoundingRect.top;
+              //setVerticalOffset(offsetY);
+              /*
+              setVerticalOffsets(prevOffsets => {
+                const newOffsets = [...prevOffsets];
+                newOffsets[droppedIndex] = offsetY + sideMarginVertical;
+                return newOffsets;
+              });
+              */
+              buttonRef.current.style.transform = `translate(${offsetX + sideMarginHorizontal}px, ${offsetY + sideMarginVertical}px)`;
+              setDropped(true);
+              setDroppedIndex(droppedIndex);
+              props.parentFunc(props.button_text!, droppedIndex, false)
+            //})
+
+            /*
             // Move the button to the first available dropbox position
             buttonRef.current.style.transform = `translate(${horizontalOffsets[droppedIndex]}px, ${verticalOffsets[droppedIndex]}px)`;
             // Call the parent function with the button text and dropped index
             // so that it can update the available state of the dropbox
+            setDropped(true);
+            setDroppedIndex(droppedIndex);
             props.parentFunc(props.button_text!, droppedIndex)
+            */
           }
         } else {
           console.log("No available dropbox found");
