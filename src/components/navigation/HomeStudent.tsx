@@ -2,10 +2,12 @@
 
 //import { useSocketContext } from '../../hooks/useSocketContext'
 //import { useRef, useState } from 'react';
+import { DndContext, useDraggable } from '@dnd-kit/core';
 import { useSocketContext } from '../../hooks/useSocketContext';
 //import { ModalHandle } from '../shared/ModalPopup'
 //import ModalPopupSave from '../shared/ModalPopupSave'
 import MainStudent from './MainStudent'
+import { MyVerticalGrid } from './MyVerticalGrid';
 //import { SideStudent } from './SideStudent'
 //import Accordion from '../shared/Accordion';
 ////import ChatPage, { MessageProps } from '../chat/ChatPage';
@@ -19,33 +21,37 @@ export default function HomeStudent(props: any ) {
 
   const {socket} = useSocketContext()
 
-  
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: 'vertical-grid', // Unique identifier for the draggable element
+  });
 
-  //const {chatMessage, setChatMessage} = 
-
-  //const modalPopupRef = useRef<ModalHandle>(null);
-
+  const style = {
+    transform: transform
+      ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
+      : undefined, // Apply the drag transformation
+  };
  
-/*
-{
-    "text": "e33333",
-    "name": "kpham",
-    "role": "teacher",
-    "id": "mPSn7wWM0Ljpnv96AAA90.9291986040657213",
-    "socketID": "mPSn7wWM0Ljpnv96AAA9"
-}
-        */
    return (
-          <div className='flex flex-col justify-stretch  m-2 bg-bgColor1 h-screen'>
-           
-              <div className='col-span-9'><MainStudent/></div>
-              <div className='flex flex-row justify-end'>
-            
-             
-              
-              </div>
-     
+    <DndContext>
+        <div className='flex flex-row  bg-bgColor1'>
+       
+          <div
+             ref={setNodeRef}
+             style={style}
+             {...listeners}
+             {...attributes}
+          >
+            <MyVerticalGrid />
           </div>
+        
+          <div className='col-span-11 flex flex-col justify-stretch bg-bgColor1 h-screen'>
+              <div><MainStudent/></div>
+              <div className='flex flex-row justify-end'>
+              </div>
+          </div>
+         
+        </div>
+         </DndContext>
       )
   
  

@@ -1,11 +1,17 @@
 import { useState, useEffect, forwardRef, useImperativeHandle, useRef, EventHandler} from 'react';
-import { AzureButton } from '../../shared/AzureButton';
+import { AzureAnimatedButton } from '../../shared/AzureAnimatedButton';
 
 
 interface InputFieldProps {
   id: string;
   type: string;
   value: string;
+}
+
+export interface DropBoxProps {
+  id: string;
+  available: boolean;
+  rect: {top: number; left: number; width: number; height: number};
 }
 
 interface Props {
@@ -20,19 +26,24 @@ interface Props {
   export const ButtonSelectCloze = forwardRef<ChildRef, Props>((props, ref) => {
  
   const [inputFields, setInputFields] = useState<InputFieldProps[] | undefined >([])
-  const [maxLength, setMaxLength] = useState<number>()
-  const inputRefs = useRef<HTMLInputElement[]>([]);
+
+  const inputRefs = useRef<HTMLDivElement[]>([]);
 
   const [targetInput, setTargetInput] = useState('')
   const [labels, setLabels] = useState<string[] | undefined>([])
 
+  const [dropBoxes, setDropBoxes] = useState<DropBoxProps[]>([]);
 
+  const charRef = useRef<HTMLDivElement>(null);
+  const minLengthRef = useRef<number>(0);
+
+  const inputCountRef = useRef(-1);
+  
 
 useEffect(() => {
   const regExp = /\[.*?\]/g
   const  matches = props.content?.match(regExp);
-  console.log("aaaa matches =", matches)
-  
+  //console.log("aaaa matches =", matches)
   /* [
     "[you/he/I]"]
   */
@@ -47,8 +58,10 @@ useEffect(() => {
         
       }
     }
-    console.log(" longest",length_of_longest_word)
-    setMaxLength(length_of_longest_word)
+    //console.log(" longest",length_of_longest_word)
+    //setMinLength(length_of_longest_word)
+    minLengthRef.current = length_of_longest_word;
+    //console.log("minLengthRef.current=", minLengthRef.current)
   }
 }
   //
@@ -60,16 +73,22 @@ useEffect(() => {
   //console.log("MMMM matches no brackets=", matches_no_brackets)
   // ["are", "thank"]
   if (matches_no_brackets) {
-    setLabels(matches_no_brackets[0].split('/'))
+    //console.log("matches_no_brackets=", matches_no_brackets)
+    setLabels(matches_no_brackets)
+   
   }
   //[ "are","<br />","thank"]
 
   // Use a regular expression to split the sentence
-  const array = props.content?.split(/\[|\]/);
-  //console.log("NNN array=", array)
-  // ["How ", "are", " you? # I'm fine, ", "thank"," you." ]
-  //[ "How ","are", " you? ", "<br />", " I'm fine, ","thank", " you." ]
+  // use regular expression to split the content by square brackets and by whitespace
+  // and also by new line tags
+  //const test_array = props.content?.split(/\[.*?\]/);
+ // console.log("test_array=", test_array)
 
+  //const array = props.content?.split(/\[|\]/);
+  const array = props.content?.split(/[\[\]\s]+/);
+  //console.log("MMMMMMMMMMMM array=", array)
+ 
   // Filter out empty strings that might result from consecutive brackets
   const filteredArray = array?.filter(item => item.trim() !== "");
   //console.log("OOO filteredArray=", filteredArray)
@@ -100,20 +119,15 @@ useEffect(() => {
 {id: '2', type: 'static_text', value: " you? # I'm fine, "}
 {id: '3', type: 'input', value: '  '}
   */
+ //console.log("cloze_content_array=", cloze_content_array)
+
   setInputFields(cloze_content_array)
   
 },[props.content])
 
   const getAnswer = () => {
-    const answer_array: string[]  = []
-    inputRefs.current.forEach(myref => {
-      if (myref) {
-        //console.log(myref.getFillContent())
-        answer_array.push(myref.value)
-      }
-    });
-    return answer_array.join('/')
     
+    return "test"
   }
 
   /**
@@ -122,30 +136,71 @@ useEffect(() => {
   useImperativeHandle(ref, () => ({
     getAnswer,
   }));
-
-  const handleInputChange = (id: string, value: string) => {
-    setInputFields((prevFields) =>
-      prevFields?.map((field) => (field.id === id ? { ...field, value } : field))
-    );
+ 
+  const getInputBoundingRect = (index: number) => {
+    const inputElement = inputRefs.current[index];
+    if (inputElement) {
+      const rect = inputElement.getBoundingClientRect();
+     // console.log(`................. Bounding rectangle for input at index ${index}:`, rect);
+      return rect;
+    } else {
+      console.error(`No input element found at index ${index}`);
+      return null;
+    }
   };
 
-  const handleFocus = (id: string) => setTargetInput(id);
+  useEffect(() => {
+      if (inputRefs.current.length > 0) {
+        //console.log('InputRefs length:', inputRefs.current.length);
+       // inputRefs.current.forEach((input, index) => {
+         // console.log(`Input ${index} Value:`, input.innerHTML);
+       // }
+       // );
+             inputRefs.current.forEach((input, index) => {
+                 const rect = getInputBoundingRect(index);
+                 if (rect) {
+                  //console.log('****** ****** Input Bounding Rect for index ', index, ': Top:', rect.top, 'Left:', rect.left, 'Width:', rect.width, 'Height:', rect.height);
+                   // save rect in dropBoxes array
+                   const dropBox: DropBoxProps = {
+                     id: `dropBox-${index}`,
+                     available: true,
+                     rect: { top: rect.top, left: rect.left, width: rect.width, height: rect.height }
+                   };
+                   setDropBoxes(prev => [...prev, dropBox]);
+          
+                 }
+                 else {
+                   console.error('Could not get bounding rectangle for input element.');
+                 }
+               })
+      } else {
+      console.error('No input elements are available yet.');
+    }    
+    },[inputFields]);
 
     function renderContent(type: string, value: string, id: string, index: number) {
-      console.log("renderContent.....type=", type, "value=", value, "id=", id, "index=", index)
+      //console.log(" in renderContent...xxxxxxxxx..type=", type, "value=", value, "id=", id, "index=", index)
       if (type === 'input') {
-        return (<input
-          className='bg-bgColor2 rounded-md cloze_answer p-1 m-1 text-center'
-          type="text"
+        const char_width = charRef.current?.getBoundingClientRect().width || 0;
+        //console.log("****** minw=", char_width)
+        const min_width = char_width * minLengthRef.current;
+        if (min_width === 0) {
+          console.error("min_width is not set yet!");
+          return null; // Prevent rendering if minWidth is not set
+        }
+        
+        return (<div
+          className='bg-blue-300 rounded-md cloze_answer p-1 m-1 text-center'
+          style={{ minWidth: min_width, width: min_width, height: 25, lineHeight: 1.5 }}
           id={id}
-          readOnly={true}
-          size={maxLength}
-          onChange={(e) => handleInputChange(id, e.target.value)}
-          onFocus={() => handleFocus(id)}
-          ref={(el: HTMLInputElement) => {
-            inputRefs.current[index] = el;
+          ref={(el) => {
+            if (el) {
+              inputCountRef.current += 1;
+              inputRefs.current[inputCountRef.current] = el; // Add the reference to the array
+            }
           }}
-        />
+        >
+        </div>
         )
       }
       else if (type === "newline_tag") {
@@ -157,41 +212,123 @@ useEffect(() => {
         }
       }
       else {
-        return (<span style={{  marginLeft: 3, lineHeight : 2, padding: 3 }}>{value}</span>)
+        return (<span style={{ color: 'white',  marginLeft: 2, lineHeight : 2, padding: 3 }}>{value}</span>)
       }
     }
 
-  const handleClick = (selected_text: string) => {
-      console.log("handleClick.....selected text =", selected_text)
-      console.log("targetInput=", targetInput)
+    const handleClick = (selected_text: string, droppedIndex: number) => {
+      //console.log("handleClick.....selected text =", selected_text, "droppedIndex=", droppedIndex)
+      //console.log("targetInput=", targetInput)
+      // update the available state corresponding to droppedIndex in the dropBoxes array
+      const updatedDropBoxes = dropBoxes.map((dropBox, index) => {
+        if (index === droppedIndex) {
+          return { ...dropBox, available: false }; // Mark the dropbox as unavailable
+        }
+        return dropBox;
+      });
+      setDropBoxes(updatedDropBoxes);
+      //console.log("&&&&&&&&&&&& updatedDropBoxes=", updatedDropBoxes)
       const target_el:HTMLInputElement = document.getElementById(targetInput) as HTMLInputElement
-      console.log("target_el=", target_el)
+      //console.log("target_el=", target_el)
       if (target_el) {
-        console.log("target_el.textContent=", target_el.textContent)
+        //console.log("target_el.textContent=", target_el.textContent)
         target_el.value = selected_text
       }
+      // set availabel slots array
   }
 
-  return (
-    <>
-    <div className=' text-textColor1'>
-        {inputFields?.map((field, index) => (
-          <span key={index}>
-          {renderContent(field.type, field.value, field.id, index) }
-          </span>
-        ))
-    }
-        <div>
-        <ul className='flex flex-1 gap-3'>
-            {labels && labels.map(label => (
-                <li key={label}>
-                   <AzureButton voice_text={label} button_text={label} parentFunc={handleClick}/>
-                </li>
-            )
-            )}
-        </ul>
-      </div>
-    </div>
-    </>
-  );
+  
+  useEffect(() => {
+    // kpham 06/26/2025: this is for the future when you want to update the dropboxes rectangles when the window is resized
+    // so that drag droping in AzureAnimatedButtons will work correctly
+    // right now, if the window is resized, the dropboxes rectangles will not be updated
+    // therefore drag/droping will not work correctly
+    const handleResize = () => {
+     //console.log("Window resized, updating dropboxes rectangles");
+
+     dropBoxes.forEach((input, index) => {
+      const rect = getInputBoundingRect(index);
+      if (rect) {
+       //console.log('****** ****** Input Bounding Rect for index ', index, ': Top:', rect.top, 'Left:', rect.left, 'Width:', rect.width, 'Height:', rect.height);
+        // save rect in dropBoxes array
+        // get the dropBox at index
+        const current_dropBox = dropBoxes[index];
+        // replace rect property of current dropBox with the new rect
+        //console.log(" current_dropBox=", current_dropBox)
+        if (!current_dropBox) {
+          console.error(`No dropBox found at index ${index}`);
+          return;
+        }
+        const dropBox: DropBoxProps = {
+          id: current_dropBox.id,
+          available: current_dropBox.available,
+          rect: { top: rect.top, left: rect.left, width: rect.width, height: rect.height }
+        };
+        // update the dropBoxes array with the new dropBox
+        setDropBoxes(prev => {
+          const newDropBoxes = [...prev];
+          newDropBoxes[index] = dropBox; // Update the specific index
+          return newDropBoxes;
+        });
+      }
+      else {
+        console.error('Could not get bounding rectangle for input element.');
+      }
+    })
+
+
+
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [dropBoxes]); // Empty dependency array means this effect runs once on mount and cleans up on unmount
+
+
+    return (
+      <>
+        <div style={{
+          position: 'absolute', left: 0, fontFamily: 'monospace', color: "white", // Use a monospaced font for consistent character width
+          fontSize: 14,
+        }}
+          ref={charRef}
+        >
+          c
+        </div>
+        {charRef.current &&
+          <div className='bg-amber-500 p-2 flex flex-col justify-center items-center flex-wrap m-3'>
+            <div className='flex flex-row justify-start bg-red-700 flex-wrap'>
+              {inputFields?.map((field, index) => {
+                return (
+                  <div key={index}>
+                    {renderContent(field.type, field.value, field.id, index)}
+                  </div>
+                );
+              })}
+            </div>
+            <div className='flex flex-row justify-center items-center bg-blue-700 m-10'>
+              <ul className='flex flex-row gap-5 m-3'>
+                {labels && labels.map((label, index) => (
+                  <li key={label}>
+                    <AzureAnimatedButton
+                      id={`azure-button-${index}`}
+                      voice_text={label}
+                      button_text={label}
+                      dropBoxes={dropBoxes}
+                      parentFunc={handleClick} />
+                  </li>
+                )
+                )}
+              </ul>
+            </div>
+          </div>
+
+        }
+    
+      </>
+    );
+
 });

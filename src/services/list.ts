@@ -104,3 +104,33 @@ export async function getAClass(id: string): Promise<ClassProps> {
       }
     }
   }
+
+  export async function upload_to_openAI_for_recognition(formData: any, config: any): Promise<any> {
+    const url = `${rootpath}/api/upload/do_upload_openai` 
+     console.log(" in upload_to_openAI_for_recognition ... url =", url)
+     console.log("form data: ", formData)
+     console.log("config: ", config)
+     try {
+      const response = await axios.post(url, formData, config);
+      //console.log(response.data);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        // Handle specific Axios errors
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.error('Response error:', error.response.status, error.response.data);
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.error('Request error:', error.request);
+        } else {
+          // Something happened in setting up the request that triggered an error
+          console.error('Error:', error.message);
+        }
+      } else {
+        // Handle non-Axios errors
+        console.error('Unexpected error:', error);
+      }
+    }
+  }

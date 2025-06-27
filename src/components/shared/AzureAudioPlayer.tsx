@@ -47,6 +47,15 @@ export const AzureAudioPlayer = (props: MyProps) => {
         </voice>
         </speak>`
         
+        /*
+<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" 
+       xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="en-US">
+    <voice name="en-US-AriaNeural">
+        Say <phoneme alphabet="ipa" ph="ˈtoʊˌmeɪtoʊ">tomato</phoneme> or use Arpabet like 
+        <phoneme alphabet="x-microsoft-arpa" ph="T AH0 M EY1 T OW0">tomato</phoneme>.
+    </voice>
+</speak>
+*/
 
         synthesizer.speakSsmlAsync(t)
 

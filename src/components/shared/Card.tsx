@@ -27,6 +27,7 @@ export const Card: React.FC<CardProps> = (props: CardProps) => {
 
     useEffect(() => {
         setBackColor(props.bgcolor)
+        console.log("Card useEffect props.bgcolor=", props.bgcolor)
     },[props.bgcolor])
     
     const handleClick: MouseEventHandler<HTMLSpanElement> = (event) => {

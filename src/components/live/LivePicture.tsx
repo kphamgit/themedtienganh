@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 //import { AzureButton } from "../components/AzureButton";
 import { AzureAudioPlayer } from "../shared/AzureAudioPlayer";
 
+
 export default function LivePicture(props: any) {
     //const user = useAppSelector(state => state.user.value)
     const [audioDescription, setAudioDescription] = useState<string>('')
@@ -36,12 +37,13 @@ export default function LivePicture(props: any) {
         setAudioDescription(live_picture_data.audio_description)
     },[live_picture_data])
     
-
+    
+   
     return (
         <>
         
             <div className="mt-5">
-          
+           
             <div><img style={{width: width, height:height}}  src = {live_picture_data.picture_url} alt="card" />
             </div>
             { audioDescription.length > 0 && 

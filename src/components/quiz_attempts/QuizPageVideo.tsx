@@ -100,6 +100,8 @@ export default function QuizPageVideo(props:any) {
       
     }, [data])
 
+    // on component mount, nextQuestionEnabled is set to false, so this hook will not run
+    // it only runs after the user submits the first answer and sets nextQuestionEnabled to true
    const { data: questionAttemptData } = useQuestionAttempt(data?.quiz_attempt.id.toString()!, nextQuestionEnabled)
 
    useEffect(() => {
@@ -192,7 +194,7 @@ export default function QuizPageVideo(props:any) {
 
     
     useEffect(() => {
-       
+       console.log("XXXXXX QuizPageVideo useEffect question?.audio_str = ", question?.audio_str)
         const fetchAudio = async () => {
             //const url = 'http://localhost:5001/api/tts/text_to_speech'
             const url = `${rootpath}/api/tts/text_to_speech`
@@ -202,7 +204,7 @@ export default function QuizPageVideo(props:any) {
                 text: question?.audio_str,
                // voice: "en-US-JennyNeural",
             })
-            //console.log("response data audioContent= ", response.data.audioContent)
+           // console.log("response data audioContent= ", response.data.audioContent)
             const audioSrc = `data:audio/mp3;base64,${response.data.audioContent}`;
             setAudioSrc(audioSrc);
         };
@@ -220,74 +222,65 @@ export default function QuizPageVideo(props:any) {
 
     return (
         <>
-        <div className='bg-gradient-to-b from-bgColorQuestionAttempt to-green-100 flex flex-col mx-40 mt-4 rounded-md'>
-          <div className='bg-bgColorQuestionContent mx-10 my-6 flex flex-col rounded-md'>
-            <ModalPopup ref={modalRef}
-            />
-            <button onClick={openHelpModal}>Open modal</button>
-            <div>
-                
-                {audioSrc && (
-                    <audio src={audioSrc} controls />
-                )}
-            </div>
-                    {showQuestion ?
-                    <>   
-                    
-                               <div className='text-textColor2 m-2' dangerouslySetInnerHTML={{ __html: question?.instruction ?? '' }}></div>
-                                    <div className='m-2 text-textColorQuestionPrompt'>{question?.prompt}</div>
-                                    <div>
-                                        {(question?.audio_str && question.audio_str.trim().length > 0) &&
-                                            <AzureAudioPlayer text={question.audio_str} />
-                                        }
-                                        {(question?.audio_src && question.audio_src.trim().length > 0) &&
-                                            <audio src={question.audio_src} controls />
-                                        }
-                                    </div>
-                        <div className='mt-3'>
-                            {question?.format === 1 ? (
-                                <DynamicWordInputs content={question.content} ref={childRef} />
-                            ) : question?.format === 2 ? (
-                                <ButtonSelectCloze content={question.content} ref={childRef} />
-                            ) : question?.format === 3 ? (
-                                <ButtonSelect content={question.content} ref={childRef} />
-                            ) : question?.format === 4 ? (
-                                <RadioQuestion question={question} ref={childRef} />
-                            ) : question?.format === 6 ? (
-                                <DragDrop content={question.content} ref={childRef} />
-                            ) : question?.format === 7 ? (
-                                <SRContinuous content={question.content} ref={childRef} />
-                            ) : question?.format === 8 ? (
-                                <WordsSelect content={question.content} ref={childRef} />
-                            ) : question?.format === 10 ? (
-                                <DropDowns content={question.content} ref={childRef} />
-                            ) : question?.format === 11 ? (
-                                <DynamicLetterInputs content={question.content} ref={childRef} />
-                            ) : (
-                                null
-                            )}
-                        </div>
-                        </>
-                        :
-                        questionAttemptResponse &&
-                        <div><QuestionAttemptResults
-                            live_flag={false}
-                            question={question}
-                            response={questionAttemptResponse} /></div>
-                    }
-            <div className='flex flex-col items-start'>
-            { showNextButton &&
-                <button className='bg-green-500 p-2 mt-2 rounded-md' onClick={() => {
-                    get_next_question()
-                }}>Next</button>
+
+            {showQuestion ?
+                <div className='flex flex-col items-center'>
+                    <div className='text-textColor2 m-2' dangerouslySetInnerHTML={{ __html: question?.instruction ?? '' }}></div>
+                    <div className='m-2 text-textColorQuestionPrompt'>{question?.prompt}</div>
+                    <div>
+                        {(question?.audio_str && question.audio_str.trim().length > 0) &&
+                            <AzureAudioPlayer text={question.audio_str} />
+                        }
+                        {(question?.audio_src && question.audio_src.trim().length > 0) &&
+                            <audio src={question.audio_src} controls />
+                        }
+                    </div>
+                    <div className='bg-green-500 flex flex-colrounded-md justify-center'>
+                        {question?.format === 1 ? (
+                            <DynamicWordInputs content={question.content} ref={childRef} />
+                        ) : question?.format === 2 ? (
+                            <ButtonSelectCloze content={question.content} ref={childRef} />
+                        ) : question?.format === 3 ? (
+                            <ButtonSelect content={question.content} ref={childRef} />
+                        ) : question?.format === 4 ? (
+                            <RadioQuestion question={question} ref={childRef} />
+                        ) : question?.format === 6 ? (
+                            <DragDrop content={question.content} ref={childRef} />
+                        ) : question?.format === 7 ? (
+                            <SRContinuous content={question.content} ref={childRef} />
+                        ) : question?.format === 8 ? (
+                            <WordsSelect content={question.content} ref={childRef} />
+                        ) : question?.format === 10 ? (
+                            <DropDowns content={question.content} ref={childRef} />
+                        ) : question?.format === 11 ? (
+                            <DynamicLetterInputs content={question.content} ref={childRef} />
+                        ) : (
+                            null
+                        )}
+
+                    </div>
+                </div>
+                :
+                questionAttemptResponse &&
+                <div className='flex flex-col justify-center items-center'><QuestionAttemptResults
+                    live_flag={false}
+                    question={question}
+                    response={questionAttemptResponse} /></div>
             }
-            {showSubmitButton &&
-                <button className='m-4 bg-amber-500 p-2 rounded-md' onClick={(e) => handleSubmit(e)}>Submit</button>
-            }
+
+
+            <div className='flex flex-col items-center justify-center m-4'>
+                {showNextButton &&
+                    <button className='bg-green-500 p-2 mt-2 rounded-md' onClick={() => {
+                        get_next_question()
+                    }}>Next</button>
+                }
+                {showSubmitButton &&
+                    <button className='m-4 bg-amber-500 p-2 rounded-md' onClick={(e) => handleSubmit(e)}>Submit</button>
+                }
             </div>
 
-            </div>
-            </div>
+
         </>
     )
 

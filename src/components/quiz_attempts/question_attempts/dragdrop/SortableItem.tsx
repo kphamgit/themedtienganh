@@ -20,7 +20,7 @@ export function Item(props: ItemProps) {
   }, [disable]);
 
   const handleClick = () => {
-    //console.log("in Item handleClick, item id = ", id);
+    console.log("in Item handleClick, item id = ", id);
     props.parent_function?.(id);
   };
 
@@ -74,7 +74,7 @@ export default function SortableItem(props: SortableItemProps) {
 
   
   const handleItemClick = () => {
-    //console.log("in SortableItem handleItemClick, item id = ", props.id);
+    console.log("in SortableItem handleItemClick, item id = ", props.id);
     //console.log("in SortableItem handleItemClick, calling parent function from container");
     props.parent_function?.(props.id);
     //setDestination((prev) => [...prev, item]);
@@ -97,8 +97,22 @@ export default function SortableItem(props: SortableItemProps) {
       //onClick={(e) => handleAddItem()}
       className="flex flex-row p-1 bg-amber-500 justify-center mx-1 rounded-md"
       >
-      <Item id={props.id} label={props.label} disable={props.disable} parent_function={handleItemClick} />
+      <button id={props.id} onClick={handleItemClick}>{props.label}</button>
     </div>
   );
 }
+
+/*
+return (
+    <div ref={setNodeRef} 
+      style={style} 
+      {...attributes} 
+      {...listeners}
+      //onClick={(e) => handleAddItem()}
+      className="flex flex-row p-1 bg-amber-500 justify-center mx-1 rounded-md"
+      >
+      <Item id={props.id} label={props.label} disable={props.disable} parent_function={handleItemClick} />
+    </div>
+  );
+*/
 

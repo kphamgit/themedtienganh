@@ -1,0 +1,40 @@
+/* Main grid container */
+.grid-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1000px;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr); /* 5 columns */
+    gap: 0px; /* Space between grid items */
+  }
+  
+  /* Main grid items */
+  .grid-item {
+    background-color: #f0f0f0;
+    padding: 0px;
+    border: 0px solid #ccc;
+    display: grid; /* Enable subgrid */
+  }
+  
+  /* Subgrid container */
+  .subgrid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr); /* 10 columns in subgrid */
+    gap: 0px; /* Space between subgrid items */
+  }
+  
+  /* Subgrid items */
+  .subgrid-item {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 10px;
+    height: 20px;
+    background-color: yellow;
+    padding: 1px;
+    
+  }

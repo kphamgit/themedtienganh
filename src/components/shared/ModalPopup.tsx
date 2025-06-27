@@ -2,7 +2,7 @@
 import { useImperativeHandle, useState, forwardRef } from 'react';
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
-import ChatPage, { MessageProps } from '../chat/ChatPage';
+import { MessageProps } from '../chat/ChatPage';
 
 export interface ModalHandle {
   openModal: (newValue: boolean, message: MessageProps) => void;

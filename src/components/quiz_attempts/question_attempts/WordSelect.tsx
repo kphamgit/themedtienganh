@@ -1,4 +1,4 @@
-import React, {MouseEventHandler, useState} from 'react'
+import React, {MouseEventHandler, useEffect, useRef, useState} from 'react'
 //import { useAppDispatch } from '../../redux/store';
 import { MyProps } from './WordsSelect';
 //import { setAnswerArray } from '../../redux/answerarray.js'
@@ -26,12 +26,18 @@ function WordSelect(props: WordSelectProps ) {
    const handleMouseLeave:MouseEventHandler<HTMLSpanElement> = () => {
       setIsHovered(false);
    };
-
+   const spanRef = useRef<HTMLSpanElement>(null);
    let btnClass = 'btn m-1';
 	
 	 if (isHovered) btnClass += ' underline';
      if (oddClickCount) btnClass += ' bg-orange-300';
 
+     useEffect(() => {
+        if (spanRef.current) {
+            const rect = spanRef.current.getBoundingClientRect();
+            console.log('Bounding rectangle:', rect);
+        }
+    }, []);
     //const handleClick = (word) => {
     const handleClick: MouseEventHandler<HTMLSpanElement> = (event) => {
         
@@ -56,12 +62,13 @@ function WordSelect(props: WordSelectProps ) {
         <>
            
             <span className={btnClass} 
+                ref={spanRef}
                 onClick={handleClick}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
             >
               {props.pair.word}
-            </span>
+            </span> 
             { ((props.pair.next_word !== '.') && (props.pair.next_word !== ',') 
             && (props.pair.next_word !== '!')  
              && (props.pair.next_word !== '?') )  

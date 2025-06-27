@@ -25,6 +25,7 @@ import { useAudioBlobContext } from '../../contexts/AudioBlobContext'
 import DragDrop from '../quiz_attempts/question_attempts/dragdrop/DragDrop';
 import { processQuestion } from './processQuestion';
 import { QuestionAttemptAttributes, QuestionProps } from '../quiz_attempts/types';
+//import * as motion from "motion/react-client"
 
 
 
@@ -87,10 +88,10 @@ export default function LiveQuestion(props: LiveQuestionProps) {
         const my_answer = childRef.current?.getAnswer();
         if (my_answer) {
             setSubmitEnabled(true)
-            console.log("handleSubmit format = ", props.question?.format)
+            //console.log("handleSubmit format = ", props.question?.format)
             if (props.question) {
                 const result = processQuestion(props.question.format.toString(), props.question.answer_key, my_answer)
-                console.log("handleSubmit result = ", result)
+                //console.log("handleSubmit result = ", result)
                 if (result) {
                     props.set_question_attempt_result(result);
                     const live_score_params: LiveScoreProps = {
@@ -141,10 +142,44 @@ export default function LiveQuestion(props: LiveQuestionProps) {
        navigate('/')
     }
 
+    const ball = {
+        width: 100,
+        height: 100,
+        backgroundColor: "#5686F5",
+        borderRadius: "50%",
+    }
+
+    const center: React.CSSProperties = {
+
+        position: "absolute",
+        margin: "auto",
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        width: "100px",
+        height: "100px",
+        backgroundColor: "red",
+        borderRadius: "50%",
+      
+   
+      }
+
+      const text: React.CSSProperties = {
+        position: "absolute",
+        textAlign: "center",
+        width: "100%",
+        top: "30%",
+        fontSize: "30px",
+      }
+
+    
+
     return (
         <>
             <div>
-                
+           
+         
                     <div className='text-textColor2 bg-bgColor1 p-2 rounded-xl ml-12 mr-2 mt-3'>
                        
                         { props.question &&

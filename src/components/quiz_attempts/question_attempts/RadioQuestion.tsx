@@ -9,8 +9,6 @@ interface Props {
     question: QuestionProps
   }
 
- 
-
   interface OptionProps {
     options: { value: string; label: string }[];
   }
@@ -49,9 +47,8 @@ export const RadioQuestion = forwardRef<ChildRef, Props>((props, ref) => {
   }));
 
   return (
-    <>
-    
-    <div>{props.question.content}</div>
+    <div className="flex flex-col items-center justify-center p-4">
+    <div className="bg-gray-300">{props.question.content}</div>
     <div className="flex flex-col">
       {myOptions?.options.map((option) => (
         <label key={option.value}>
@@ -65,67 +62,6 @@ export const RadioQuestion = forwardRef<ChildRef, Props>((props, ref) => {
         </label>
       ))}
     </div>
-    </>
+    </div>
   );
 });
-
-/*
- <div>{props.question.content}</div>
-    <br />
-    <fieldset>
-      {['radio'].map((type) => (
-        <div key={`${type}`} className="mb-3">
-          <div className="flex items-center gap-2">
-          <Radio
-            name="radio"
-            value="choice1"
-            type={type}
-            id={`${type}_choice_1`}
-            onChange={onOptionChange}
-          />
-           <Label htmlFor="united-state">{props.question.radio.choice_1_text}</Label>
-          </div>
-
-          <div className="flex items-center gap-2 mt-2">
-          <Radio
-            label={'  ' + props.question.radio.choice_2_text}
-            name="radio"
-            value="choice2"
-            type={type}
-            id={`${type}_choice_2`}
-            onChange={onOptionChange}
-          />
-           <Label htmlFor="united-state">{props.question.radio.choice_2_text}</Label>
-          </div>
-
-          <div className="flex items-center gap-2 mt-2">
-            <Radio
-            label={'  ' + props.question.radio.choice_3_text}
-            name="radio"
-            value="choice3"
-            type={type}
-            id={`${type}_choice_3`}
-            onChange={onOptionChange}
-          />
-          <Label htmlFor="united-state">{props.question.radio.choice_3_text}</Label>
-          </div>
-          
-          {props.question.radio.choice_4_text && (
-            <div className="flex items-center gap-2 mt-2">
-          <Radio
-            label={'  ' + question.radio.choice_4_text}
-            name="radio"
-            value="choice4"
-            type={type}
-            id={`${type}_choice_4`}
-            onChange={onOptionChange}
-          />
-          <Label htmlFor="united-state">{props.question.radio.choice_4_text}</Label>
-          </div>
-          )}
-        </div>
-      ))}
-    </fieldset>
-    <div>&nbsp;</div>
-   
-*/

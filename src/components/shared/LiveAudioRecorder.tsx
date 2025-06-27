@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useAudioRecorder } from 'react-audio-voice-recorder';
 import { v4 as uuidv4 } from 'uuid';
-import { upload_form_data_to_s3 } from '../../services/list';
+import { upload_form_data_to_s3, upload_to_openAI_for_recognition } from '../../services/list';
 import { useAppSelector } from '../../redux/store';
 
 const MyComponent = () => {
@@ -17,6 +17,7 @@ const MyComponent = () => {
 
 const user = useAppSelector(state => state.user.value)
 
+/*
   useEffect(() => {
     if (recordingBlob) {
       // Handle the recorded audio blob
@@ -28,7 +29,7 @@ const user = useAppSelector(state => state.user.value)
       console.log("send...")
            const newUuid = uuidv4();
              const fileName = `${newUuid}-${user.user_name}`;
-             console.log("LIveAudioRecrodefileName=", fileName)
+             //console.log("LIveAudioRecrodefileName=", fileName)
              const myFile = new File([recordingBlob as Blob], fileName, {
                     type: (recordingBlob as Blob).type,
              });
@@ -54,6 +55,45 @@ const user = useAppSelector(state => state.user.value)
              })
     }
   }, [recordingBlob]);
+*/
+
+useEffect(() => {
+  if (recordingBlob) {
+    // Handle the recorded audio blob
+    const audioUrl = URL.createObjectURL(recordingBlob);
+    const audio = new Audio(audioUrl);
+    audio.play();
+
+    //  also send the blob to a server for storage
+    console.log("send...")
+         const newUuid = uuidv4();
+           const fileName = `${newUuid}-${user.user_name}`;
+           //console.log("LIveAudioRecrodefileName=", fileName)
+           const myFile = new File([recordingBlob as Blob], fileName, {
+                  type: (recordingBlob as Blob).type,
+           });
+           const formData = new FormData();
+         
+           console.log("xxxxXXXXXXXXX myFile=", myFile)
+           formData.append("audio", myFile);
+           const config = {
+               headers: {
+                   'content-type': 'multipart/form-data',
+               },
+           };
+           //setBlob(undefined)
+           upload_to_openAI_for_recognition(formData, config)
+           .then((response) => {
+          
+            //console.log("response=", response)
+            //if (response.message.includes("OK")) {
+              console.log("response=", response)
+              alert("Audio sent!")
+         
+           // }
+           })
+  }
+}, [recordingBlob]);
 
   if (!isRecording) {
     return (
