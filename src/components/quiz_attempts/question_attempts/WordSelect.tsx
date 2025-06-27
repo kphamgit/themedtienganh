@@ -27,7 +27,7 @@ function WordSelect(props: WordSelectProps ) {
       setIsHovered(false);
    };
    const spanRef = useRef<HTMLSpanElement>(null);
-   let btnClass = 'btn m-1';
+   let btnClass = 'btn m-0 p-2 bg-amber-400 rounded-md';
 	
 	 if (isHovered) btnClass += ' underline';
      if (oddClickCount) btnClass += ' bg-orange-300';
@@ -35,7 +35,7 @@ function WordSelect(props: WordSelectProps ) {
      useEffect(() => {
         if (spanRef.current) {
             const rect = spanRef.current.getBoundingClientRect();
-            console.log('Bounding rectangle:', rect);
+            //console.log('Bounding rectangle:', rect);
         }
     }, []);
     //const handleClick = (word) => {

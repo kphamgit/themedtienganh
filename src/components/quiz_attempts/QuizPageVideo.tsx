@@ -1,7 +1,7 @@
 import { MouseEventHandler, useEffect, useRef, useState } from 'react'
 import { useLocation, useParams } from 'react-router-dom';
 import { useAppSelector } from '../../redux/store';
-import { QuestionAttemptAttributes, QuestionProps, QuizAttemptProps } from './types';
+import { QuestionAttemptAttributes, QuestionProps } from './types';
 import { ChildRef, DynamicWordInputs } from './question_attempts/DynamicWordInputs';
 import { ButtonSelectCloze } from './question_attempts/ButtonSelecCloze';
 import { ButtonSelect } from './question_attempts/ButtonSelect';
@@ -10,7 +10,6 @@ import { SRContinuous } from './question_attempts/SRContinuous';
 import { WordsSelect } from './question_attempts/WordsSelect';
 import { DropDowns } from './question_attempts/DropDowns';
 import { DynamicLetterInputs } from './question_attempts/DynamicLetterInputs';
-//import { QuestionAttemptResults } from './QuestionAttemptResults';
 import { AzureAudioPlayer } from '../shared/AzureAudioPlayer';
 
 import ReactPlayer from 'react-player';
@@ -75,6 +74,8 @@ export default function QuizPageVideo(props:any) {
     const [endOfQuiz, setEndOfQuiz] = useState(false)
     const childRef = useRef<ChildRef>(null);
 
+    //const buttonSelectClozeChildRef  = useRef<ButtonSelectClozeChildRef>(null);
+
     const counterRef = useRef<CounterRef>(null)
 
     const [playing, setPlaying] = useState(false);
@@ -106,8 +107,9 @@ export default function QuizPageVideo(props:any) {
 
    useEffect(() => {
         if (questionAttemptData) {
-            //console.log("QuizPageVideo questionAttemptData = ", questionAttemptData)
+            console.log("QuizPageVideo questionAttemptData = ", questionAttemptData)
             if (questionAttemptData.end_of_quiz) {
+                console.log(" END OF QUIX")
                 setEndOfQuiz(true)
             }
             else {
@@ -119,8 +121,9 @@ export default function QuizPageVideo(props:any) {
                 setShowQuestion(true)
                
             }
+            
         }
-      
+        
    }, [questionAttemptData])
    
     
@@ -182,19 +185,9 @@ export default function QuizPageVideo(props:any) {
     }
     */
 
-    if (endOfQuiz) {
-        return (
-            <div className='flex flex-col items-center'>
-                <div className='m-4'>
-                    <h1>End of Quiz</h1>
-                </div>
-            </div>
-        )
-    }
-
     
     useEffect(() => {
-       console.log("XXXXXX QuizPageVideo useEffect question?.audio_str = ", question?.audio_str)
+       //console.log("XXXXXX QuizPageVideo useEffect question?.audio_str = ", question?.audio_str)
         const fetchAudio = async () => {
             //const url = 'http://localhost:5001/api/tts/text_to_speech'
             const url = `${rootpath}/api/tts/text_to_speech`
@@ -222,9 +215,18 @@ export default function QuizPageVideo(props:any) {
 
     return (
         <>
-
+            { endOfQuiz &&
+                <div className='flex flex-col items-center'>
+                    <div className='bg-red-500 text-white text-lg m-4 rounded-md p-4'>
+                        <h1>End of Quiz</h1>
+                    </div>
+                </div>
+            }
             {showQuestion ?
                 <div className='flex flex-col items-center'>
+                    <div className='flex flex-row justify-start items-center w-full mx-10 bg-cyan-200 px-20 py-1  rounded-md'>
+                    <div className='mb-2'>Question: {question?.question_number}</div>
+                    </div>
                     <div className='text-textColor2 m-2' dangerouslySetInnerHTML={{ __html: question?.instruction ?? '' }}></div>
                     <div className='m-2 text-textColorQuestionPrompt'>{question?.prompt}</div>
                     <div>
@@ -235,7 +237,7 @@ export default function QuizPageVideo(props:any) {
                             <audio src={question.audio_src} controls />
                         }
                     </div>
-                    <div className='bg-green-500 flex flex-colrounded-md justify-center'>
+                    <div className='bg-cyan-200 flex flex-colrounded-md justify-center'>
                         {question?.format === 1 ? (
                             <DynamicWordInputs content={question.content} ref={childRef} />
                         ) : question?.format === 2 ? (

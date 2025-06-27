@@ -101,7 +101,7 @@ import  QuestionHelper from './QuestionHelper';
                 )
          
         }
-        else if (props?.question?.format === 1) { // cloze
+        else if (props?.question?.format === 1 || props.question?.format === 2) { // cloze
               const replacements: DynamicObject = {};
               const answer_parts = props?.question?.answer_key.split('/')
               answer_parts.forEach( (part, index) => {

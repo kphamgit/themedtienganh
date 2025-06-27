@@ -1,5 +1,5 @@
 import { useState, useEffect, forwardRef, useImperativeHandle, useRef, EventHandler} from 'react';
-import { AzureAnimatedButton } from '../../shared/AzureAnimatedButton';
+import { AzureAnimatedButton } from  '../../shared/AzureAnimatedButton'
 
 
 interface InputFieldProps {
@@ -10,6 +10,7 @@ interface InputFieldProps {
 
 export interface DropBoxProps {
   id: string;
+  value: string;
   available: boolean;
   rect: {top: number; left: number; width: number; height: number};
 }
@@ -17,9 +18,12 @@ export interface DropBoxProps {
 interface Props {
     content: string | undefined;
   }
-  export interface ChildRef {
-    getAnswer: () => string | undefined;
-  }
+ // export interface ButtonSelectClozeChildRef {
+  //  getAnswer: () => string[] | undefined;
+ // }
+ export interface ChildRef {
+  getAnswer: () => string | undefined;
+}
 
   //const labels = ['one', 'two']
 
@@ -126,8 +130,20 @@ useEffect(() => {
 },[props.content])
 
   const getAnswer = () => {
-    
-    return "test"
+    // iterate through dropboxes and get the values of the inputs
+    console.log(" getAnswer...dropboxes=", dropBoxes)
+    const answers = dropBoxes.map((dropBox, index) => {
+     
+      if (dropBox) {  
+        //console.log(`Input at index ${index} value:`, inputElement.textContent);
+        return dropBox.value || '';
+      } else {
+        console.error(`No input element found at index ${index}`);
+        return '';
+      }
+    });
+    console.log(" getAnswer...answers=", answers.join('/'))
+    return answers.join('/'); // Join the answers with a separator, e.g., ' / '
   }
 
   /**
@@ -149,34 +165,40 @@ useEffect(() => {
     }
   };
 
-  useEffect(() => {
+    useEffect(() => {
       if (inputRefs.current.length > 0) {
         //console.log('InputRefs length:', inputRefs.current.length);
-       // inputRefs.current.forEach((input, index) => {
-         // console.log(`Input ${index} Value:`, input.innerHTML);
-       // }
-       // );
-             inputRefs.current.forEach((input, index) => {
-                 const rect = getInputBoundingRect(index);
-                 if (rect) {
-                  //console.log('****** ****** Input Bounding Rect for index ', index, ': Top:', rect.top, 'Left:', rect.left, 'Width:', rect.width, 'Height:', rect.height);
-                   // save rect in dropBoxes array
-                   const dropBox: DropBoxProps = {
-                     id: `dropBox-${index}`,
-                     available: true,
-                     rect: { top: rect.top, left: rect.left, width: rect.width, height: rect.height }
-                   };
-                   setDropBoxes(prev => [...prev, dropBox]);
-          
-                 }
-                 else {
-                   console.error('Could not get bounding rectangle for input element.');
-                 }
-               })
+        // inputRefs.current.forEach((input, index) => {
+        // console.log(`Input ${index} Value:`, input.innerHTML);
+        // }
+        // );
+        inputRefs.current.forEach((input, index) => {
+          const rect = getInputBoundingRect(index);
+          if (rect) {
+            //console.log('****** ****** Input Bounding Rect for index ', index, ': Top:', rect.top, 'Left:', rect.left, 'Width:', rect.width, 'Height:', rect.height);
+            // save rect in dropBoxes array
+            const dropBox: DropBoxProps = {
+              id: `dropBox-${index}`,
+              value: '',
+              // Initially, the value is empty, it will be filled when a button is clicked and dropped on it
+              available: true,
+              rect: { top: rect.top, left: rect.left, width: rect.width, height: rect.height }
+            };
+            setDropBoxes(prev => [...prev, dropBox]);
+
+          }
+          else {
+            console.error('Could not get bounding rectangle for input element.');
+          }
+        })
       } else {
-      console.error('No input elements are available yet.');
-    }    
-    },[inputFields]);
+        console.error('No input elements are available yet.');
+      }
+      return () => {
+        // Cleanup function to reset the drop boxes when the component unmounts
+        setDropBoxes([]);
+      }
+    }, [inputFields]);
 
     function renderContent(type: string, value: string, id: string, index: number) {
       //console.log(" in renderContent...xxxxxxxxx..type=", type, "value=", value, "id=", id, "index=", index)
@@ -190,7 +212,7 @@ useEffect(() => {
         }
         
         return (<div
-          className='bg-blue-300 rounded-md cloze_answer p-1 m-1 text-center'
+          className='bg-blue-100 rounded-md cloze_answer p-1 m-1 text-center'
           style={{ minWidth: min_width, width: min_width, height: 25, lineHeight: 1.5 }}
           id={id}
           ref={(el) => {
@@ -212,22 +234,22 @@ useEffect(() => {
         }
       }
       else {
-        return (<span style={{ color: 'white',  marginLeft: 2, lineHeight : 2, padding: 3 }}>{value}</span>)
+        return (<span style={{ color: 'black',  marginLeft: 2, lineHeight : 2, padding: 3 }}>{value}</span>)
       }
     }
 
     const handleClick = (selected_text: string, droppedIndex: number, available: boolean) => {
-      console.log("handleClick...droppedIndex=", droppedIndex)
+      //console.log("handleClick...droppedIndex=", droppedIndex)
       //console.log("targetInput=", targetInput)
       // update the available state corresponding to droppedIndex in the dropBoxes array
       const updatedDropBoxes = dropBoxes.map((dropBox, index) => {
         if (index === droppedIndex) {
-          return { ...dropBox, available: available }; // Mark the dropbox as unavailable
+          return { ...dropBox, value: selected_text, available: available }; // Mark the dropbox as unavailable
         }
         return dropBox;
       });
       setDropBoxes(updatedDropBoxes);
-      //console.log("&&&&&&&&&&&& updatedDropBoxes=", updatedDropBoxes)
+    
       const target_el:HTMLInputElement = document.getElementById(targetInput) as HTMLInputElement
       //console.log("target_el=", target_el)
       if (target_el) {
@@ -239,12 +261,8 @@ useEffect(() => {
 
   
   useEffect(() => {
-    // kpham 06/26/2025: this is for the future when you want to update the dropboxes rectangles when the window is resized
-    // so that drag droping in AzureAnimatedButtons will work correctly
-    // right now, if the window is resized, the dropboxes rectangles will not be updated
-    // therefore drag/droping will not work correctly
     const handleResize = () => {
-     //console.log("Window resized, updating dropboxes rectangles");
+   
 
      dropBoxes.forEach((input, index) => {
       const rect = getInputBoundingRect(index);
@@ -261,6 +279,7 @@ useEffect(() => {
         }
         const dropBox: DropBoxProps = {
           id: current_dropBox.id,
+          value: current_dropBox.value,
           available: current_dropBox.available,
           rect: { top: rect.top, left: rect.left, width: rect.width, height: rect.height }
         };
@@ -275,15 +294,13 @@ useEffect(() => {
         console.error('Could not get bounding rectangle for input element.');
       }
     })
-
-
-
     };
 
     window.addEventListener('resize', handleResize);
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      // Cleanup function to remove the event listener when the component unmounts
     };
   }, [dropBoxes]); // Empty dependency array means this effect runs once on mount and cleans up on unmount
 
@@ -299,8 +316,8 @@ useEffect(() => {
           c
         </div>
         {charRef.current &&
-          <div className='bg-amber-500 p-2 flex flex-col justify-center items-center flex-wrap m-3'>
-            <div className='flex flex-row justify-start bg-red-700 flex-wrap'>
+          <div className='bg-cyan-200 p-2 flex flex-col justify-center items-center flex-wrap m-3'>
+            <div className='flex flex-row justify-start bg-blue-300 flex-wrap'>
               {inputFields?.map((field, index) => {
                 return (
                   <div key={index}>
@@ -309,7 +326,7 @@ useEffect(() => {
                 );
               })}
             </div>
-            <div className='flex flex-row justify-center items-center bg-blue-700 m-10'>
+            <div className='flex flex-row justify-center items-center bg-green-600 m-10'>
               <ul className='flex flex-row gap-5 m-3'>
                 {labels && labels.map((label, index) => (
                   <li key={label}>
@@ -324,8 +341,10 @@ useEffect(() => {
                 )}
               </ul>
             </div>
+          
           </div>
-
+          // make a test button to test the getAnswer function
+          
         }
     
       </>

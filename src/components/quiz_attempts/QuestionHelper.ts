@@ -9,7 +9,7 @@ class QuestionHelper {
     format_user_answer = (answer: string | undefined, answer_key: string, format: number | undefined, content: string): string | undefined => {
         //console.log(" questionHelper format_user_answer,  format", format, " user answer = ", answer, " answer_key = ", answer_key)
         if (answer) {
-            if (format === 1) {
+            if (format === 1 || format === 2) {  //cloze
                 const replacements: DynamicObject = {};
                 const answer_key_parts = answer_key.split('/')
                 const user_answer_parts = answer.split('/')

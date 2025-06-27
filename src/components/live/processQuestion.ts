@@ -1,7 +1,6 @@
+//export const processQuestion = (format: string | undefined, answer_key: string | undefined, user_answer: string | undefined) => {
 
-//export const processLiveQuestion = (answer_key:string, user_answer: string) => {
-
-export const processQuestion = (format: string | undefined, answer_key: string | undefined, user_answer: string | undefined) => {
+export const processQuestion = (format: string | undefined, answer_key: string | undefined, user_answer: any | undefined) => {
   
     console.log("processQuestion format = ", format)
   const default_results = {
@@ -10,19 +9,15 @@ export const processQuestion = (format: string | undefined, answer_key: string |
     error_flag: false, 
  
 }
-//process_button_select(question: any , user_answer:string): QuestionAttemptCreationAttributes{
-    //console.log(" in process_button_select")
-//const process_button_select = (answer_key:string, user_answer: string) => {
+
     const process_button_select = (answer_key: string, user_answer: string) => {
    
    let error = false;
    let score = 0
    if (answer_key != user_answer)  {
-    //console.log("process_button_select error: ")
       error = true
    }
    else {
-    //console.log("process_button_select NO error: ")
         score += 5;
    }      
     return { ...default_results,
@@ -35,10 +30,13 @@ export const processQuestion = (format: string | undefined, answer_key: string |
 
 const process_cloze = (answer_key:string, user_answer: string ) => {
     
+    console.log("process_cloze answer_key = ", answer_key)
+
+    console.log("process_cloze user_answer = ", user_answer)
+
     let error = true;
     let score = 0
-    //console.log("in process_cloze user answer :",user_answer);
-    //console.log("in process_cloze answer key array = ", answer_keys_array);
+
     let user_answer_parts = user_answer.trim().split('/')
     //console.log("user_answer_parts = ", user_answer_parts)
     let answer_key_parts = answer_key.split('/')
@@ -69,7 +67,7 @@ const process_cloze = (answer_key:string, user_answer: string ) => {
         }
     })
 
-    //console.log("process_cloze error = ", error)
+  
     if (!error) {
         score = 5
     }        
@@ -101,9 +99,38 @@ const compare_cloze_answers = (user_answer: string, answer_key: string) => {
     return match
 }
 
-const process_radio = (question: any, user_answer: string) => {  // 4
+const process_button_cloze = (answer_key:string, user_answer: string ) => {
+    
+    let error = false;
+    let score = 0
 
-    //console.log("process_radio user answer = ", user_answer)
+    let answer_key_parts = answer_key.split('/')
+    let user_answer_parts = user_answer.trim().split('/')
+
+    for (let i = 0; i < answer_key_parts.length; i++) {
+        //console.log("process_button_cloze answer_key_parts[i] = ", answer_key_parts[i])
+        //console.log("process_button_cloze user_answer_parts[i] = ", user_answer_parts[i]);
+        if (answer_key_parts[i] !== user_answer_parts[i]) {
+            error = true;
+            continue;
+        }
+        //console.log("answer_key_parts[i] = ", answer_key_parts[i])
+    }
+    if (!error) {
+        score = 5
+    }        
+    const rc =  { ...default_results,
+        user_answer: user_answer,
+        score: score,
+        error_flag: error,
+
+        }
+     return rc
+        //return results;
+}
+
+
+const process_radio = (question: any, user_answer: string) => {  // 4
     let error = false;
   let score = 0
   if (answer_key != user_answer)  {
@@ -122,7 +149,7 @@ const process_radio = (question: any, user_answer: string) => {  // 4
 }
 
 const process_words_scramble = (answer_key: string , user_answer:string) => {
-    //console.log("process_words_scramble user answer = ", user_answer)
+ 
     let searchRegExp = /\//g;
     let replaceWith = '';
 //kevin: programming notes: replaceAll doesn't work on the server,
@@ -147,8 +174,7 @@ const process_words_scramble = (answer_key: string , user_answer:string) => {
 }
 
 const process_speech_recognition = (answer_key: string , user_answer:string) => {
-    //console.log("process_speech_recognition  answer_key = ", answer_key)
-    //console.log("process_speech_recognition user answer = ", user_answer)
+ 
     let error = false;
     let score = 0
     if (answer_key != user_answer)  {
@@ -201,10 +227,15 @@ const process_words_select = (answer_key: string, user_answer: string) => {
 
          }
 }
-//console.log("processLiveQuestion format = ", format)
+
 switch (format) {
     case '1': // cloze
         return process_cloze(
+            answer_key!,
+            user_answer!
+        );
+    case '2': // button cloze
+        return process_button_cloze(
             answer_key!,
             user_answer!
         );

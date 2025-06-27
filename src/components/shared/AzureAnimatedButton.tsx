@@ -31,16 +31,6 @@ export const AzureAnimatedButton = (props: AzureButtonProps) => {
       const [verticalOffsets, setVerticalOffsets] = useState<number[]>([]);
       const [horizontalOffsets, setHorizontalOffsets] = useState<number[]>([]);
  
-      const printBoundingRect = () => {
-        if (myBoundingRect) {
-          console.log("Bounding rectangle:", myBoundingRect);
-          console.log('Button left:', myBoundingRect.left);
-          console.log('Button top:', myBoundingRect.top);
-        } else {
-          console.log("Bounding rectangle is null");
-        }
-      };
-
       useEffect(() => {
         if (buttonRef.current) {
           const rect = buttonRef.current.getBoundingClientRect();
@@ -142,40 +132,13 @@ export const AzureAnimatedButton = (props: AzureButtonProps) => {
           if (buttonRef.current && myBoundingRect) {
             //props.dropBoxes?.forEach((dropBox, index) => {
               // calculate the offsets for the buttons from the dropboxes
-              const buttonWidth = myBoundingRect.width;
-              //console.log('Button width:', buttonWidth);
-              const dropboxWidth = availableDropBox.rect.width;
-              //console.log('DropBox width:', dropboxWidth);
-              const sideMarginHorizontal = (dropboxWidth - buttonWidth!) / 2;
-              //console.log('Side Margin:', sideMargin);
-
-              const offsetX = availableDropBox.rect.left - myBoundingRect.left;
-           
-              //setVerticalOffset(offsetY);
-              /*
-              setHorizontalOffsets(prevOffsets => {
-                const newOffsets = [...prevOffsets];
-                newOffsets[droppedIndex] = offsetX + sideMarginHorizontal;
-                return newOffsets;
-              });
-              */
+              //console.log('DropBox width:', dropboxWidth);      
               const buttonHeight = myBoundingRect.height;
               //console.log('Button width:', buttonWidth);
               const dropboxHeight = availableDropBox.rect.height;
-              //console.log('DropBox width:', dropboxWidth);
-              const sideMarginVertical = (dropboxHeight - buttonHeight!) / 2;
-              //console.log('Side Margin:', sideMargin);
-
-              const offsetY = availableDropBox.rect.top - myBoundingRect.top;
-              //setVerticalOffset(offsetY);
-              /*
-              setVerticalOffsets(prevOffsets => {
-                const newOffsets = [...prevOffsets];
-                newOffsets[droppedIndex] = offsetY + sideMarginVertical;
-                return newOffsets;
-              });
-              */
-              buttonRef.current.style.transform = `translate(${offsetX + sideMarginHorizontal}px, ${offsetY + sideMarginVertical}px)`;
+              //console.log('DropBox width:', dropboxWidth);     
+              buttonRef.current.style.transform = `translate(${horizontalOffsets[droppedIndex]}px, ${verticalOffsets[droppedIndex]}px)`;
+              //buttonRef.current.style.transform = `translate(${offsetX + sideMarginHorizontal}px, ${offsetY + sideMarginVertical}px)`;
               setDropped(true);
               setDroppedIndex(droppedIndex);
               props.parentFunc(props.button_text!, droppedIndex, false)
@@ -254,7 +217,7 @@ export const AzureAnimatedButton = (props: AzureButtonProps) => {
     return (
         <>
           <button ref={buttonRef} 
-          className='bg-amber-700 text-white px-2 rounded-md hover:bg-amber-900'
+          className='bg-blue-100 text-black px-2 rounded-md hover:bg-blue-200'
              onClick={handleClick}
              style={{
               transition: 'transform 0.5s ease-in-out', // Smooth animation
