@@ -90,7 +90,7 @@ export default function QuizPageVideo(props:any) {
 
    useEffect(() => {
         if (data) {
-            //console.log("QuizPageVideo data = ", data)
+            //console.log("QuizPageVideo questioin  = ", data.question)
             setQuestion(data.question)
             setShowSubmitButton(true)
             setQuestionAttemptId(String(data.question_attempt_id))
@@ -107,7 +107,7 @@ export default function QuizPageVideo(props:any) {
 
    useEffect(() => {
         if (questionAttemptData) {
-            console.log("QuizPageVideo questionAttemptData = ", questionAttemptData)
+            //console.log("QuizPageVideo questionAttemptData = ", questionAttemptData)
             if (questionAttemptData.end_of_quiz) {
                 console.log(" END OF QUIX")
                 setEndOfQuiz(true)
@@ -241,7 +241,7 @@ export default function QuizPageVideo(props:any) {
                         {question?.format === 1 ? (
                             <DynamicWordInputs content={question.content} ref={childRef} />
                         ) : question?.format === 2 ? (
-                            <ButtonSelectCloze content={question.content} ref={childRef} />
+                            <ButtonSelectCloze content={question.content} choices={question.button_cloze_options} ref={childRef} />
                         ) : question?.format === 3 ? (
                             <ButtonSelect content={question.content} ref={childRef} />
                         ) : question?.format === 4 ? (

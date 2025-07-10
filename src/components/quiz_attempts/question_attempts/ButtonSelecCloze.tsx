@@ -17,6 +17,7 @@ export interface DropBoxProps {
 
 interface Props {
     content: string | undefined;
+    choices: string | undefined;
   }
  // export interface ButtonSelectClozeChildRef {
   //  getAnswer: () => string[] | undefined;
@@ -34,7 +35,7 @@ interface Props {
   const inputRefs = useRef<HTMLDivElement[]>([]);
 
   const [targetInput, setTargetInput] = useState('')
-  const [labels, setLabels] = useState<string[] | undefined>([])
+  const [buttonLabels, setButtonLabels] = useState<string[] | undefined>([])
 
   const [dropBoxes, setDropBoxes] = useState<DropBoxProps[]>([]);
 
@@ -43,6 +44,14 @@ interface Props {
 
   const inputCountRef = useRef(-1);
   
+  useEffect(() => {
+     if (!props.choices) {
+      console.error("No choices provided in props");
+      return;
+    }
+    //console.log("ButtonSelectCloze...props.choices=", props.choices)
+    setButtonLabels(props.choices?.split('/').map((item) => item.trim()) || []);
+  }, [props.choices]);
 
 useEffect(() => {
   const regExp = /\[.*?\]/g
@@ -76,11 +85,12 @@ useEffect(() => {
   })
   //console.log("MMMM matches no brackets=", matches_no_brackets)
   // ["are", "thank"]
+  /*
   if (matches_no_brackets) {
     //console.log("matches_no_brackets=", matches_no_brackets)
     setLabels(matches_no_brackets)
-   
   }
+*/
   //[ "are","<br />","thank"]
 
   // Use a regular expression to split the sentence
@@ -238,7 +248,7 @@ useEffect(() => {
       }
     }
 
-    const handleClick = (selected_text: string, droppedIndex: number, available: boolean) => {
+    const handleClick = (selected_text: string, droppedIndex: number | undefined, available: boolean) => {
       //console.log("handleClick...droppedIndex=", droppedIndex)
       //console.log("targetInput=", targetInput)
       // update the available state corresponding to droppedIndex in the dropBoxes array
@@ -316,7 +326,7 @@ useEffect(() => {
           c
         </div>
         {charRef.current &&
-          <div className='bg-cyan-200 p-2 flex flex-col justify-center items-center flex-wrap m-3'>
+          <div className='bg-cyan-400 p-2 flex flex-col justify-center items-center flex-wrap m-3'>
             <div className='flex flex-row justify-start bg-blue-300 flex-wrap'>
               {inputFields?.map((field, index) => {
                 return (
@@ -326,9 +336,9 @@ useEffect(() => {
                 );
               })}
             </div>
-            <div className='flex flex-row justify-center items-center bg-green-600 m-10'>
+            <div className='flex flex-row justify-center items-center bg-orange-300 m-10'>
               <ul className='flex flex-row gap-5 m-3'>
-                {labels && labels.map((label, index) => (
+                {buttonLabels && buttonLabels.map((label, index) => (
                   <li key={label}>
                     <AzureAnimatedButton
                       id={`azure-button-${index}`}
