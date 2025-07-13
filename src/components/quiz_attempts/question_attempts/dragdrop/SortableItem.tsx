@@ -75,6 +75,7 @@ export default function SortableItem(props: SortableItemProps) {
   
   const handleItemClick = () => {
     console.log("in SortableItem handleItemClick, item id = ", props.id);
+    console.log("in SortableItem handleItemClick, item id = ", props.id);
     //console.log("in SortableItem handleItemClick, calling parent function from container");
     props.parent_function?.(props.id);
     //setDestination((prev) => [...prev, item]);
@@ -95,9 +96,13 @@ export default function SortableItem(props: SortableItemProps) {
       {...attributes} 
       {...listeners}
       //onClick={(e) => handleAddItem()}
-      className="flex flex-row p-1 bg-amber-500 justify-center mx-1 rounded-md"
+      className={`px-4 py-2 rounded ${
+        props.disable
+          ? "bg-gray-400 text-gray-500 cursor-not-allowed"
+          : "bg-green-400 hover:bg-green-500"
+      }`}
       >
-      <button id={props.id} onClick={handleItemClick}>{props.label}</button>
+      <button id={props.id} disabled={props.disable} onClick={handleItemClick}>{props.label}</button>
     </div>
   );
 }
@@ -112,6 +117,20 @@ return (
       className="flex flex-row p-1 bg-amber-500 justify-center mx-1 rounded-md"
       >
       <Item id={props.id} label={props.label} disable={props.disable} parent_function={handleItemClick} />
+    </div>
+  );
+*/
+
+/*
+return (
+    <div ref={setNodeRef} 
+      style={style} 
+      {...attributes} 
+      {...listeners}
+      //onClick={(e) => handleAddItem()}
+      className="flex flex-row p-1 bg-amber-500 justify-center mx-1 rounded-md"
+      >
+      <button id={props.id} onClick={handleItemClick}>{props.label}</button>
     </div>
   );
 */

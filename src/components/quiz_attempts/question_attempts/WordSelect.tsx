@@ -30,7 +30,7 @@ function WordSelect(props: WordSelectProps ) {
    let btnClass = 'btn m-0 p-2 bg-amber-400 rounded-md';
 	
 	 if (isHovered) btnClass += ' underline';
-     if (oddClickCount) btnClass += ' bg-orange-300';
+     if (oddClickCount) btnClass += ' bg-blue-300';
 
      useEffect(() => {
         if (spanRef.current) {

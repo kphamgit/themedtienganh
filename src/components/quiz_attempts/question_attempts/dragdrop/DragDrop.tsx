@@ -37,25 +37,11 @@ export interface DragAndDropRefProps {
 const DragDrop = forwardRef<DragAndDropRefProps, Props>((props, ref) => {
 
 //export default function DragDrop() {
- /* 
-  const [allItems, setAllItems] = useState<{ [key: string]: ItemProps[] }>({
-    root: [{ id: uuidv4(), label: "Item 1", disable: false }, 
-      { id: uuidv4(), label: "Item 2", disable: false }, 
-      { id: uuidv4(), label: "Item 3", disable: false }],
-    container1: [{ id: uuidv4(), label: "Item 4" }, { id: uuidv4(), label: "Item 5" }, { id: uuidv4(), label: "Item 6" }]
-   
-  });
-*/
+ 
 const [allItems, setAllItems] = useState<{ [key: string]: ItemProps[] }>({
   root: [],
-  container1: []
+  destination_container: []
 });
-
-  /*
-  const [source, setSource] = useState<ItemProps[]>([]);
-   //const [destination, setDestination] = useState<string[]>([]);
-   const [destination, setDestination] = useState<ItemProps[]>([]); 
-  */
 
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeLabel, setActiveLabel] = useState<string | null>(null);
@@ -104,9 +90,9 @@ const [allItems, setAllItems] = useState<{ [key: string]: ItemProps[] }>({
   },[props.content])
 
   const getAnswer = () => {
-    //get the label of the items in the container1 array
+    //get the label of the items in the destination_container array
     const answer_array: string[]  = []
-    allItems.container1.forEach(item => {
+    allItems.destination_container.forEach(item => {
      // console.log("item.label=", item.label);
       answer_array.push(item.label)
     });
@@ -122,31 +108,33 @@ const [allItems, setAllItems] = useState<{ [key: string]: ItemProps[] }>({
 
 
   const handleSortableItemClick = (item_id: string, container_id: string) => {
-    //console.log("in App tsx click on item item_id=", item_id);
+    console.log("in handleSortableItemClick click on item item_id=", item_id);
+    console.log("in handleSortableItemClick click on item container_id=", container_id);
     //look in items1.root for the index of the item with the item_id
     const item_index = allItems[container_id].findIndex((item) => item.id === item_id);
     //console.log("item_index=", item_index);
    
-    //look for this item in the container from which it was clicked
+    //look for this item in the source container (container from which it was clicked)
     const the_item = allItems[container_id].find((item) => item.id === item_id);
-    //console.log("handleSortableItemClick found item =", the_item);
+    console.log("handleSortableItemClick found item =", the_item);
+    
     if (container_id === "root") {
-          if (the_item) { // append the item to the container1 array
+          if (the_item) { // append the item to the destination_container array
               setAllItems((prev) => ({
                   ...prev,
-                  container1: [
-                      ...prev.container1,
+                  destination_container: [
+                      ...prev.destination_container,
                       { ...allItems.root[item_index], id: uuidv4() }
                   ]
               }));
           }
-            //disable the clicked item in the root array
+          console.log("disable the clicked item with id ", item_id, " in the root array")
           setAllItems((prev) => ({
               ...prev,
               root: prev.root.map((item) => item.id === item_id ? { ...item, disable: true } : item),
           }));
     }
-    else { //container1
+    else { //destination_container
 
       //look for a disabled item in the root array with the same label as the clicked item 
       const item_in_root = allItems.root.find((item) => (item.label === the_item?.label && item.disable === true));
@@ -157,10 +145,10 @@ const [allItems, setAllItems] = useState<{ [key: string]: ItemProps[] }>({
                 ...prev,
                 root: prev.root.map((item) => item.id === item_in_root.id ? { ...item, disable: false } : item),
             }));
-            //at the same time, remove the clicked item from the container1 array
+            //at the same time, remove the clicked item from the destination_container array
             setAllItems((prev) => ({
                 ...prev,
-                container1: prev.container1.filter((item) => item.id !== item_id)
+                destination_container: prev.destination_container.filter((item) => item.id !== item_id)
             }));
         }
     }
@@ -178,12 +166,16 @@ const [allItems, setAllItems] = useState<{ [key: string]: ItemProps[] }>({
       >
         <div className="flex flex-col gap-4 align-top">
       
-        <div className="flex flex-row justify-start bg-blue-300"><Container id="container1" 
-            items={allItems.container1} 
-            parent_function={handleSortableItemClick} />
+        <div className="flex flex-row justify-start bg-pink-400">
+            <Container id="destination_container" 
+              items={allItems.destination_container} 
+              parent_function={handleSortableItemClick} 
+            />
         </div>
         <div className="flex flex-row bg-orange-300">
-          <Container id="root" items={allItems.root} parent_function={handleSortableItemClick} /></div>
+          <Container id="root" 
+            items={allItems.root} 
+            parent_function={handleSortableItemClick} /></div>
         </div>
         <DragOverlay>{activeId && activeLabel ? <Item id={activeId} label={activeLabel} /> : null}</DragOverlay>
       </DndContext>
@@ -215,8 +207,8 @@ const [allItems, setAllItems] = useState<{ [key: string]: ItemProps[] }>({
     let activeItem = allItems.root.find((item) => item.id === id);
     //console.log("activeItem=", activeItem);
     if (!activeItem) {
-      //search in items1 container1 array
-      activeItem = allItems.container1.find((item) => item.id === id);
+      //search in items1 destination_container array
+      activeItem = allItems.destination_container.find((item) => item.id === id);
       //console.log("activeItem=", activeItem);
     }
     //console.log("activeItem label =", activeItem?.label);
@@ -238,7 +230,7 @@ const [allItems, setAllItems] = useState<{ [key: string]: ItemProps[] }>({
     const overContainer = findContainer(overId);
     //console.log("after findContainer overContainer:", overContainer);
 
-    if (activeContainer === 'container1' && overContainer === 'root') {
+    if (activeContainer === 'destination_container' && overContainer === 'root') {
       return
     }
     
@@ -253,7 +245,7 @@ const [allItems, setAllItems] = useState<{ [key: string]: ItemProps[] }>({
  
     setAllItems((prev) => {
      // console.log("setItems1 called in handleDragOver prev =", prev);
-     // console.log(" find the items in the prev state for activeContainer (root or container1 or container2 ...):");
+     // console.log(" find the items in the prev state for activeContainer (root or destination_container or container2 ...):");
       const activeItems = prev[activeContainer as keyof typeof allItems];
 
      // console.log("previous state of activeItems:", activeItems);

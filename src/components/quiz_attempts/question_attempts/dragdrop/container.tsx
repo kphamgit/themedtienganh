@@ -42,7 +42,7 @@ export default function Container(props: ContainerProps) {
      
       <div ref={setNodeRef} 
         className={clsx(
-            "flex flex-row m-10 p-1 flex-wrap justify-items-start",
+            "flex flex-row m-10 p-1 flex-wrap justify-items-start gap-1",
             id === 'container1' ? "bg-gray-100" : "bg-cyan-100"
           )}
         >
