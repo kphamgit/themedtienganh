@@ -96,7 +96,7 @@ export default function SortableItem(props: SortableItemProps) {
       {...attributes} 
       {...listeners}
       //onClick={(e) => handleAddItem()}
-      className={`px-4 py-2 rounded ${
+      className={`px-3 py-2 rounded ${
         props.disable
           ? "bg-gray-400 text-gray-500 cursor-not-allowed"
           : "bg-green-400 hover:bg-green-500"

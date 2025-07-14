@@ -15,6 +15,7 @@ import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { v4 as uuidv4 } from "uuid";
 import Container from "./container";
 import { Item, ItemProps } from "./SortableItem";
+import DestinationContainer from "./DestContainer";
 //import Announcements from "./announcements";
 
 //https://codesandbox.io/p/sandbox/dnd-kit-sortable-example-yhwz3f?file=%2Fsrc%2FApp.jsx
@@ -166,8 +167,8 @@ const [allItems, setAllItems] = useState<{ [key: string]: ItemProps[] }>({
       >
         <div className="flex flex-col gap-4 align-top">
       
-        <div className="flex flex-row justify-start bg-pink-400">
-            <Container id="destination_container" 
+        <div className="flex flex-row justify-start bg-amber-300">
+            <DestinationContainer id="destination_container" 
               items={allItems.destination_container} 
               parent_function={handleSortableItemClick} 
             />

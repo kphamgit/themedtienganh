@@ -326,7 +326,7 @@ useEffect(() => {
           c
         </div>
         {charRef.current &&
-          <div className='bg-cyan-400 p-2 flex flex-col justify-center items-center flex-wrap m-3'>
+          <div className='bg-cyan-300 p-2 flex flex-col justify-center items-center flex-wrap m-3'>
             <div className='flex flex-row justify-start bg-blue-300 flex-wrap'>
               {inputFields?.map((field, index) => {
                 return (
@@ -336,7 +336,7 @@ useEffect(() => {
                 );
               })}
             </div>
-            <div className='flex flex-row justify-center items-center bg-orange-300 m-10'>
+            <div className='flex flex-row justify-center items-center bg-orange-200 m-10'>
               <ul className='flex flex-row gap-5 m-3'>
                 {buttonLabels && buttonLabels.map((label, index) => (
                   <li key={label}>
