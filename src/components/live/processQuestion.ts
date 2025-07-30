@@ -2,7 +2,7 @@
 
 export const processQuestion = (format: string | undefined, answer_key: string | undefined, user_answer: any | undefined) => {
   
-    console.log("processQuestion format = ", format)
+   //console.log("processQuestion format = ", format)
   const default_results = {
     user_answer: '', 
     score: 0, 
@@ -30,9 +30,9 @@ export const processQuestion = (format: string | undefined, answer_key: string |
 
 const process_cloze = (answer_key:string, user_answer: string ) => {
     
-    console.log("process_cloze answer_key = ", answer_key)
+    //console.log("process_cloze answer_key = ", answer_key)
 
-    console.log("process_cloze user_answer = ", user_answer)
+    //console.log("process_cloze user_answer = ", user_answer)
 
     let error = true;
     let score = 0

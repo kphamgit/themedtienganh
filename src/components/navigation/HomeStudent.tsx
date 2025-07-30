@@ -34,16 +34,6 @@ export default function HomeStudent(props: any ) {
    return (
     <DndContext>
         <div className='flex flex-row  bg-bgColor1'>
-       
-          <div
-             ref={setNodeRef}
-             style={style}
-             {...listeners}
-             {...attributes}
-          >
-            <MyVerticalGrid />
-          </div>
-        
           <div className='col-span-11 flex flex-col justify-stretch bg-bgColor1 h-screen'>
               <div><MainStudent/></div>
               <div className='flex flex-row justify-end'>

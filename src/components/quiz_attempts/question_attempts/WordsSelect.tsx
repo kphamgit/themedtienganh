@@ -1,5 +1,4 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
-//import { useAppSelector } from '../../redux/store';
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import WordSelect from './WordSelect';
 import { ChildRef } from '../types';
 
@@ -8,7 +7,7 @@ interface Props {
   }
 
  
-  export interface MyProps {word: string, next_word: string}
+  export interface MyProps {group_id: number, word: string, next_word: string}
 
 export const WordsSelect = forwardRef<ChildRef, Props>((props, ref) => {
    
@@ -45,7 +44,9 @@ export const WordsSelect = forwardRef<ChildRef, Props>((props, ref) => {
     let my_arr1 = []
     for (var i=0; i < my_arr.length; i++) { 
         let word = my_arr[i]
-        let pair: MyProps = {word: '', next_word: ''}
+        // if i is even, then group_id is 0, else group_id is 1
+        let group_id = (i % 2 === 0) ? 0 : 1
+        let pair: MyProps = {group_id: group_id, word: '', next_word: ''}
         if (i < (my_arr.length-1)) {
             pair.word = word
             pair.next_word = my_arr[i+1]
@@ -62,12 +63,12 @@ export const WordsSelect = forwardRef<ChildRef, Props>((props, ref) => {
     
 
     function addWordToAnswer(word: string) {
-        console.log("addWord ", word)
+        //console.log("addWord ", word)
         setAnswerArray([...answerarray, word])
      }
 
      function removeWordFromAnswer(word: string) {
-        console.log("remove a word", word)
+        //console.log("remove a word", word)
        let word_index = answerarray.findIndex(e => e === word )
        setAnswerArray(answerarray.filter((word, idx) => idx !== word_index))
      }
@@ -86,7 +87,7 @@ export const WordsSelect = forwardRef<ChildRef, Props>((props, ref) => {
             
             {
                 words.map((pair, index) => {
-                    return <WordSelect key = {index} pair ={pair} addWordToAnswer={addWordToAnswer} removeWordFromAnswer={removeWordFromAnswer} />
+                    return <WordSelect key = {index} group_id={pair.group_id} pair ={pair} addWordToAnswer={addWordToAnswer} removeWordFromAnswer={removeWordFromAnswer} />
                 })
             }
         </>

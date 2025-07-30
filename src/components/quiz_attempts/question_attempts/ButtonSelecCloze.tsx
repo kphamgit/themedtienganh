@@ -83,7 +83,7 @@ useEffect(() => {
   const matches_no_brackets =  matches?.map((item) => {
       return item.replace('[', '').replace(']', '')
   })
-  //console.log("MMMM matches no brackets=", matches_no_brackets)
+  //console.log("MMMMMMMMMMMMM matches no brackets=", matches_no_brackets)
   // ["are", "thank"]
   /*
   if (matches_no_brackets) {
@@ -100,26 +100,57 @@ useEffect(() => {
  // console.log("test_array=", test_array)
 
   //const array = props.content?.split(/\[|\]/);
-  const array = props.content?.split(/[\[\]\s]+/);
-  //console.log("MMMMMMMMMMMM array=", array)
+  //const array = props.content?.split(/[\[\]\s]+/);
+  // split content by square brackets and by 
+  const array = props.content?.split(/(\[.*?\])|(\s+)|(#)/).filter(Boolean);
+  //console.log("XXXXXXX array=", array)
+  /*
+[
+    "In",
+    " ",
+    "Vietnam,",
+    " ",
+    "students",
+    " ",
+    "[usually wear]",
+    " ",
+    "uniforms",
+    " ",
+    "to",
+    " ",
+    "[go to school]",
+    " ",
+    "on",
+    " ",
+    "Monday."
+]
+  */
  
   // Filter out empty strings that might result from consecutive brackets
-  const filteredArray = array?.filter(item => item.trim() !== "");
-  //console.log("OOO filteredArray=", filteredArray)
+ // const filteredArray = array?.filter(item => item.trim() !== "");
+  //console.log("NNNNNN filteredArray=", filteredArray)
   //["How ", "are", " you? # I'm fine, ", "thank"," you." ]
   //[ "How ","are", " you? ", "<br />", " I'm fine, ","thank", " you." ]
 
-
-  const cloze_content_array = filteredArray?.map((part, index) => {
-    const found = matches_no_brackets?.find((match) => part === match);
-    if (found) {
-      if (part.includes('#')) {
+  /*
+    if (part.includes('#')) {
         //console.log(" found new line tag =", part)
         return { id: index.toString(),  type: 'newline_tag', value: part,}
       }
-      else {
+  */
+
+  const cloze_content_array = array?.map((part, index) => {
+    const found = matches_no_brackets?.find((match) => 
+      {
+        //console.log("part=", part, " match=", match)
+        return part.replace('[','').replace(']','') === match
+
+    });
+    console.log( "part=", part, " found=", found)
+    if (found) {
+        //console.log(" found cloze part =", part)
         return { id: index.toString(),  type: 'input', value: "  ",}
-      }
+    
     }
     else {
       //console.log(" found static text part =", part)

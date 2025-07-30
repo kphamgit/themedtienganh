@@ -1,11 +1,13 @@
-import React, {MouseEventHandler, useEffect, useRef, useState} from 'react'
+import {MouseEventHandler, useEffect, useRef, useState} from 'react'
 //import { useAppDispatch } from '../../redux/store';
-import { MyProps } from './WordsSelect';
+//import { MyProps } from './WordsSelect';
 //import { setAnswerArray } from '../../redux/answerarray.js'
 //import classNames from 'classnames';
 
 interface WordSelectProps {
-    pair: MyProps
+   // pair: MyProps //{word: string, next_word: string}
+    group_id: number
+    pair: {word: string, next_word: string}
     addWordToAnswer: (word: string) => void
     removeWordFromAnswer: (word: string) => void
 }
@@ -15,11 +17,7 @@ function WordSelect(props: WordSelectProps ) {
     const [clickCount, setClickCount] = useState(0)
     const [oddClickCount, setOddClickCount] = useState<boolean>(false)
     const [isHovered, setIsHovered] = useState<boolean>(false);
-    //const [answerarray, setAnswerArray] = useState([])
-    //const dispatch = useAppDispatch()
-    
-    //const answerarray = useSelector((state) => state.answerarray.value)
-
+ 
    const handleMouseEnter:MouseEventHandler<HTMLSpanElement> = () => {
       setIsHovered(true);
    };
@@ -27,18 +25,35 @@ function WordSelect(props: WordSelectProps ) {
       setIsHovered(false);
    };
    const spanRef = useRef<HTMLSpanElement>(null);
-   let btnClass = 'btn m-0 p-2 bg-amber-400 rounded-md';
-	
-	 if (isHovered) btnClass += ' underline';
-     if (oddClickCount) btnClass += ' bg-blue-300';
 
-     useEffect(() => {
-        if (spanRef.current) {
-            const rect = spanRef.current.getBoundingClientRect();
-            //console.log('Bounding rectangle:', rect);
-        }
-    }, []);
-    //const handleClick = (word) => {
+   let btnClass = 'btn m-0 px-1 rounded-md py-0 ';
+
+   let btnClass1 = 'btn mx-0 px-0 py-0 rounded-md';
+
+   let btnClass2 = 'btn mx-0 pl-1 pr-0 rounded-md ';
+	
+   if (props.pair.word === '.' || props.pair.word === '?') {
+    btnClass = btnClass1; // Use btnClass1 if the word is a dot or question mark
+  } 
+  else if (props.pair.next_word === '.' || props.pair.next_word === '?') {
+    btnClass = btnClass2; // Use btnClass2 if the next word is a dot or question mark (i.e, word is at end of sentence)
+  }
+
+  //else {
+   // if (isHovered) btnClass += ' underline';
+   // if (oddClickCount) btnClass += ' bg-blue-300';
+ // }
+ //useEffect(() => {
+// console.log('props.group_id', props.group_id)
+//}, [props.group_id])
+
+    //if (props.group_id === 1) {
+         if (isHovered) { 
+            btnClass += ' underline';
+         }
+         if (oddClickCount) btnClass += ' bg-blue-300';
+   //;}
+
     const handleClick: MouseEventHandler<HTMLSpanElement> = (event) => {
         
         const clicked_el = event.target as HTMLSpanElement
