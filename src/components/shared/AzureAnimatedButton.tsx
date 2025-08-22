@@ -30,7 +30,8 @@ export const AzureAnimatedButton = (props: AzureButtonProps) => {
       const [dynamicVerticalOffsets, setDynamicVerticalOffsets] = useState<number[]>([]);
       const [dynamicHorizontalOffsets, setDynamicHorizontalOffsets] = useState<number[]>([]);
 
-     
+      const [isClicked, setIsClicked] = useState<boolean>(false);
+
       useEffect(() => {
         setMyRect(buttonRef.current!.getBoundingClientRect());        
       }, []); // Run once on mount or when id changes
@@ -91,7 +92,7 @@ export const AzureAnimatedButton = (props: AzureButtonProps) => {
 
     const handleClick: MouseEventHandler<HTMLButtonElement> = (event) => {
        // look in dropboxes to check for first available slot
-      
+       setIsClicked(true);
        if (droppedIndex !== undefined && droppedIndex >= 0) {
         //console.log("Button already dropped droppedIndex = ",droppedIndex," return to original position");
         if (buttonRef.current) {
@@ -153,7 +154,7 @@ export const AzureAnimatedButton = (props: AzureButtonProps) => {
         */
         const t = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-US">
         <voice name="en-US-Andrew2:DragonHDLatestNeural">
-          <prosody rate="-10.00%">
+          <prosody rate="-5.00%">
           ${props.button_text}
           </prosody>
         </voice>
@@ -172,17 +173,21 @@ export const AzureAnimatedButton = (props: AzureButtonProps) => {
     }
 
     return (
-      <>
-        <button ref={buttonRef} 
-        className='bg-blue-600 text-white px-2 rounded-md hover:bg-blue-200'
-           onClick={handleClick}
-           style={{
-            transition: 'transform 0.3s ease-in-out', // Smooth animation
-          }}
-          >
-          {props.button_text}
-        </button>
-      </>
+      <button
+      ref={buttonRef}
+      className={`bg-blue-300 px-2 text-black rounded-md ${
+        isClicked ? "" : "hover:bg-blue-200"
+      }`}
+      onClick={(e) => {
+        setIsClicked(true); // Set isClicked to true when the button is clicked
+        handleClick(e); // Call the existing handleClick function
+      }}
+      style={{
+        transition: "transform 0.3s ease-in-out", // Smooth animation
+      }}
+    >
+      {props.button_text}
+    </button> 
   )
 }
 

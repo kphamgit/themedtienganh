@@ -248,7 +248,7 @@ useEffect(() => {
         }
         // render dropbox as a div with blue background
         return (<div
-          className='bg-blue-100 rounded-md cloze_answer p-1 m-1 text-center'
+          className='bg-blue-300 rounded-md cloze_answer p-1 m-1 text-center'
           style={{ minWidth: min_width, width: min_width, height: 25, lineHeight: 1.5 }}
           id={id}
           ref={(el) => {
@@ -346,7 +346,7 @@ useEffect(() => {
         </div>
         {charRef.current &&
           <div className='bg-cyan-300 p-2 flex flex-col justify-center items-center flex-wrap m-3'>
-            <div className='flex flex-row justify-start bg-blue-300 flex-wrap'>
+            <div className='flex flex-row justify-start bg-blue-200 flex-wrap'>
               {inputFields?.map((field, index) => {
                 return (
                   <div key={index}>
