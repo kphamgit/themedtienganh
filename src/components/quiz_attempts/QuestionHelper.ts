@@ -34,7 +34,7 @@ class QuestionHelper {
                 )
                 //return content.replace(/\[|\]/g, "")
             }
-            else if (format === 10 || format === 2) {
+            else if (format === 10) {     // 10= dropdown, 2= button cloze -select
                 const replacements: DynamicObject = {};
                 const answer_parts = answer_key.split('/')
                 const user_answer_parts = answer.split('/')
@@ -89,8 +89,8 @@ class QuestionHelper {
     format_answer_key = (answer_key: string, format: number | undefined, content: string): string | undefined => {
         if (answer_key) {
             //console.log("YYYYY format_answer_key ansswer key = ", answer_key, "format = ", format)
-            if (format === 1) {  //cloze
-                //console.log("format = ", format)
+            if (format === 1 || format === 2) {  //cloze
+                //console.log("format_answer_key format = ", format)
                 const replacements: DynamicObject = {};
                 const answer_parts = answer_key.split('/')
                 answer_parts.forEach( (part, index) => {

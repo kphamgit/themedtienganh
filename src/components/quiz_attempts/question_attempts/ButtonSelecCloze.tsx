@@ -32,17 +32,14 @@ interface Props {
  
   const [inputFields, setInputFields] = useState<InputFieldProps[] | undefined >([])
 
-  const inputRefs = useRef<HTMLDivElement[]>([]);
+  const dropBoxRefs = useRef<HTMLDivElement[]>([]);
 
-  const [targetInput, setTargetInput] = useState('')
   const [buttonLabels, setButtonLabels] = useState<string[] | undefined>([])
 
   const [dropBoxes, setDropBoxes] = useState<DropBoxProps[]>([]);
 
   const charRef = useRef<HTMLDivElement>(null);
   const minLengthRef = useRef<number>(0);
-
-  const inputCountRef = useRef(-1);
   
   useEffect(() => {
      if (!props.choices) {
@@ -126,12 +123,6 @@ useEffect(() => {
 ]
   */
  
-  // Filter out empty strings that might result from consecutive brackets
- // const filteredArray = array?.filter(item => item.trim() !== "");
-  //console.log("NNNNNN filteredArray=", filteredArray)
-  //["How ", "are", " you? # I'm fine, ", "thank"," you." ]
-  //[ "How ","are", " you? ", "<br />", " I'm fine, ","thank", " you." ]
-
   /*
     if (part.includes('#')) {
         //console.log(" found new line tag =", part)
@@ -139,6 +130,8 @@ useEffect(() => {
       }
   */
 
+  let num_dropboxes = 0;
+  let num_words = 0;
   const cloze_content_array = array?.map((part, index) => {
     const found = matches_no_brackets?.find((match) => 
       {
@@ -146,25 +139,29 @@ useEffect(() => {
         return part.replace('[','').replace(']','') === match
 
     });
-    console.log( "part=", part, " found=", found)
+    //console.log( "part=", part, " found=", found)
     if (found) {
-        //console.log(" found cloze part =", part)
-        return { id: index.toString(),  type: 'input', value: "  ",}
+      const dropbox = { id: "dropbox_" + num_dropboxes.toString(), type: 'dropbox', value: "  " };
+      num_dropboxes++; // Increment num_dropboxes after it is used
+      return dropbox;
     
     }
     else {
       //console.log(" found static text part =", part)
-      return { id: index.toString(), type: 'static_text', value: part}
+      const word_obj = {id : "word_" + num_words.toString(), type: 'static_text', value: part};
+      num_words++;
+      return word_obj;
+     
     }
   })
   //console.log("XXXX cloze_content_array=", cloze_content_array)
   /*
 {id: '0', type: 'static_text', value: 'How '}
-{id: '1', type: 'input', value: '  '}
+{id: '1', type: 'dropbox', value: '  '}
 {id: '2', type: 'static_text', value: " you? # I'm fine, "}
-{id: '3', type: 'input', value: '  '}
+{id: '3', type: 'dropbox', value: '  '}
   */
- //console.log("cloze_content_array=", cloze_content_array)
+ //console.log("^^^^^  cloze_content_array=", cloze_content_array)
 
   setInputFields(cloze_content_array)
   
@@ -172,7 +169,7 @@ useEffect(() => {
 
   const getAnswer = () => {
     // iterate through dropboxes and get the values of the inputs
-    console.log(" getAnswer...dropboxes=", dropBoxes)
+    //console.log(" getAnswer...dropboxes=", dropBoxes)
     const answers = dropBoxes.map((dropBox, index) => {
      
       if (dropBox) {  
@@ -183,7 +180,9 @@ useEffect(() => {
         return '';
       }
     });
-    console.log(" getAnswer...answers=", answers.join('/'))
+    //console.log(" getAnswer...answers=", answers.join('/'))
+    // clear the dropBoxes 
+    setDropBoxes([]);
     return answers.join('/'); // Join the answers with a separator, e.g., ' / '
   }
 
@@ -194,10 +193,10 @@ useEffect(() => {
     getAnswer,
   }));
  
-  const getInputBoundingRect = (index: number) => {
-    const inputElement = inputRefs.current[index];
-    if (inputElement) {
-      const rect = inputElement.getBoundingClientRect();
+  const getDropBoxBoundingRect = (index: number) => {
+    const dropBox = dropBoxRefs.current[index];
+    if (dropBox) {
+      const rect = dropBox.getBoundingClientRect();
      // console.log(`................. Bounding rectangle for input at index ${index}:`, rect);
       return rect;
     } else {
@@ -207,14 +206,10 @@ useEffect(() => {
   };
 
     useEffect(() => {
-      if (inputRefs.current.length > 0) {
-        //console.log('InputRefs length:', inputRefs.current.length);
-        // inputRefs.current.forEach((input, index) => {
-        // console.log(`Input ${index} Value:`, input.innerHTML);
-        // }
-        // );
-        inputRefs.current.forEach((input, index) => {
-          const rect = getInputBoundingRect(index);
+      if (dropBoxRefs.current.length > 0) {
+       //console.log('Setting up drop boxes for input elements...inputRefs.current=', dropBoxRefs.current);
+        dropBoxRefs.current.forEach((input, index) => {
+          const rect = getDropBoxBoundingRect(index);
           if (rect) {
             //console.log('****** ****** Input Bounding Rect for index ', index, ': Top:', rect.top, 'Left:', rect.left, 'Width:', rect.width, 'Height:', rect.height);
             // save rect in dropBoxes array
@@ -226,7 +221,6 @@ useEffect(() => {
               rect: { top: rect.top, left: rect.left, width: rect.width, height: rect.height }
             };
             setDropBoxes(prev => [...prev, dropBox]);
-
           }
           else {
             console.error('Could not get bounding rectangle for input element.');
@@ -242,24 +236,26 @@ useEffect(() => {
     }, [inputFields]);
 
     function renderContent(type: string, value: string, id: string, index: number) {
-      //console.log(" in renderContent...xxxxxxxxx..type=", type, "value=", value, "id=", id, "index=", index)
-      if (type === 'input') {
+     //console.log(" in renderContent...xxxxxxxxx..type=", type, "value=", value, "id=", id, "index=", index)
+      if (type === 'dropbox') {
+        //console.log(" in renderContent...yyyyyyyyyy..type=input .. id=", id, " index=", index)
         const char_width = charRef.current?.getBoundingClientRect().width || 0;
-        //console.log("****** minw=", char_width)
+        //console.log("****** renderContent minw=", char_width)
         const min_width = char_width * minLengthRef.current;
         if (min_width === 0) {
           console.error("min_width is not set yet!");
           return null; // Prevent rendering if minWidth is not set
         }
-        
+        // render dropbox as a div with blue background
         return (<div
           className='bg-blue-100 rounded-md cloze_answer p-1 m-1 text-center'
           style={{ minWidth: min_width, width: min_width, height: 25, lineHeight: 1.5 }}
           id={id}
           ref={(el) => {
             if (el) {
-              inputCountRef.current += 1;
-              inputRefs.current[inputCountRef.current] = el; // Add the reference to the array
+              //inputCountRef.current += 1;
+              const dropbox_index = id.split('_')[1];
+              dropBoxRefs.current[parseInt(dropbox_index)] = el; // Add the reference to the array
             }
           }}
         >
@@ -274,13 +270,13 @@ useEffect(() => {
           return (<span><br />&nbsp;&nbsp;&nbsp;&nbsp;</span>)
         }
       }
-      else {
+      else {  // type = 'static_text'
         return (<span style={{ color: 'black',  marginLeft: 2, lineHeight : 2, padding: 3 }}>{value}</span>)
       }
     }
 
     const handleClick = (selected_text: string, droppedIndex: number | undefined, available: boolean) => {
-      //console.log("handleClick...droppedIndex=", droppedIndex)
+      //console.log("ButtonSeleceCloze: handleClick.. selectedText = ", selected_text, " droppedIndex=", droppedIndex)
       //console.log("targetInput=", targetInput)
       // update the available state corresponding to droppedIndex in the dropBoxes array
       const updatedDropBoxes = dropBoxes.map((dropBox, index) => {
@@ -289,24 +285,16 @@ useEffect(() => {
         }
         return dropBox;
       });
+      //console.log(" ButtonSeleceCloze, handleClick,  updatedDropBoxes=", updatedDropBoxes)
       setDropBoxes(updatedDropBoxes);
-    
-      const target_el:HTMLInputElement = document.getElementById(targetInput) as HTMLInputElement
-      //console.log("target_el=", target_el)
-      if (target_el) {
-        //console.log("target_el.textContent=", target_el.textContent)
-        target_el.value = selected_text
-      }
-      // set availabel slots array
+   
   }
 
   
   useEffect(() => {
     const handleResize = () => {
-   
-
      dropBoxes.forEach((input, index) => {
-      const rect = getInputBoundingRect(index);
+      const rect = getDropBoxBoundingRect(index);
       if (rect) {
        //console.log('****** ****** Input Bounding Rect for index ', index, ': Top:', rect.top, 'Left:', rect.left, 'Width:', rect.width, 'Height:', rect.height);
         // save rect in dropBoxes array

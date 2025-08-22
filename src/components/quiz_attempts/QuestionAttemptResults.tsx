@@ -139,6 +139,7 @@ import  QuestionHelper from './QuestionHelper';
 
     // (answer: string | undefined, answer_key: string, format: number | undefined, content: string): string | undefined => {
     const displayAnswerKey = (): ReactNode => {
+      
         const result = QuestionHelper.format_answer_key(displayedAnswerKey, props?.question?.format, props?.question?.content!)
         return (
             <div>{result}</div>
@@ -163,7 +164,7 @@ import  QuestionHelper from './QuestionHelper';
     //bg-gradient-to-b from-bgColorQuestionAttempt to-green-100
     return (
         <div>
-          
+            <h3>QUESSTION ATTEMPT RESULTS</h3>
             <div className='bg-bgColorQuestionContent text-black ml-3 mb-3'>
                 {props?.question?.instruction &&
                     <div dangerouslySetInnerHTML={{ __html: props?.question.instruction }}></div>
@@ -192,9 +193,12 @@ import  QuestionHelper from './QuestionHelper';
                         }
                     </>
                     :
+                    <>
                     <div className='flex flex-row justify-center text-lg text-textColorFaSmile mx-2'>
                         <FaSmile />
                     </div>
+                    <div className='text-textColor2 my-2'>{displayAnswerKey()}</div>
+                    </>
                 }
             </div>
         </div>

@@ -203,7 +203,7 @@ export default function LiveQuestion(props: LiveQuestionProps) {
                             { props.question.format === 1 ? (
                                 <DynamicWordInputs content={props.question.content} ref={childRef} />
                             ) : props.question.format === 2 ? (
-                                <ButtonSelectCloze content={props.question.content} ref={childRef} />
+                                <ButtonSelectCloze content={props.question.content} choices={props.question.button_cloze_options} ref={childRef} />
                             ) : props.question.format === 3 ? (
                                 <ButtonSelect content={props.question.content} ref={childRef} />
                             ) : props.question.format === 4 ? (
