@@ -20,7 +20,7 @@ export function Item(props: ItemProps) {
   }, [disable]);
 
   const handleClick = () => {
-    console.log("in Item handleClick, item id = ", id);
+    //console.log("in Item handleClick, item id = ", id);
     props.parent_function?.(id);
   };
 
@@ -74,8 +74,8 @@ export default function SortableItem(props: SortableItemProps) {
 
   
   const handleItemClick = () => {
-    console.log("in SortableItem handleItemClick, item id = ", props.id);
-    console.log("in SortableItem handleItemClick, item id = ", props.id);
+    //console.log("in SortableItem handleItemClick, item id = ", props.id);
+   //console.log("in SortableItem handleItemClick, item id = ", props.id);
     //console.log("in SortableItem handleItemClick, calling parent function from container");
     props.parent_function?.(props.id);
     //setDestination((prev) => [...prev, item]);

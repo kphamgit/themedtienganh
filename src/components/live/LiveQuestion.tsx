@@ -25,8 +25,7 @@ import { useAudioBlobContext } from '../../contexts/AudioBlobContext'
 import DragDrop from '../quiz_attempts/question_attempts/dragdrop/DragDrop';
 import { processQuestion } from './processQuestion';
 import { QuestionAttemptAttributes, QuestionProps } from '../quiz_attempts/types';
-//import * as motion from "motion/react-client"
-
+import { useLiveQuestionNumber } from '../../contexts/livequiz/LiveQuestionNumber';
 
 
 interface LiveQuestionProps {
@@ -56,6 +55,7 @@ export default function LiveQuestion(props: LiveQuestionProps) {
 
     const {socket, user_name, users} = useContext(SocketContext).SocketState;
 
+    const { questionNumber, setQuestionNumber } = useLiveQuestionNumber();
 
     const user = useAppSelector(state => state.user.value)
     const counterRef = useRef<CounterRef>(null)
@@ -104,7 +104,11 @@ export default function LiveQuestion(props: LiveQuestionProps) {
                         total_score: 0, 
                         user_name: user.user_name
                     }
+                    // emit live score to other students
                     socket?.emit('live_score', live_score_params) 
+                    // reset questionNumber in context
+                    //console.log("LiveQuestion: resetting question number in context")
+                    setQuestionNumber("")
                 } else {
                     console.error("Result is undefined");
                 }
@@ -184,7 +188,7 @@ export default function LiveQuestion(props: LiveQuestionProps) {
                        
                         { props.question &&
                             <>
-                              <div className='mb-2'>Question: {props.question.question_number}</div>
+                              <div className='mb-2'>Question: {questionNumber}</div>
                             <div className='bg-bgColorQuestionContent text-textColor1'>
                             
                             <div  className='text-textColor2' dangerouslySetInnerHTML={{ __html: props.question.instruction }}></div>

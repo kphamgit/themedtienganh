@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 //import { useParams } from 'react-router-dom';
 import { useAppSelector } from '../../redux/store';
 //import { useAxiosFetch } from '../../hooks';
@@ -14,6 +14,7 @@ import { useAppSelector } from '../../redux/store';
 //import { RadioQuestion } from '../quiz_attempts/question_attempts/RadioQuestion';
 //import { ButtonSelectCloze } from '../quiz_attempts/question_attempts/ButtonSelecCloze';
 import SocketContext from '../../contexts/socket_context/Context';
+import { useLiveQuestionNumber } from '../../contexts/livequiz/LiveQuestionNumber';
 //import { AzureAudioPlayer } from '../shared/AzureAudioPlayer';
 //import { SRContinuous } from '../quiz_attempts/question_attempts/SRContinuous';
 //import { useLocation, useNavigate } from 'react-router-dom';
@@ -21,12 +22,13 @@ import SocketContext from '../../contexts/socket_context/Context';
 //import { CounterRef } from '../shared/Counter';
 //import { DynamicLetterInputs } from '../quiz_attempts/question_attempts/DynamicLetterInputs';
 //import { useAudioBlobContext } from '../../contexts/AudioBlobContext'
-import { ScoreBoard } from './ScoreBoard';
+//import { ScoreBoard } from './ScoreBoard';
 import LiveQuestion from './LiveQuestion';
 //import { QuestionAttemptAttributes, QuestionProps } from '../quiz_attempts/types';
 import { QuestionAttemptResults } from '../quiz_attempts/QuestionAttemptResults';
 import { QuestionAttemptAttributes, QuestionProps } from '../quiz_attempts/types';
 import { useQuestion } from '../../hooks/useQuestion';
+import { ScoreBoard, ScoreBoardRefProps } from './ScoreBoard';
 //import {QuestionAttemptResponseProps} from '../components/services/list'
 
 /*
@@ -72,8 +74,6 @@ export default function LiveQuiz(props: any) {
    
     const user = useAppSelector(state => state.user.value)
   
-    const [getQuestionEnabled, setGetQuestionEnabled] = useState(false)
-
     const [showLivePicture, setShowLivePicture] = useState(false)
     const [pictureUrl, setPictureUrl] = useState<string>('')
     const [pictureText, setPictureText] = useState<string>('')
@@ -83,33 +83,61 @@ export default function LiveQuiz(props: any) {
     const [question, setQuestion] = useState<QuestionProps | undefined>(undefined)
 
     const [liveQuizId, setLiveQuizId] = useState<string | undefined>('')
-    const [liveQuestionNumber, setLiveQuestionNumber] = useState<string | undefined>('')
+    //const [liveQuestionNumber, setLiveQuestionNumber] = useState<string | undefined>('')
 
     const [questionAttemptResponse, setQuestionAttemptResponse] = useState<QuestionAttemptAttributes | null>(null)
 
     const {socket} = useContext(SocketContext).SocketState;
- 
-    const { data, error, isLoading } = useQuestion(liveQuizId, liveQuestionNumber, getQuestionEnabled)
 
+    const { questionNumber, setQuestionNumber } = useLiveQuestionNumber();
+ 
+    //const { data, error, isLoading } = useQuestion(liveQuizId, questionNumber, getQuestionEnabled)
+    const rootpath = useAppSelector(state => state.rootpath.value)
+
+    const scoreBoardRef = useRef<ScoreBoardRefProps>(null);
+    
     useEffect(() => {
-      if (data) {
-        //console.log("LiveQuiz data = ", data)
-        setQuestion(data.question)
-      }
-    }
-    , [data])
+      // reset question number when component mounts
+      //console.log("LiveQuiz mounted, resetting question number")
+      setQuestionNumber('')
+    }, [])
       
     useEffect(() => {
       if (socket) {
         socket.on('live_question', (arg: { quiz_id: string, question_number: string, target_student: string }) => {
-          //console.log("live question received...arg=", arg) 
-          setGetQuestionEnabled(true)  //retrieve the question from the server
+          //("live question received...new question number=", arg.question_number) 
+          //console.log("current live question number is", questionNumber === '' ? 'EMPTY' : questionNumber);
 
-          setShowLivePicture(false)
-          setLiveQuizId(arg.quiz_id)
-          setLiveQuestionNumber(arg.question_number)
-          setShowQuestion(true)
-          setQuestionAttemptResponse(null)
+ 
+          if (questionNumber && questionNumber.length > 0) {
+            //console.log("... user not finished with previous question, ignoring new live question");
+            return;
+          }
+
+          // use fetch to get the question data from the server
+          const response = fetch(`${rootpath}/api/quizzes/${arg.quiz_id}/get_question/${arg.question_number}`);
+          response.then(res => {
+            if (!res.ok) throw new Error("Failed to fetch live question");
+            const data = res.json();
+            data.then((data) => {
+              //console.log("LiveQuiz fetched question data = ", data)
+              setQuestion(data.question)
+              setQuestionNumber(arg.question_number)
+              setShowLivePicture(false)
+              setLiveQuizId(arg.quiz_id)
+              setShowQuestion(true)
+              setQuestionAttemptResponse(null)
+            })
+            console.log(" call onLiveQuestionReceived in ScoreBoard from LiveQuiz for question_number=", arg.question_number)
+            scoreBoardRef.current?.onLiveQuestionReceived(arg.question_number)
+            console.log("LiveQuiz: emitting live_question_acknowledgement for quiz_id=", arg.quiz_id, "from student", user.user_name)
+             socket.emit('live_question_acknowledgement', {quiz_id: arg.quiz_id, 
+              question_number: arg.question_number, target_student: user.user_name
+              })
+            
+              
+              
+          })
         })
         socket.on('live_picture', (arg: any) => {
           //console.log("... .... live_picture message received:")
@@ -124,7 +152,7 @@ export default function LiveQuiz(props: any) {
           socket?.off("live_picture")
         }
       }
-    }, [socket, user.user_name, user.classId])
+    }, [socket, user.user_name, user.classId, questionNumber])
 
     const set_question_attempt_results = (arg: QuestionAttemptAttributes) => {
       //console.log("LiveQuz: set_question_attempt_results: arg= ", arg)
@@ -141,6 +169,7 @@ export default function LiveQuiz(props: any) {
                 <div className='bg-bgColorQuestionContent mx-10 my-6 flex flex-col rounded-md'>
                 { showQuestion ?
                 <>
+                  <div>Live quiz: question number: {questionNumber}</div>
                    <LiveQuestion question={question}
                     set_question_attempt_result={set_question_attempt_results} 
                     
@@ -167,7 +196,7 @@ export default function LiveQuiz(props: any) {
                 </div>
                 </div>
                 <div className=' col-span-2 bg-bgColor1 text-textColor2 text-lg'>
-                    <ScoreBoard classId={user.classId?.toString() } />
+                    <ScoreBoard classId={user.classId?.toString()} ref={scoreBoardRef} />
                 </div>
             </div>
             </div>

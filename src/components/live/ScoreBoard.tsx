@@ -1,8 +1,35 @@
 import { useAxiosFetch } from '../../hooks'
 import { useAppSelector } from '../../redux/store'
-import { useContext, useEffect, useRef, useState } from 'react'
+import { forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import SocketContext from '../../contexts/socket_context/Context'
 import QuestionHelper from '../quiz_attempts/QuestionHelper'
+import { useLiveQuestionNumber } from '../../contexts/livequiz/LiveQuestionNumber';
+
+export type ScoreBoardRefProps = {
+    onLiveQuestionReceived: (
+        //question_format: number | undefined,
+        question_number: string | undefined,
+    ) => void
+}
+
+/*
+type ScoreBoardRefProps = {
+    onLiveScoreReceived: (arg: {
+        question_format: number | undefined,
+        question_number: number | undefined,
+        question_content: string | undefined,
+        user_answer: string | undefined,
+        answer_key: string | undefined,
+        score: string | undefined,
+        total_score: number | undefined, 
+        user_name: string | undefined
+    }) => void
+}
+*/
+ type ScoreBoardProps = {
+    classId: string | undefined
+    
+}
 
  type ClassProps = 
     {
@@ -19,7 +46,9 @@ import QuestionHelper from '../quiz_attempts/QuestionHelper'
         }[]
     }
 
-export function ScoreBoard(props:{classId: string | undefined}) {
+//export function ScoreBoardNew(props:{classId: string | undefined, ref: React.Ref<ScoreBoardRefProps>}) {
+    //export function ScoreBoardNew(props: ScoreBoardProps) {
+    export const ScoreBoard = forwardRef<ScoreBoardRefProps, ScoreBoardProps>((props, ref) => {
     const { data: my_class, loading, error } = useAxiosFetch<ClassProps>({ url: `/classes/${props.classId}`, method: 'get' });
     const {socket, user_name, users} = useContext(SocketContext).SocketState;
     
@@ -27,6 +56,44 @@ export function ScoreBoard(props:{classId: string | undefined}) {
     const [targetStudent, setTargetStudent] = useState<string>()
     const studenDivRefs = useRef<HTMLDivElement[]>([]);
 
+    const { questionNumber } = useLiveQuestionNumber();
+
+    useEffect(() => {
+        console.log("IN score board NEW ****************.......questionNumber changed to: ", questionNumber)
+        for (let my_div of studenDivRefs.current) {
+            //console.log(my_div.childNodes[0].childNodes[0].textContent);
+            if (my_div.childNodes[0].childNodes[0].textContent === user.user_name) {
+                my_div.childNodes[0].childNodes[1].childNodes[0].textContent = ''
+                my_div.childNodes[0].childNodes[1].childNodes[1].textContent = ''   // clear score span
+                //if (user.role?.includes('admin')) {
+                my_div.childNodes[1].textContent = ''           
+                // }
+                break;
+            }
+        }
+       
+     
+    }, [user.user_name])
+
+    const onLiveQuestionReceived = (question_number: string | undefined) => {
+        console.log("IN score board NEW .......onLiveQuestionReceived", question_number) 
+        for (let my_div of studenDivRefs.current) {
+            //console.log(my_div.childNodes[0].childNodes[0].textContent);
+            if (my_div.childNodes[0].childNodes[0].textContent === user.user_name) {
+                my_div.childNodes[0].childNodes[1].childNodes[0].textContent = question_number || ''
+                my_div.childNodes[0].childNodes[1].childNodes[1].textContent = ''   // clear score span
+                //if (user.role?.includes('admin')) {
+                my_div.childNodes[1].textContent = ''           
+                // }
+                break;
+            }
+        }
+    }
+
+    useImperativeHandle(ref, () => ({
+        onLiveQuestionReceived,
+      }));
+    
     useEffect(() => {
 
         if (socket) {
@@ -71,46 +138,15 @@ export function ScoreBoard(props:{classId: string | undefined}) {
     useEffect(() => {
 
       if (socket) {
-        socket.on('live_question', (arg: { quiz_id: string, question_number: string, target_student: string }) => {
-          //console.log("IN score board live_question", arg)
-          if (arg.target_student.trim() === 'everybody' || 
-            arg.target_student.trim() === user.user_name?.trim()
-            ) {
-            for (let my_div of studenDivRefs.current) {
-                //console.log(my_div.childNodes[0].childNodes[0].textContent);
-                if (my_div.childNodes[0].childNodes[0].textContent === user.user_name) {
-                    my_div.childNodes[0].childNodes[1].childNodes[0].textContent = arg.question_number
-                    my_div.childNodes[0].childNodes[1].childNodes[1].textContent = ''   // clear score span
-                    break;
-                }
-            }
-            
-            socket.emit('live_question_acknowledgement', {quiz_id: arg.quiz_id, 
-                question_number: arg.question_number, target_student: user.user_name
-            })
-            /*
-            studenDivRefs.current.forEach((my_div) => {
-               console.log("IN score board live_question everybody", my_div.childNodes[0].childNodes[0].textContent)   
-               if (my_div.childNodes[0].childNodes[0].textContent === user.user_name) {
-                  
-               }
-               // my_div.childNodes[0].childNodes[1].childNodes[0].textContent = arg.question_number
-               // my_div.childNodes[0].childNodes[1].childNodes[1].textContent = ''   // clear score span
-            })
-            */
-          }
-          else {
-            console.log(" invalid student target")
-          }
-          
-        })
+      
         socket.on('live_question_acknowledgement', (arg: { quiz_id: string, question_number: string, target_student: string }) => {
-            //console.log("IN score board ON live_question_acknowledgement", arg)
+            console.log("IN score board ON live_question_acknowledgement received target student=", arg.target_student)
             for (let my_div of studenDivRefs.current) {
                 //console.log(my_div.childNodes[0].childNodes[0].textContent);
                 if (my_div.childNodes[0].childNodes[0].textContent === arg.target_student) {
                     my_div.childNodes[0].childNodes[1].childNodes[0].textContent = arg.question_number
                     my_div.childNodes[0].childNodes[1].childNodes[1].textContent = ''   // clear score span
+                    my_div.childNodes[1].textContent = ''   // clear answer div
                     break;
                 }
             }
@@ -153,6 +189,7 @@ export function ScoreBoard(props:{classId: string | undefined}) {
             {my_class &&
                 <div className='bg-amber-500 text-textColor3'>
                     <div className='text-textColor3 p-1'>Live Score Board</div>
+                    <div className='p-1'>{questionNumber}</div>
                     <div>
                         {my_class.users.map((student, index) => (
                             <div className='bg-bgColor3 mb-2 main_student_div px-3' key={index} ref={(el) => {
@@ -180,34 +217,4 @@ export function ScoreBoard(props:{classId: string | undefined}) {
             }
         </>
     )
-}
-
-/*
- return (
-        <>
-            {my_class &&
-                <div className='bg-bgColor1 text-textColor3'>
-                    <div className='text-textColor3 mb-2'>Live Score Board</div>
-                   <div>
-                    {my_class.users.map((student, index) => (
-                        <div key={index} ref={(el) => {
-                            if (el) {
-                                studenDivRefs.current[index] = el;
-                            }
-                        }}>
-
-                            <span className='mx-1 name' onClick={handleNameClicked}>{student.user_name}</span>
-                                <span className='mx-2 text-green-700 question_number' >{props.startingQuestionId}</span>
-                                <span className='mx-2 text-orange-600'></span>
-                                <span className='mx-2 text-orange-700 font-bold' ></span>
-                                <span className='mx-2 text-blue-700' ></span>
-                        </div>
-                    ))
-                    }
-                </div>
-                  
-                </div>
-            }
-        </>
-    )
-*/
+})

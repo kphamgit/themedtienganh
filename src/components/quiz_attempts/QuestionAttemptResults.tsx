@@ -164,7 +164,7 @@ import  QuestionHelper from './QuestionHelper';
     //bg-gradient-to-b from-bgColorQuestionAttempt to-green-100
     return (
         <div>
-            <h3>QUESSTION ATTEMPT RESULTS</h3>
+            <h3>Question: {props.question?.question_number}, your score: {props.response.score}</h3>
             <div className='bg-bgColorQuestionContent text-black ml-3 mb-3'>
                 {props?.question?.instruction &&
                     <div dangerouslySetInnerHTML={{ __html: props?.question.instruction }}></div>

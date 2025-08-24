@@ -64,9 +64,6 @@ const [allItems, setAllItems] = useState<{ [key: string]: ItemProps[] }>({
     })
   );
 
-  useEffect(() => {
-    console.log("max touch points = ", navigator.maxTouchPoints)
-  },[])
 
   useEffect(() => {
     //console.log("in WordScrambler")
@@ -109,15 +106,13 @@ const [allItems, setAllItems] = useState<{ [key: string]: ItemProps[] }>({
 
 
   const handleSortableItemClick = (item_id: string, container_id: string) => {
-    console.log("in handleSortableItemClick click on item item_id=", item_id);
-    console.log("in handleSortableItemClick click on item container_id=", container_id);
     //look in items1.root for the index of the item with the item_id
     const item_index = allItems[container_id].findIndex((item) => item.id === item_id);
     //console.log("item_index=", item_index);
    
     //look for this item in the source container (container from which it was clicked)
     const the_item = allItems[container_id].find((item) => item.id === item_id);
-    console.log("handleSortableItemClick found item =", the_item);
+    //console.log("handleSortableItemClick found item =", the_item);
     
     if (container_id === "root") {
           if (the_item) { // append the item to the destination_container array
@@ -129,7 +124,7 @@ const [allItems, setAllItems] = useState<{ [key: string]: ItemProps[] }>({
                   ]
               }));
           }
-          console.log("disable the clicked item with id ", item_id, " in the root array")
+          //console.log("disable the clicked item with id ", item_id, " in the root array")
           setAllItems((prev) => ({
               ...prev,
               root: prev.root.map((item) => item.id === item_id ? { ...item, disable: true } : item),

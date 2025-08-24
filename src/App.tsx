@@ -13,6 +13,8 @@ import { useAppDispatch } from "./redux/store"
 
 import { setRootPath } from "./redux/rootpath";
 
+import { LiveQuestionNumberProvider } from "./contexts/livequiz/LiveQuestionNumber";
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const Home = lazy(() => import("./components/navigation/Home"))
@@ -84,6 +86,7 @@ function App() {
       <SocketContextComponent>
         <Suspense fallback={<div>Loading...</div>}>
           <TtSpeechProvider>
+            <LiveQuestionNumberProvider>
             <QueryClientProvider client={queryClient}>
             <BrowserRouter>
               <Routes>
@@ -106,6 +109,7 @@ function App() {
               </Routes>
             </BrowserRouter>
             </QueryClientProvider>
+            </LiveQuestionNumberProvider>
           </TtSpeechProvider>
         </Suspense>
       </SocketContextComponent>
