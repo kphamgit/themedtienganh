@@ -278,6 +278,16 @@ useEffect(() => {
     const handleClick = (selected_text: string, droppedIndex: number | undefined, available: boolean) => {
       //console.log("ButtonSeleceCloze: handleClick.. selectedText = ", selected_text, " droppedIndex=", droppedIndex)
       //console.log("targetInput=", targetInput)
+      //const audioUrl =`https://kphamazureblobstore.blob.core.windows.net/tts-audio/${word}.mp3`; // Replace with your audio file URL
+      //`https://kphamazureblobstore.blob.core.windows.net/tts-audio/${word}.mp3`
+      /*
+      const audioUrl =`https://kphamazureblobstore.blob.core.windows.net/tts-audio/one.mp3`;
+      const audio = new Audio(audioUrl);
+      audio.play().catch((error) => {
+          console.error("Error playing audio:", error);
+      });
+      */
+     
       // update the available state corresponding to droppedIndex in the dropBoxes array
       const updatedDropBoxes = dropBoxes.map((dropBox, index) => {
         if (index === droppedIndex) {

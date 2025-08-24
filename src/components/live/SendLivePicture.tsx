@@ -17,8 +17,7 @@ import SocketContext from '../../contexts/socket_context/Context'
     }
 
 export function SendLivePicture(props: any) {
-    
-    //const live_quiz_id = useAppSelector(state => state.live_quiz_id.value)
+
     
     const [liveUrl , setLiveUrl] = useState<string>('')
     const [width, setWidth] = useState<string>('100')

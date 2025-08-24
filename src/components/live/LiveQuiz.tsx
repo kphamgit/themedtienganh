@@ -27,48 +27,8 @@ import LiveQuestion from './LiveQuestion';
 //import { QuestionAttemptAttributes, QuestionProps } from '../quiz_attempts/types';
 import { QuestionAttemptResults } from '../quiz_attempts/QuestionAttemptResults';
 import { QuestionAttemptAttributes, QuestionProps } from '../quiz_attempts/types';
-import { useQuestion } from '../../hooks/useQuestion';
 import { ScoreBoard, ScoreBoardRefProps } from './ScoreBoard';
 //import {QuestionAttemptResponseProps} from '../components/services/list'
-
-/*
-type GetQuestionProps = {
-    end_of_quiz: boolean,
-    question: QuestionProps,
-
-}
-
-interface QuestionAttemptAttributes {
-    answer: string;
-    score: number;
-    question_number: number | undefined;
-    questionId: string | undefined;
-    error_flag: boolean;
-    audio_src: string;
-    completed: boolean;
-    //quizAttemptId: string;
-  }
-
-  interface LiveScoreProps {
-    question_format: number | undefined,
-    question_number: number | undefined,
-    question_content: string | undefined,
-    user_answer: string | undefined,
-    answer_key: string | undefined,
-    score: string | undefined,
-    total_score: number | undefined, 
-    user_name: string | undefined
-  }
-*/
-
-/*
-interface LiveQuestionAttemptResultsProps {
-  user_answer: string;
-  score: number;
-  error_flag: boolean;
- 
-}
-*/
 
 export default function LiveQuiz(props: any) {
    
@@ -91,7 +51,6 @@ export default function LiveQuiz(props: any) {
 
     const { questionNumber, setQuestionNumber } = useLiveQuestionNumber();
  
-    //const { data, error, isLoading } = useQuestion(liveQuizId, questionNumber, getQuestionEnabled)
     const rootpath = useAppSelector(state => state.rootpath.value)
 
     const scoreBoardRef = useRef<ScoreBoardRefProps>(null);
@@ -105,12 +64,15 @@ export default function LiveQuiz(props: any) {
     useEffect(() => {
       if (socket) {
         socket.on('live_question', (arg: { quiz_id: string, question_number: string, target_student: string }) => {
-          //("live question received...new question number=", arg.question_number) 
+          //console.log("live question received...new question number=", arg.question_number) 
+          //console.log("... for target student=", arg.target_student, " current student=", user.user_name)
           //console.log("current live question number is", questionNumber === '' ? 'EMPTY' : questionNumber);
-
- 
           if (questionNumber && questionNumber.length > 0) {
             //console.log("... user not finished with previous question, ignoring new live question");
+            return;
+          }
+          if (arg.target_student.trim() !== 'everybody' && arg.target_student.trim() !== user.user_name) {
+            //console.log("... live question not for this student, ignoring");
             return;
           }
 
@@ -128,15 +90,12 @@ export default function LiveQuiz(props: any) {
               setShowQuestion(true)
               setQuestionAttemptResponse(null)
             })
-            console.log(" call onLiveQuestionReceived in ScoreBoard from LiveQuiz for question_number=", arg.question_number)
+            //console.log(" call onLiveQuestionReceived in ScoreBoard from LiveQuiz for question_number=", arg.question_number)
             scoreBoardRef.current?.onLiveQuestionReceived(arg.question_number)
-            console.log("LiveQuiz: emitting live_question_acknowledgement for quiz_id=", arg.quiz_id, "from student", user.user_name)
+            //console.log("LiveQuiz: emitting live_question_acknowledgement for quiz_id=", arg.quiz_id, "from student", user.user_name)
              socket.emit('live_question_acknowledgement', {quiz_id: arg.quiz_id, 
               question_number: arg.question_number, target_student: user.user_name
               })
-            
-              
-              
           })
         })
         socket.on('live_picture', (arg: any) => {

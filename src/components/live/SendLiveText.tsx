@@ -3,8 +3,6 @@ import SocketContext from '../../contexts/socket_context/Context';
 
 export default function SendLiveText(props: any) {
     
-    //const live_quiz_id = useAppSelector(state => state.live_quiz_id.value)
-    
     const [liveText , setLiveText ] = useState<string>('')
     const [targetStudent , setTargetStudent ] = useState<string>('everybody')
     const {socket} = useContext(SocketContext).SocketState;

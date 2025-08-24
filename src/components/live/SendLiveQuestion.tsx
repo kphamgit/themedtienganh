@@ -5,7 +5,6 @@ import { NameList } from './NameList'
 
     export function SendLiveQuestion(props: any) {
     
-    //const live_quiz_id = useAppSelector(state => state.live_quiz_id.value)
     const [liveQuizId , setLiveQuizId ] = useState<string>('')
     const [questionNumber , setQuestionNumber ] = useState<string>('')
     const [targetStudent , setTargetStudent ] = useState<string>('')
