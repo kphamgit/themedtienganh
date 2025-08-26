@@ -91,7 +91,7 @@ export default function LiveQuestion(props: LiveQuestionProps) {
             //console.log("handleSubmit format = ", props.question?.format)
             if (props.question) {
                 const result = processQuestion(props.question.format.toString(), props.question.answer_key, my_answer)
-                //console.log("handleSubmit result = ", result)
+                console.log("handleSubmit result = ", result)
                 if (result) {
                     props.set_question_attempt_result(result);
                     const live_score_params: LiveScoreProps = {
@@ -120,28 +120,6 @@ export default function LiveQuestion(props: LiveQuestionProps) {
         }
       }
       
-
-      /*
-      useEffect(() => {
-        if (result) {
-            setShowSubmitButton(false)
-            setQuestionAttemptResponse({question: props.question, results: result})   
-            props.set_question_attempt_result(result)   
-            const live_score_params: LiveScoreProps = {
-                question_format: props.question?.format,
-                question_number: result.question_number,
-                question_content: props.question?.content,
-                user_answer: childRef.current?.getAnswer(),
-                answer_key: props.question?.answer_key,
-                score: result.score.toString(),
-                total_score: 0, 
-                user_name: user.user_name
-            }
-           socket?.emit('live_score', live_score_params) 
-        }
-      }, [result])
-      */
-
     if (endOfQuiz) {
        navigate('/')
     }
@@ -177,7 +155,10 @@ export default function LiveQuestion(props: LiveQuestionProps) {
         fontSize: "30px",
       }
 
-    
+    const enableSubmitButton = () => {
+        // retrieve the submit button and enable it
+        
+    }
 
     return (
         <>
@@ -207,7 +188,11 @@ export default function LiveQuestion(props: LiveQuestionProps) {
                             { props.question.format === 1 ? (
                                 <DynamicWordInputs content={props.question.content} ref={childRef} />
                             ) : props.question.format === 2 ? (
-                                <ButtonSelectCloze content={props.question.content} choices={props.question.button_cloze_options} ref={childRef} />
+                                <ButtonSelectCloze 
+                                content={props.question.content} 
+                                choices={props.question.button_cloze_options} 
+                                parentFuncEnableSubmitButton={(enableSubmitButton)}
+                                ref={childRef} />
                             ) : props.question.format === 3 ? (
                                 <ButtonSelect content={props.question.content} ref={childRef} />
                             ) : props.question.format === 4 ? (
@@ -229,7 +214,7 @@ export default function LiveQuestion(props: LiveQuestionProps) {
                             </div>
                                 <div>
                         {showSubmitButton &&
-                            <button className='bg-bgColor3 text-textColor3 m-1 text-lg p-1 rounded-md' onClick={handleSubmit}>Submit</button>
+                            <button className='bg-bgColor3 text-textColor3 m-1 text-lg p-1 rounded-md' disabled onClick={handleSubmit}>Submit</button>
                         }
                     </div>
                             </>

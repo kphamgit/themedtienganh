@@ -74,6 +74,8 @@ export default function QuizPageVideo(props:any) {
     const [endOfQuiz, setEndOfQuiz] = useState(false)
     const childRef = useRef<ChildRef>(null);
 
+    const [submitDisabled, setSubmitDisabled] = useState(true)
+
     //const buttonSelectClozeChildRef  = useRef<ButtonSelectClozeChildRef>(null);
 
     const counterRef = useRef<CounterRef>(null)
@@ -212,6 +214,9 @@ export default function QuizPageVideo(props:any) {
        // }
     };
 
+    const enableSubmmitButton = () => {
+        setSubmitDisabled( false  )
+    }
 
     return (
         <>
@@ -241,7 +246,11 @@ export default function QuizPageVideo(props:any) {
                         {question?.format === 1 ? (
                             <DynamicWordInputs content={question.content} ref={childRef} />
                         ) : question?.format === 2 ? (
-                            <ButtonSelectCloze content={question.content} choices={question.button_cloze_options} ref={childRef} />
+                            <ButtonSelectCloze 
+                            content={question.content} 
+                            choices={question.button_cloze_options} 
+                            parentFuncEnableSubmitButton={(enableSubmmitButton)}
+                            ref={childRef} />
                         ) : question?.format === 3 ? (
                             <ButtonSelect content={question.content} ref={childRef} />
                         ) : question?.format === 4 ? (
@@ -278,7 +287,13 @@ export default function QuizPageVideo(props:any) {
                     }}>Next</button>
                 }
                 {showSubmitButton &&
-                    <button className='m-4 bg-amber-500 p-2 rounded-md' onClick={(e) => handleSubmit(e)}>Submit</button>
+                    <button className='m-4 bg-amber-500 p-2 rounded-md' 
+                    style={{
+                        opacity: submitDisabled ? 0.5 : 1, // Fully visible when enabled, semi-transparent when disabled
+                        cursor: submitDisabled ? "pointer" : "not-allowed", // Pointer cursor when enabled, not-allowed when disabled
+                      }}
+                    disabled={submitDisabled} 
+                    onClick={(e) => handleSubmit(e)}>Submit</button>
                 }
             </div>
 
@@ -288,3 +303,8 @@ export default function QuizPageVideo(props:any) {
 
 }
 
+/*
+   {showSubmitButton &&
+                    <button className='m-4 bg-amber-500 p-2 rounded-md' disabled={submitDisabled} onClick={(e) => handleSubmit(e)}>Submit</button>
+                }
+*/

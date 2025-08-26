@@ -99,6 +99,35 @@ const compare_cloze_answers = (user_answer: string, answer_key: string) => {
     return match
 }
 
+const process_letter_cloze = (answer_key:string, user_answer: string ) => {
+    // answer_key is a string without slashes, e.g. "UR"
+    // user_answer is a string with slashes, e.g. "U/R" (because user fills in the letters individually)
+    //console.log("process_letter_cloze answer_key = ", answer_key)  // UR
+    //console.log("process_letter_cloze user_answer = ", user_answer)  // U/R
+    let error = true;
+    let score = 0
+
+    //let user_answer_parts = user_answer.trim().split('/')
+    // remove the slash from user answer`
+    let user_answer_str = user_answer.replace(/\//g, '')
+    //console.log("user_answer_parts = ", user_answer_parts)
+   
+    error = (user_answer_str !== answer_key)
+
+    if (!error) {
+        score = 5
+    }        
+    const rc =  { ...default_results,
+        user_answer: user_answer,
+        score: score,
+        error_flag: error,
+
+        }
+     return rc
+        //return results;
+}
+
+
 const process_button_cloze = (answer_key:string, user_answer: string ) => {
     
     let error = false;
@@ -130,23 +159,26 @@ const process_button_cloze = (answer_key:string, user_answer: string ) => {
 }
 
 
-const process_radio = (question: any, user_answer: string) => {  // 4
-    let error = false;
-  let score = 0
-  if (answer_key != user_answer)  {
-     error = true
-  }
-  else {
-       score += question.score;
-  }
-   
-   return { ...default_results,
-       user_answer: user_answer,
-       score: score,
-       error_flag: error,
+    const process_radio = (answer_key: any, user_answer: string) => {  // 4
+        console.log("process_radio answer_key = ", answer_key)
+        console.log("process_radio user_answer = ", user_answer)
+        let error = false;
+        let score = 0
+        if (answer_key != user_answer) {
+            error = true
+        }
+        else {
+            score += 5;
+        }
 
-       }
-}
+        return {
+            ...default_results,
+            user_answer: user_answer,
+            score: score,
+            error_flag: error,
+
+        }
+    }
 
 const process_words_scramble = (answer_key: string , user_answer:string) => {
  
@@ -270,7 +302,7 @@ switch (format) {
             user_answer!
         );
     case '11': // dropdown
-        return process_cloze(
+        return process_letter_cloze(
             answer_key!,
             user_answer!
         );

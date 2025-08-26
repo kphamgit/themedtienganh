@@ -7,7 +7,6 @@ import { useSocketContext } from '../../hooks/useSocketContext';
 //import { ModalHandle } from '../shared/ModalPopup'
 //import ModalPopupSave from '../shared/ModalPopupSave'
 import MainStudent from './MainStudent'
-import { MyVerticalGrid } from './MyVerticalGrid';
 //import { SideStudent } from './SideStudent'
 //import Accordion from '../shared/Accordion';
 ////import ChatPage, { MessageProps } from '../chat/ChatPage';

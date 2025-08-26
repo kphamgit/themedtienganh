@@ -6,14 +6,20 @@ import {
   SpeechSynthesisOutputFormat,
   SpeakerAudioDestination,
 } from 'microsoft-cognitiveservices-speech-sdk';
-import { DropBoxProps } from '../quiz_attempts/question_attempts/ButtonSelecCloze';
+import { DOMRectPropsType } from '../quiz_attempts/question_attempts/ButtonSelecCloze';
 
+export type DroppedBoxInfo = {
+  droppedBoxId: string | undefined,
+  rect: DOMRectPropsType | undefined
+}
 export interface AzureButtonProps {
     id: string;
     voice_text?: string;
     button_text: string | undefined;
-    dropBoxes?: DropBoxProps[] | undefined;
-    parentFunc: (selected_text: string, droppedIndex: number | undefined, available: boolean) => void
+    //dropBoxes?: DropBoxProps[] | undefined;
+    parentFunc: (selectedAnimatedButtonId: string, selected_text: string) => DroppedBoxInfo
+    parentFunc1: (width: number) => void  // called after components finished mounting to inform parent of my width
+    parentFuncResetDropBox: (dropBoxId: string) => void
   }
   
 export const AzureAnimatedButton = (props: AzureButtonProps) => {
@@ -21,11 +27,12 @@ export const AzureAnimatedButton = (props: AzureButtonProps) => {
     //console.log("in AzureButton", props)
       const buttonRef = useRef<HTMLButtonElement>(null);
 
-      
-      const [droppedIndex, setDroppedIndex] = useState<number | undefined>(); // >=0 means dropped
+      // the id of the drop box where this Animated Button is dropped onto
+      const [droppedBoxId, setDroppedBoxId] = useState<string | undefined>(); // >=0 means dropped
     
       const [myRect, setMyRect] = useState<DOMRect | null>(null);
-     
+  
+      const clickCount = useRef<number>(0);
  
       const [dynamicVerticalOffsets, setDynamicVerticalOffsets] = useState<number[]>([]);
       const [dynamicHorizontalOffsets, setDynamicHorizontalOffsets] = useState<number[]>([]);
@@ -33,50 +40,39 @@ export const AzureAnimatedButton = (props: AzureButtonProps) => {
       const [isClicked, setIsClicked] = useState<boolean>(false);
 
       useEffect(() => {
+       // console.log("in AzureAnimatedButton useEffect button Bounding Rectangle =", buttonRef.current!.getBoundingClientRect());
+        /*
+ {
+    "x": 475.296875,
+    "y": 344.5,
+    "width": 92.921875,
+    "height": 24,
+    "top": 344.5,
+    "right": 568.21875,
+    "bottom": 368.5,
+    "left": 475.296875
+}
+
+{
+    "x": 588.21875,
+    "y": 344.5,
+    "width": 85.4765625,
+    "height": 24,
+    "top": 344.5,
+    "right": 673.6953125,
+    "bottom": 368.5,
+    "left": 588.21875
+}
+        */
         setMyRect(buttonRef.current!.getBoundingClientRect());        
-      }, []); // Run once on mount or when id changes
+      }, []); // Run once on mount 
      
-    
       useEffect(() => {
-        if (props.dropBoxes) {
-          //console.log(" in useEffect UUUUUUUU updateCount:", updateCount, " for AzureAnimatedButton id=", props.id);
-          //console.log("in useEffect: props.dropBoxes size:", props.dropBoxes.length);
-          if (!myRect || props.dropBoxes.length === 0) {
-            //console.log("buttonRef.current is null or dropBoxes lenght is 0, cannot calculate offsets");
-            return;
-          }
-          //console.log("in useEffect: props.dropBoxes size =", props.dropBoxes.length);
-          props.dropBoxes.forEach((dropBox, index) => {
-            //console.log(" ");
-            //console.log("in useEffect: dropBox INDEX:", index);
-            //console.log("in useEffect: dropBox ", index, " rect:", dropBox.rect);
-            //const draggable_rect = buttonRef.current!.getBoundingClientRect();        
-            //console.log("button myRect:", myRect);
-            const buttonWidth = myRect.width;
-            const dropboxWidth = dropBox.rect.width;
-            const sideMarginHorizontal = (dropboxWidth - buttonWidth) / 2;
-            const offsetX = dropBox.rect.left  - myRect.left;
-            //console.log("in useEffect: offsetX (from ", props.id, " to dropbox", index, "):", offsetX);
-            setDynamicHorizontalOffsets(prevOffsets => {
-              const newOffsets = [...prevOffsets];
-              newOffsets[index] = offsetX + sideMarginHorizontal;
-              return newOffsets;
-            });
-            const buttonHeight = myRect.height;
-            const dropboxHeight = dropBox.rect.height;
-            const sideMarginVertical = (dropboxHeight - buttonHeight) / 2;
-            const offsetY = dropBox.rect.top - myRect.top;
-            //console.log("in useEffect: offsetY (from ", props.id, " to dropbox", index, "):", offsetY);
-            setDynamicVerticalOffsets(prevOffsets => {
-              const newOffsets = [...prevOffsets];
-              newOffsets[index] = offsetY + sideMarginVertical;
-              return newOffsets;
-            });
-          })
+        if (myRect) {
+          props.parentFunc1(myRect.width);  //now that I got my reactangle, let inform parent of my width
         }
-      }, [props.dropBoxes, props.id, myRect]); // Run once on mount or when dropBoxes change
-
-
+      }, [myRect, props]);
+    
       useEffect(() => {
         if (dynamicHorizontalOffsets.length === 0 || dynamicVerticalOffsets.length === 0) {
           //console.log("in useEffect: horizontalOffsets or verticalOffsets are empty, cannot log offsets");
@@ -90,49 +86,46 @@ export const AzureAnimatedButton = (props: AzureButtonProps) => {
           //console.log("in useEffect: my ID: ", props.id, " my button text: ", props.button_text, "my verticalOffsets", dynamicVerticalOffsets);
       }, [dynamicHorizontalOffsets, dynamicVerticalOffsets, props.id]);
 
-    const handleClick: MouseEventHandler<HTMLButtonElement> = (event) => {
-       // look in dropboxes to check for first available slot
-       setIsClicked(true);
-       if (droppedIndex !== undefined && droppedIndex >= 0) {
-        //console.log("Button already dropped droppedIndex = ",droppedIndex," return to original position");
-        if (buttonRef.current) {
-         // Call the parent function with the button text and dropped index
-          buttonRef.current.style.transform = `translate(0px, 0px)`;
-          // so that it can update the available state of the dropbox
-          setDroppedIndex(undefined);
-          // release the corresponding dropbox
-         // props.dropBoxes![droppedIndex].available = true;
-          props.parentFunc(props.button_text!, droppedIndex, true)
-        }
-        else {
-          console.log("buttonRef.current is null, cannot reset position");
-          return;
-        }
-        return;
-       }
-       const availableDropBox = props.dropBoxes?.find(dropBox => dropBox.available);
-        if (availableDropBox) {
-          //console.log("available dropbox found")
-          const droppedIndex = props.dropBoxes!.indexOf(availableDropBox);
-          //console.log("dropped index", droppedIndex)
-          if (buttonRef.current) {
-            //props.dropBoxes?.forEach((dropBox, index) => {
-              // calculate the offsets for the buttons from the dropboxes    
-              //console.log(" HERE 1 horizontalOffsets", dynamicHorizontalOffsets)
-              //console(" verticalOffsets", verticalOffsets)
-              buttonRef.current.style.transform = `translate(${dynamicHorizontalOffsets[droppedIndex]}px, ${dynamicVerticalOffsets[droppedIndex]}px)`;
-              setDroppedIndex(droppedIndex);
-              props.parentFunc(props.button_text!, droppedIndex, false)
-            //})
-
+      const handleClick: MouseEventHandler<HTMLButtonElement> = (event) => {
+          // increment click count
+          clickCount.current += 1;
+          
+          // click count is even means button is being reset to original position
+          if (clickCount.current % 2 === 0) {
+            // reset button position
+            if (buttonRef.current) {
+              buttonRef.current.style.transform = `translate(0px, 0px)`;
+            }
+            // call parent function to clear corresponding drop box for this animated button
+            if (droppedBoxId) {
+              console.log("in AzureAnimatedButton handleClick: resetting drop box id =", droppedBoxId);
+              props.parentFuncResetDropBox(droppedBoxId);
+            }
+            else {
+              console.warn("in AzureAnimatedButton handleClick: droppedBoxId is undefined during reset");
+            }
+            return;
           }
-        } else {
-          console.log("No available dropbox found");
-        }
-        playAudio();
-        //console.log('Button clicked:', props.button_text);
-    }
-    
+          
+          //const dropBoxRect: DOMRectPropsType | undefined = props.parentFunc( props.id, props.button_text!);
+          const droppedBoxInfo: DroppedBoxInfo = props.parentFunc( props.id, props.button_text!);
+          //droppedBoxId: availableDropBox?.id, rect: availableDropBox?.rect };
+          if (buttonRef.current && droppedBoxInfo.rect) {
+            setDroppedBoxId(droppedBoxInfo.droppedBoxId ? droppedBoxInfo.droppedBoxId : undefined);
+            //console.log("in **** AzureAnimatedButton handleClick NO Picture, received dropBoxRect =", droppedBoxInfo.rect);
+            //console.log("in **** AzureAnimatedButton handleClick NO Picture, buttonRef rec =", buttonRef.current.getBoundingClientRect());
+            const dropBoxRect = droppedBoxInfo.rect;
+            // the assumption is that animated button's width is always smaller than dropbox width
+            // get the difference and divide by 2 to establish the x margin to center the button in the dropbox
+            const margin_x = (dropBoxRect.width - buttonRef.current.getBoundingClientRect().width) / 2;
+          const x_diff = dropBoxRect.x - buttonRef.current.getBoundingClientRect().x;
+
+          const margin_y = (dropBoxRect.height - buttonRef.current.getBoundingClientRect().height) / 2;
+          
+          const y_diff = dropBoxRect.y - buttonRef.current.getBoundingClientRect().y;
+          buttonRef.current.style.transform = `translate(${x_diff + margin_x}px,  ${y_diff + margin_y}px)`;
+          }
+      }
 
     const playAudio = () => {
         //console.log("in playAudio ", props.text)

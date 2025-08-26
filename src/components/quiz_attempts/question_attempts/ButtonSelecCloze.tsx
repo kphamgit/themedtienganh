@@ -8,39 +8,96 @@ interface InputFieldProps {
   value: string;
 }
 
+
+interface ComponentProps {
+    content: string | undefined;
+    choices: string | undefined;
+    parentFuncEnableSubmitButton: () => void;
+  }
+ 
+  export type DOMRectPropsType = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+}
+
 export interface DropBoxProps {
   id: string;
   value: string;
   available: boolean;
-  rect: {top: number; left: number; width: number; height: number};
+  animatedButtonId: string | null ;
+  rect: DOMRectPropsType;
 }
 
-interface Props {
-    content: string | undefined;
-    choices: string | undefined;
-  }
- // export interface ButtonSelectClozeChildRef {
-  //  getAnswer: () => string[] | undefined;
- // }
  export interface ChildRef {
   getAnswer: () => string | undefined;
 }
 
   //const labels = ['one', 'two']
 
-  export const ButtonSelectCloze = forwardRef<ChildRef, Props>((props, ref) => {
+  // make a dropbox component that takes in a width and height and renders a div with blue background
+  const DropBox = (props: { width: number; height: number; id: string, parentFunc: (dropbox: DropBoxProps) => void }) => {
+
+    const [id, setId] = useState<string>(props.id);
+    const dropBoxDivRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+      // Get the bounding rectangle when the component mounts
+      if (dropBoxDivRef.current) {
+        const rect = dropBoxDivRef.current.getBoundingClientRect();
+        //console.log(`DropBox: Bounding rectangle for DropBox ${props.id}:`, rect);
+        /*
+{
+    "x": 398.03125,
+    "y": 287.5,
+    "width": 134.2578125,
+    "height": 30,
+    "top": 287.5,
+    "right": 532.2890625,
+    "bottom": 317.5,
+    "left": 398.03125
+}
+        */
+       //console.log(" calling parentFunc from DropBox with rect=", rect)
+        props.parentFunc({rect: rect, id: props.id, value: '', available: true, animatedButtonId: null} );
+      }
+    }, []); // Empty dependency array ensures this runs only once on mount
+  
+
+
+    return (
+      <div
+        ref={dropBoxDivRef} // Attach the ref to the div
+        className='bg-red-400 rounded-md cloze_answer p-1 m-1 text-center'
+        style={{ width: props.width, height: props.height }}
+        id={props.id}
+      >
+      </div>
+    );
+  }
+
+
+  export const ButtonSelectCloze = forwardRef<ChildRef, ComponentProps>((props, ref) => {
  
   const [inputFields, setInputFields] = useState<InputFieldProps[] | undefined >([])
 
-  const dropBoxRefs = useRef<HTMLDivElement[]>([]);
-
   const [buttonLabels, setButtonLabels] = useState<string[] | undefined>([])
 
-  const [dropBoxes, setDropBoxes] = useState<DropBoxProps[]>([]);
+  const [largestDropBoxWidth, setLargestDropBoxWidth] = useState<number>(0);  
 
-  const charRef = useRef<HTMLDivElement>(null);
-  const minLengthRef = useRef<number>(0);
+  const animatedButtonWidths = useRef<number[]>([]);
   
+  const [ready, setReady] = useState<boolean>(false);
+
+  const dropBoxRefs = useRef<DropBoxProps[]>([]);
+
+  const timerRef = useRef<number | null>(null);
+
   useEffect(() => {
      if (!props.choices) {
       console.error("No choices provided in props");
@@ -51,139 +108,60 @@ interface Props {
   }, [props.choices]);
 
 useEffect(() => {
+
+  /*
   const regExp = /\[.*?\]/g
   const  matches = props.content?.match(regExp);
   //console.log("aaaa matches =", matches)
-  /* [
-    "[you/he/I]"]
-  */
-  if (matches) {
-  const match_parts = matches[0].split('/')
-  let length_of_longest_word = 1;
-  if (match_parts) {
-    for (var i = 0; i < match_parts.length; i++) {
-      if (match_parts[i].length > length_of_longest_word) {
-        //console.log(" longest", (matches[i].length + 1))
-        length_of_longest_word = match_parts[i].length + 1
-        
-      }
-    }
-    //console.log(" longest",length_of_longest_word)
-    //setMinLength(length_of_longest_word)
-    minLengthRef.current = length_of_longest_word;
-    //console.log("minLengthRef.current=", minLengthRef.current)
-  }
-}
   //
-
   //remove the square brackets from matches
-  const matches_no_brackets =  matches?.map((item) => {
+  const bracketed_strings =  matches?.map((item) => {
       return item.replace('[', '').replace(']', '')
   })
-  //console.log("MMMMMMMMMMMMM matches no brackets=", matches_no_brackets)
-  // ["are", "thank"]
-  /*
-  if (matches_no_brackets) {
-    //console.log("matches_no_brackets=", matches_no_brackets)
-    setLabels(matches_no_brackets)
-  }
-*/
-  //[ "are","<br />","thank"]
-
+  console.log("MMMMMMMMMMMMM matches no brackets=", bracketed_strings)
   // Use a regular expression to split the sentence
   // use regular expression to split the content by square brackets and by whitespace
   // and also by new line tags
-  //const test_array = props.content?.split(/\[.*?\]/);
- // console.log("test_array=", test_array)
-
-  //const array = props.content?.split(/\[|\]/);
-  //const array = props.content?.split(/[\[\]\s]+/);
-  // split content by square brackets and by 
-  const array = props.content?.split(/(\[.*?\])|(\s+)|(#)/).filter(Boolean);
-  //console.log("XXXXXXX array=", array)
-  /*
-[
-    "In",
-    " ",
-    "Vietnam,",
-    " ",
-    "students",
-    " ",
-    "[usually wear]",
-    " ",
-    "uniforms",
-    " ",
-    "to",
-    " ",
-    "[go to school]",
-    " ",
-    "on",
-    " ",
-    "Monday."
-]
   */
- 
+  const content_array = props.content?.split(/(\[.*?\])|(\s+)|(#)/).filter(Boolean);
+  //console.log("XXXXXXXYYYYYYYYY array=", content_array)
   /*
-    if (part.includes('#')) {
-        //console.log(" found new line tag =", part)
-        return { id: index.toString(),  type: 'newline_tag', value: part,}
-      }
+  [ "In",    " ", "Vietnam,"," ","students"," ","[usually wear]"," ","uniforms"," ","to"," ","[go to school]"," ","on"," " "Monday."
+  ]
   */
-
-  let num_dropboxes = 0;
-  let num_words = 0;
-  const cloze_content_array = array?.map((part, index) => {
-    const found = matches_no_brackets?.find((match) => 
-      {
-        //console.log("part=", part, " match=", match)
-        return part.replace('[','').replace(']','') === match
-
-    });
-    //console.log( "part=", part, " found=", found)
-    if (found) {
-      const dropbox = { id: "dropbox_" + num_dropboxes.toString(), type: 'dropbox', value: "  " };
-      num_dropboxes++; // Increment num_dropboxes after it is used
-      return dropbox;
-    
+  let drop_boxes_count = 0;
+  let words_count = 0;
+  const input_fields_array: InputFieldProps[] | undefined = content_array?.map((part, index) => {
+    // if part contains a left and right square bracket, then it is a dropbox
+    if (part.startsWith('[') && part.endsWith(']')) {
+      drop_boxes_count++;
+      return { id: 'dropbox_' + drop_boxes_count.toString(), type: 'dropbox', value: '  ' };
     }
-    else {
-      //console.log(" found static text part =", part)
-      const word_obj = {id : "word_" + num_words.toString(), type: 'static_text', value: part};
-      num_words++;
-      return word_obj;
-     
-    }
+    words_count++;
+    return { id: 'word_' + words_count.toString(), type: 'static_text', value: part };
   })
-  //console.log("XXXX cloze_content_array=", cloze_content_array)
-  /*
-{id: '0', type: 'static_text', value: 'How '}
-{id: '1', type: 'dropbox', value: '  '}
-{id: '2', type: 'static_text', value: " you? # I'm fine, "}
-{id: '3', type: 'dropbox', value: '  '}
-  */
- //console.log("^^^^^  cloze_content_array=", cloze_content_array)
-
-  setInputFields(cloze_content_array)
+  //console.log("YYYYYYYYYXXXXXXXXXX input_fields_array1=", input_fields_array)
+  
+  setInputFields(input_fields_array)
   
 },[props.content])
 
+//useEffect(() => {
+ // console.log("****************** inputFields changed: ", inputFields)
+//}, [inputFields]);
+
   const getAnswer = () => {
-    // iterate through dropboxes and get the values of the inputs
-    //console.log(" getAnswer...dropboxes=", dropBoxes)
-    const answers = dropBoxes.map((dropBox, index) => {
-     
-      if (dropBox) {  
-        //console.log(`Input at index ${index} value:`, inputElement.textContent);
-        return dropBox.value || '';
-      } else {
-        console.error(`No input element found at index ${index}`);
-        return '';
+    // iterate through dropboxRefs and get the values 
+   let answer = '';
+    dropBoxRefs.current.forEach((dropBox, index) => {
+      answer += dropBox.value;
+      if (index < dropBoxRefs.current.length - 1) {
+        answer += '/';
       }
-    });
-    //console.log(" getAnswer...answers=", answers.join('/'))
-    // clear the dropBoxes 
-    setDropBoxes([]);
-    return answers.join('/'); // Join the answers with a separator, e.g., ' / '
+    }
+    );
+    console.log(" ButtonSelectCloze: getAnswer called... user answer =", answer)
+   return answer
   }
 
   /**
@@ -193,75 +171,22 @@ useEffect(() => {
     getAnswer,
   }));
  
-  const getDropBoxBoundingRect = (index: number) => {
-    const dropBox = dropBoxRefs.current[index];
-    if (dropBox) {
-      const rect = dropBox.getBoundingClientRect();
-     // console.log(`................. Bounding rectangle for input at index ${index}:`, rect);
-      return rect;
-    } else {
-      console.error(`No input element found at index ${index}`);
-      return null;
-    }
-  };
-
-    useEffect(() => {
-      if (dropBoxRefs.current.length > 0) {
-       //console.log('Setting up drop boxes for input elements...inputRefs.current=', dropBoxRefs.current);
-        dropBoxRefs.current.forEach((input, index) => {
-          const rect = getDropBoxBoundingRect(index);
-          if (rect) {
-            //console.log('****** ****** Input Bounding Rect for index ', index, ': Top:', rect.top, 'Left:', rect.left, 'Width:', rect.width, 'Height:', rect.height);
-            // save rect in dropBoxes array
-            const dropBox: DropBoxProps = {
-              id: `dropBox-${index}`,
-              value: '',
-              // Initially, the value is empty, it will be filled when a button is clicked and dropped on it
-              available: true,
-              rect: { top: rect.top, left: rect.left, width: rect.width, height: rect.height }
-            };
-            setDropBoxes(prev => [...prev, dropBox]);
-          }
-          else {
-            console.error('Could not get bounding rectangle for input element.');
-          }
-        })
-      } else {
-        console.error('No input elements are available yet.');
-      }
-      return () => {
-        // Cleanup function to reset the drop boxes when the component unmounts
-        setDropBoxes([]);
-      }
-    }, [inputFields]);
-
     function renderContent(type: string, value: string, id: string, index: number) {
-     //console.log(" in renderContent...xxxxxxxxx..type=", type, "value=", value, "id=", id, "index=", index)
+     // console.log(" in renderContent...xxxxxxxxx..type=", type, "value=", value, "id=", id, "index=", index)
       if (type === 'dropbox') {
-        //console.log(" in renderContent...yyyyyyyyyy..type=input .. id=", id, " index=", index)
-        const char_width = charRef.current?.getBoundingClientRect().width || 0;
-        //console.log("****** renderContent minw=", char_width)
-        const min_width = char_width * minLengthRef.current;
-        if (min_width === 0) {
-          console.error("min_width is not set yet!");
-          return null; // Prevent rendering if minWidth is not set
-        }
-        // render dropbox as a div with blue background
-        return (<div
-          className='bg-blue-300 rounded-md cloze_answer p-1 m-1 text-center'
-          style={{ minWidth: min_width, width: min_width, height: 25, lineHeight: 1.5 }}
+        return (
+         <DropBox
+          width={largestDropBoxWidth > 0 ? largestDropBoxWidth : 50}
+          height={30}
           id={id}
-          ref={(el) => {
-            if (el) {
-              //inputCountRef.current += 1;
-              const dropbox_index = id.split('_')[1];
-              dropBoxRefs.current[parseInt(dropbox_index)] = el; // Add the reference to the array
-            }
+          parentFunc={(dropbox: DropBoxProps) => {
+            //console.log(" ^^^^^^^^^ DropBox parentFunc called... width =", width)
+            //console.log(" ********** A DropBox component finished mounting,  dropbox=", dropbox)
+            //console.log(" push it to dropBoxComponentRefs.current")
+            dropBoxRefs.current.push(dropbox);
           }}
-        >
-        </div>
-        )
-      }
+         />)
+        }
       else if (type === "newline_tag") {
         if (value === '#') {
           return (<span><br /></span>)
@@ -275,8 +200,49 @@ useEffect(() => {
       }
     }
 
-    const handleClick = (selected_text: string, droppedIndex: number | undefined, available: boolean) => {
-      //console.log("ButtonSeleceCloze: handleClick.. selectedText = ", selected_text, " droppedIndex=", droppedIndex)
+    const resetDropBox = (dropBoxId: string) => {
+      dropBoxRefs.current.map((dropBox, index) => {
+        if (dropBox.id === dropBoxId) {
+          //console.log("resetting dropBox ", index);
+          dropBox.animatedButtonId = null;
+          dropBox.available = true;
+          dropBox.value = '';
+        }
+      });
+    }
+
+    const handleAnimatedButtonClicked = (selectedAnimatedButtonId: string, selected_text: string) => {
+     // console.log(" in handleAnimatedButtonClicked... dropBoxComponentRefs array=", dropBoxComponentRefs.current)
+      console.log(" ButtonSeleceCloze: handleAnimatedButtonClicked.. selectedText = ", selected_text)
+      //console.log("ButtonSeleceCloze: handleAnimatedButtonClicked.. selectedText = ", selected_text, " droppedIndex=", droppedIndex)
+      const availableDropBox = dropBoxRefs.current.find(dropBox => dropBox.available);
+      // also get the index withing dropBoxComponentRefs.current array of availableDropBox
+      //const availableDropBoxIndex = dropBoxComponentRefs.current.findIndex(dropBox => dropBox.available);
+      if (availableDropBox) {
+        //console.log("available dropbox found", availableDropBox);
+        // set animatedButton id in the dropboxes array to the id of this component
+        // get dropbox id
+        dropBoxRefs.current.map((dropBox, index) => {
+          if (dropBox.id === availableDropBox.id) {
+            //console.log("setting dropBox ", index, " animatedButtonId id to ", selectedAnimatedButtonId);
+            dropBox.animatedButtonId = selectedAnimatedButtonId;
+            dropBox.available = false;
+            dropBox.value = selected_text;
+          }
+        });
+      }
+      // return the bounding reactangle of the available dropbox to the AzureAnimatedButton component
+      // so that it can animate to that position
+      // check dropBoxComponentRefs.current to see if all dropboxes are filled
+      const allFilled = dropBoxRefs.current.every(dropBox => !dropBox.available);
+      if (allFilled) {
+        //console.log(" All dropboxes are filled now!");
+        // call parent function to enable the Submit button
+        props.parentFuncEnableSubmitButton();
+      }
+      
+      return { droppedBoxId: availableDropBox?.id, rect: availableDropBox?.rect };
+      /*
       //console.log("targetInput=", targetInput)
       //const audioUrl =`https://kphamazureblobstore.blob.core.windows.net/tts-audio/${word}.mp3`; // Replace with your audio file URL
       //`https://kphamazureblobstore.blob.core.windows.net/tts-audio/${word}.mp3`
@@ -287,75 +253,38 @@ useEffect(() => {
           console.error("Error playing audio:", error);
       });
       */
-     
-      // update the available state corresponding to droppedIndex in the dropBoxes array
-      const updatedDropBoxes = dropBoxes.map((dropBox, index) => {
-        if (index === droppedIndex) {
-          return { ...dropBox, value: selected_text, available: available }; // Mark the dropbox as unavailable
-        }
-        return dropBox;
-      });
-      //console.log(" ButtonSeleceCloze, handleClick,  updatedDropBoxes=", updatedDropBoxes)
-      setDropBoxes(updatedDropBoxes);
    
   }
 
-  
+  const animatedButtonMounted = (width: number) => {
+    //console.log(" ButtonSelectCloze: animatedButtonMounted... button width =", width)
+     animatedButtonWidths.current.push(width);
+     if (animatedButtonWidths.current.length === (buttonLabels?.length || 0)) {
+      // all buttons have mounted
+      // find the max width
+      const max_width = Math.max(...animatedButtonWidths.current);
+      //console.log(" ButtonSelectCloze: animatedButtonMounted... max button width =", max_width)
+      setLargestDropBoxWidth(max_width);
+      timerRef.current = window.setTimeout(() => {
+        setReady(true);
+      }, 200);
+      
+     }
+  }
+
+  // clean up timer on unmount
   useEffect(() => {
-    const handleResize = () => {
-     dropBoxes.forEach((input, index) => {
-      const rect = getDropBoxBoundingRect(index);
-      if (rect) {
-       //console.log('****** ****** Input Bounding Rect for index ', index, ': Top:', rect.top, 'Left:', rect.left, 'Width:', rect.width, 'Height:', rect.height);
-        // save rect in dropBoxes array
-        // get the dropBox at index
-        const current_dropBox = dropBoxes[index];
-        // replace rect property of current dropBox with the new rect
-        //console.log(" current_dropBox=", current_dropBox)
-        if (!current_dropBox) {
-          console.error(`No dropBox found at index ${index}`);
-          return;
-        }
-        const dropBox: DropBoxProps = {
-          id: current_dropBox.id,
-          value: current_dropBox.value,
-          available: current_dropBox.available,
-          rect: { top: rect.top, left: rect.left, width: rect.width, height: rect.height }
-        };
-        // update the dropBoxes array with the new dropBox
-        setDropBoxes(prev => {
-          const newDropBoxes = [...prev];
-          newDropBoxes[index] = dropBox; // Update the specific index
-          return newDropBoxes;
-        });
-      }
-      else {
-        console.error('Could not get bounding rectangle for input element.');
-      }
-    })
-    };
-
-    window.addEventListener('resize', handleResize);
-
     return () => {
-      window.removeEventListener('resize', handleResize);
-      // Cleanup function to remove the event listener when the component unmounts
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
     };
-  }, [dropBoxes]); // Empty dependency array means this effect runs once on mount and cleans up on unmount
-
+  }, []);
 
     return (
-      <>
-        <div style={{
-          position: 'absolute', left: 0, fontFamily: 'monospace', color: "white", // Use a monospaced font for consistent character width
-          fontSize: 14,
-        }}
-          ref={charRef}
-        >
-          c
-        </div>
-        {charRef.current &&
+      <>  
           <div className='bg-cyan-300 p-2 flex flex-col justify-center items-center flex-wrap m-3'>
+            { ready  &&
             <div className='flex flex-row justify-start bg-blue-200 flex-wrap'>
               {inputFields?.map((field, index) => {
                 return (
@@ -365,6 +294,8 @@ useEffect(() => {
                 );
               })}
             </div>
+            }
+            <div className='bg-red-500 text-white'>Ready: {ready.toString()}</div>
             <div className='flex flex-row justify-center items-center bg-orange-200 m-10'>
               <ul className='flex flex-row gap-5 m-3'>
                 {buttonLabels && buttonLabels.map((label, index) => (
@@ -373,8 +304,10 @@ useEffect(() => {
                       id={`azure-button-${index}`}
                       voice_text={label}
                       button_text={label}
-                      dropBoxes={dropBoxes}
-                      parentFunc={handleClick} />
+                      parentFunc={handleAnimatedButtonClicked}
+                      parentFunc1={animatedButtonMounted} 
+                      parentFuncResetDropBox={resetDropBox}
+                      />
                   </li>
                 )
                 )}
@@ -382,9 +315,6 @@ useEffect(() => {
             </div>
           
           </div>
-          // make a test button to test the getAnswer function
-          
-        }
     
       </>
     );

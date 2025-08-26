@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import ChatPage, { MessageProps } from '../chat/ChatPage';
 import { useSocketContext } from '../../hooks/useSocketContext';
 import { ChatPageRef } from '../chat/ChatPage';
+import HomeStudentGrid from './HomeStudentGrid';
 
 
 export default function Home() {
@@ -54,7 +55,7 @@ export default function Home() {
       {user.role === 'teacher' ?
         <HomeTeacher />
         : (
-        <HomeStudent />
+        <HomeStudentGrid />
         )
       }
      
