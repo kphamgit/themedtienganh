@@ -157,7 +157,7 @@ export default function LiveQuestion(props: LiveQuestionProps) {
 
     const enableSubmitButton = () => {
         // retrieve the submit button and enable it
-        
+
     }
 
     return (
@@ -214,7 +214,7 @@ export default function LiveQuestion(props: LiveQuestionProps) {
                             </div>
                                 <div>
                         {showSubmitButton &&
-                            <button className='bg-bgColor3 text-textColor3 m-1 text-lg p-1 rounded-md' disabled onClick={handleSubmit}>Submit</button>
+                            <button className='bg-bgColor3 text-textColor3 m-1 text-lg p-1 rounded-md' onClick={handleSubmit}>Submit</button>
                         }
                     </div>
                             </>

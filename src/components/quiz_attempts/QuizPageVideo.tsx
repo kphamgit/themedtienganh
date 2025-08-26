@@ -288,11 +288,8 @@ export default function QuizPageVideo(props:any) {
                 }
                 {showSubmitButton &&
                     <button className='m-4 bg-amber-500 p-2 rounded-md' 
-                    style={{
-                        opacity: submitDisabled ? 0.5 : 1, // Fully visible when enabled, semi-transparent when disabled
-                        cursor: submitDisabled ? "pointer" : "not-allowed", // Pointer cursor when enabled, not-allowed when disabled
-                      }}
-                    disabled={submitDisabled} 
+                  
+                    disabled={false} 
                     onClick={(e) => handleSubmit(e)}>Submit</button>
                 }
             </div>
@@ -306,5 +303,24 @@ export default function QuizPageVideo(props:any) {
 /*
    {showSubmitButton &&
                     <button className='m-4 bg-amber-500 p-2 rounded-md' disabled={submitDisabled} onClick={(e) => handleSubmit(e)}>Submit</button>
+                }
+*/
+
+/*
+  style={{
+                        opacity: submitDisabled ? 0.5 : 1, // Fully visible when enabled, semi-transparent when disabled
+                        cursor: submitDisabled ? "pointer" : "not-allowed", // Pointer cursor when enabled, not-allowed when disabled
+                      }}
+*/
+
+/*
+       {showSubmitButton &&
+                    <button className='m-4 bg-amber-500 p-2 rounded-md' 
+                    style={{
+                        opacity: submitDisabled ? 0.5 : 1, // Fully visible when enabled, semi-transparent when disabled
+                        cursor: submitDisabled ? "pointer" : "not-allowed", // Pointer cursor when enabled, not-allowed when disabled
+                      }}
+                    disabled={submitDisabled} 
+                    onClick={(e) => handleSubmit(e)}>Submit</button>
                 }
 */
