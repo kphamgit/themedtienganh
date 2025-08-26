@@ -77,6 +77,12 @@ export default function SortableItem(props: SortableItemProps) {
     //console.log("in SortableItem handleItemClick, item id = ", props.id);
    //console.log("in SortableItem handleItemClick, item id = ", props.id);
     //console.log("in SortableItem handleItemClick, calling parent function from container");
+    console.log("******* Playing audio for label: ", props.label);
+    const audioUrl =`https://kphamazureblobstore.blob.core.windows.net/tts-audio/${props.label}.mp3`;
+      const audio = new Audio(audioUrl);
+      audio.play().catch((error) => {
+          console.error("Error playing audio:", error);
+      });
     props.parent_function?.(props.id);
     //setDestination((prev) => [...prev, item]);
     // find the item in the source array using its array index and set its isActive to false

@@ -231,6 +231,11 @@ useEffect(() => {
           }
         });
       }
+      const audioUrl =`https://kphamazureblobstore.blob.core.windows.net/tts-audio/${selected_text}.mp3`;
+      const audio = new Audio(audioUrl);
+      audio.play().catch((error) => {
+          console.error("Error playing audio:", error);
+      });
       // return the bounding reactangle of the available dropbox to the AzureAnimatedButton component
       // so that it can animate to that position
       // check dropBoxComponentRefs.current to see if all dropboxes are filled
@@ -247,11 +252,7 @@ useEffect(() => {
       //const audioUrl =`https://kphamazureblobstore.blob.core.windows.net/tts-audio/${word}.mp3`; // Replace with your audio file URL
       //`https://kphamazureblobstore.blob.core.windows.net/tts-audio/${word}.mp3`
       /*
-      const audioUrl =`https://kphamazureblobstore.blob.core.windows.net/tts-audio/one.mp3`;
-      const audio = new Audio(audioUrl);
-      audio.play().catch((error) => {
-          console.error("Error playing audio:", error);
-      });
+   
       */
    
   }
@@ -295,7 +296,7 @@ useEffect(() => {
               })}
             </div>
             }
-            <div className='bg-red-500 text-white'>Ready: {ready.toString()}</div>
+           
             <div className='flex flex-row justify-center items-center bg-orange-200 m-10'>
               <ul className='flex flex-row gap-5 m-3'>
                 {buttonLabels && buttonLabels.map((label, index) => (

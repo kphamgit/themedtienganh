@@ -74,7 +74,7 @@ export default function QuizPageVideo(props:any) {
     const [endOfQuiz, setEndOfQuiz] = useState(false)
     const childRef = useRef<ChildRef>(null);
 
-    const [submitDisabled, setSubmitDisabled] = useState(true)
+    const [submitDisabled, setSubmitDisabled] = useState(false)
 
     //const buttonSelectClozeChildRef  = useRef<ButtonSelectClozeChildRef>(null);
 
