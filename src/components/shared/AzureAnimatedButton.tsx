@@ -41,29 +41,6 @@ export const AzureAnimatedButton = (props: AzureButtonProps) => {
 
       useEffect(() => {
        // console.log("in AzureAnimatedButton useEffect button Bounding Rectangle =", buttonRef.current!.getBoundingClientRect());
-        /*
- {
-    "x": 475.296875,
-    "y": 344.5,
-    "width": 92.921875,
-    "height": 24,
-    "top": 344.5,
-    "right": 568.21875,
-    "bottom": 368.5,
-    "left": 475.296875
-}
-
-{
-    "x": 588.21875,
-    "y": 344.5,
-    "width": 85.4765625,
-    "height": 24,
-    "top": 344.5,
-    "right": 673.6953125,
-    "bottom": 368.5,
-    "left": 588.21875
-}
-        */
         setMyRect(buttonRef.current!.getBoundingClientRect());        
       }, []); // Run once on mount 
      

@@ -31,6 +31,7 @@ import { useMutation } from '@tanstack/react-query';
 import { updateQuestionAttempt } from '../api/updateQuestionAttempt';
 import { QuestionAttemptResults } from './QuestionAttemptResults';
 import axios from 'axios';
+import { CheckboxQuestion } from './question_attempts/CheckboxQuestion';
 
 interface PageParamsProps {
     page_num: number
@@ -92,7 +93,7 @@ export default function QuizPageVideo(props:any) {
 
    useEffect(() => {
         if (data) {
-            //console.log("QuizPageVideo questioin  = ", data.question)
+            console.log("QuizPageVideo questioin  = ", data.question)
             setQuestion(data.question)
             setShowSubmitButton(true)
             setQuestionAttemptId(String(data.question_attempt_id))
@@ -208,11 +209,6 @@ export default function QuizPageVideo(props:any) {
         }
     },[question?.audio_str])
     
-    const openHelpModal = () => {
-        //if (modalRef.current) {
-          //  modalRef.current.updateValue(true);
-       // }
-    };
 
     const enableSubmmitButton = () => {
         setSubmitDisabled( false  )
@@ -255,6 +251,8 @@ export default function QuizPageVideo(props:any) {
                             <ButtonSelect content={question.content} ref={childRef} />
                         ) : question?.format === 4 ? (
                             <RadioQuestion question={question} ref={childRef} />
+                        ) : question?.format === 5 ? (
+                            <CheckboxQuestion content={question.content} ref={childRef} />
                         ) : question?.format === 6 ? (
                             <DragDrop content={question.content} ref={childRef} />
                         ) : question?.format === 7 ? (

@@ -160,8 +160,8 @@ const process_button_cloze = (answer_key:string, user_answer: string ) => {
 
 
     const process_radio = (answer_key: any, user_answer: string) => {  // 4
-        console.log("process_radio answer_key = ", answer_key)
-        console.log("process_radio user_answer = ", user_answer)
+       // console.log("process_radio answer_key = ", answer_key)
+        //console.log("process_radio user_answer = ", user_answer)
         let error = false;
         let score = 0
         if (answer_key != user_answer) {
@@ -179,6 +179,61 @@ const process_button_cloze = (answer_key:string, user_answer: string ) => {
 
         }
     }
+
+    const process_checkbox = (answer_key: any, user_answer: string) => {  // 4
+        console.log("process_checkbox answer_key = ", answer_key)
+        console.log("process_checkbox user_answer = ", user_answer)
+        let error = false;
+        let score = 0
+        let answer_key_parts = answer_key.split('/')
+        // ["choice1", "choice3"]
+        let user_answer_parts = user_answer.split('/')
+        // ["choice3", "choice1"]
+        // note the order may be different even though the choices match the answer key, 
+        // so we need to sort both arrays before comparing
+        if (user_answer_parts.length != answer_key_parts.length) {
+            error = true
+        }
+        else {
+            // sort both arrays and compare
+           const answer_keys_arr = answer_key_parts.map( (part:string) => part.trim() ).sort()
+           console.log("answer_keys_arr = ", answer_keys_arr)
+           const user_answers_arr = user_answer_parts.map( (part:string) => part.trim() ).sort()
+              console.log("user_answers_arr = ", user_answers_arr)
+              // join both arrays into strings and compare
+           if (answer_keys_arr.join(',') != user_answers_arr.join(',')) {
+                error = true
+           }
+        }
+
+        if (!error) {   
+            score += 5;
+        }
+
+        return {
+            ...default_results,
+            user_answer: user_answer,
+            score: score,
+            error_flag: error,
+
+
+        }
+    }
+
+    /*
+ user_answer_parts.forEach((user_answer_part, index) => {
+                //console.log("here index"+index)
+                let found = false
+                answer_key_parts.forEach((answer_key_part: string, answer_key_index: number) => {
+                    //console.log("thhere index"+answer_key_index)
+                    if (user_answer_part == answer_key_part) {
+                        //console.log("found")
+                        found = true
+                    }
+                })
+                if (!found) error = true
+            })
+    */
 
 const process_words_scramble = (answer_key: string , user_answer:string) => {
  
@@ -278,6 +333,11 @@ switch (format) {
         );
     case '4': // radio
         return process_radio(
+            answer_key,
+            user_answer!
+        );
+    case '5': // radio
+        return process_checkbox(
             answer_key,
             user_answer!
         );
