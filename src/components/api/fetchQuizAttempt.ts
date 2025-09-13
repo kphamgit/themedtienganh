@@ -72,7 +72,8 @@ export type FetchQuizAttemptProps = {
   export const fetchQuizAttempt = async (quiz_id: string | undefined, user_id: string | undefined):
       Promise<FetchQuizAttemptProps> => {
       const rootpath = store.getState().rootpath.value
-      const url = `${rootpath}/api/quiz_attempts/find_create/${quiz_id}/${user_id}`;
+      console.log("in fetchQuizAttempt, rootpath=", rootpath, " quiz_id=", quiz_id, " user_id=", user_id)
+      const url = `${rootpath}/api/quiz_attempts/find_create_new/${quiz_id}/${user_id}`;
       //console.log("in fetchQuizAttempt url", url)
       
       const response = await fetch(url);

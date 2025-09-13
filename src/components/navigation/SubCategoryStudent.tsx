@@ -42,11 +42,15 @@ export default function SubCategoryPageStudent(props:any) {
 //https://www.tienganhtuyhoa.com/categories/4/sub_categories_student/9
     const take_quiz = (quiz_id: number | undefined, url: string | undefined) => {
         if (sub_category) {
-            const api_url = `/sub_categories/${sub_category.name}/quizzes/${quiz_id}`
+            //const api_url = `/sub_categories/${sub_category.name}/quizzes/${quiz_id}`
+            //"sub_categories/:sub_category_name/take_quiz/:quizId" element={<TakeQuiz />} />
+            const api_url = `/sub_categories/${sub_category.name}/take_quiz/${quiz_id}`
             navigate(api_url, {state: {video_url: url }})
         }
     }
 
+    // <Route path="sub_categories/:sub_category_name/quizzes/:quizId" element={<QuizPageVideo />} />
+    //    <Route path="sub_categories/:sub_category_name/take_quiz/:quizId" element={<TakeQuiz />} />
     return (
         <>
         <div className= "flex flex-col flex-wrap h-[1100px] w-full/3 border mx-12 mr-5">

@@ -1,5 +1,6 @@
 import { useState, useEffect, forwardRef, useImperativeHandle, useRef, EventHandler} from 'react';
 import { AzureAnimatedButton } from  '../../shared/AzureAnimatedButton'
+import { ChildRef } from '../types';
 
 
 interface InputFieldProps {
@@ -34,10 +35,7 @@ export interface DropBoxProps {
   rect: DOMRectPropsType;
 }
 
- export interface ChildRef {
-  getAnswer: () => string | undefined;
-}
-
+ 
   //const labels = ['one', 'two']
 
   // make a dropbox component that takes in a width and height and renders a div with blue background

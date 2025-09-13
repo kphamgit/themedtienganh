@@ -1,6 +1,6 @@
 import { useState, useEffect, forwardRef, useImperativeHandle, useRef} from 'react';
 import { InputLetter } from './InputLetter';
-import { InputLetterRef } from '../types';
+import { ChildRef, InputLetterRef } from '../types';
 
 
 interface InputField {
@@ -15,9 +15,6 @@ interface Props {
     content: string | undefined;
   }
 
-  export interface ChildRef {
-    getAnswer: () => string | undefined;
-  }
 
   export const DynamicLetterInputs = forwardRef<ChildRef, Props>((props, ref) => {
  

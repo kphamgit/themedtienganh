@@ -1,4 +1,5 @@
 import { useState, useEffect, forwardRef, useImperativeHandle, useRef} from 'react';
+import { ChildRef } from '../types';
 
 
 interface InputField {
@@ -11,10 +12,7 @@ interface InputField {
 interface Props {
     content: string | undefined;
   }
-  export interface ChildRef {
-    getAnswer: () => string | undefined;
-  }
-
+  
   export const DynamicWordInputs = forwardRef<ChildRef, Props>((props, ref) => {
  
   const [inputFields, setInputFields] = useState<InputField[] | undefined >([])

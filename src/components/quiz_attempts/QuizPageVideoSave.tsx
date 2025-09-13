@@ -2,7 +2,7 @@ import { MouseEventHandler, useEffect, useRef, useState } from 'react'
 import { useLocation, useParams } from 'react-router-dom';
 import { useAppSelector } from '../../redux/store';
 import { ChildRef, QuestionAttemptAttributes, QuestionProps } from './types';
-import {  DynamicWordInputs } from './question_attempts/DynamicWordInputs';
+import { DynamicWordInputs } from './question_attempts/DynamicWordInputs';
 import { ButtonSelectCloze } from './question_attempts/ButtonSelecCloze';
 import { ButtonSelect } from './question_attempts/ButtonSelect';
 import { RadioQuestion } from './question_attempts/RadioQuestion';
@@ -32,7 +32,6 @@ import { updateQuestionAttempt } from '../api/updateQuestionAttempt';
 import { QuestionAttemptResults } from './QuestionAttemptResults';
 import axios from 'axios';
 import { CheckboxQuestion } from './question_attempts/CheckboxQuestion';
-import YoutubeVideoPlayerNew from '../shared/YoutubeVideoPlayerNew';
 
 interface PageParamsProps {
     page_num: number
@@ -46,7 +45,7 @@ interface VideoProps {
     video_pages: PageParamsProps[]
   }
 
-export default function QuizPageVideo(props:any) {
+export default function QuizPageVideoSave(props:any) {
     
     const modalRef = useRef<ModalHandle>(null);
 
@@ -82,12 +81,6 @@ export default function QuizPageVideo(props:any) {
 
     const counterRef = useRef<CounterRef>(null)
 
-
-    const videoSegments = useRef([
-        { startTime: "0:00", endTime: "0:35" },
-        { startTime: "0:35", endTime: "1:00" },
-        { startTime: "1:00", endTime: "1:30" }
-      ])
     // video play state. This state is needed to control the play/pause of the video
     const [playing, setPlaying] = useState(false);
     // video player ref, needed to do seeking to specific time
@@ -318,7 +311,7 @@ export default function QuizPageVideo(props:any) {
     }
 
     return (
-        <>``
+        <>
             { endOfQuiz &&
                 <div className='flex flex-col items-center'>
                     <div className='bg-red-500 text-white text-lg m-4 rounded-md p-4'>
@@ -328,11 +321,11 @@ export default function QuizPageVideo(props:any) {
             }
             {showQuestion ?
                 <div className='flex flex-col items-center'>
-                     <div><YoutubeVideoPlayerNew video_url={videoUrl} video_segments={videoSegments.current}/></div>
+
                     <div className='flex flex-row justify-start items-center w-full mx-10 bg-cyan-200 px-20 py-1  rounded-md'>
                     <div className='mb-2'>Question: {question?.question_number}</div>
                     </div>
-                   
+                    <div>{displayYoutubeVideo()}</div>
                     <div className='text-textColor2 m-2' dangerouslySetInnerHTML={{ __html: question?.instruction ?? '' }}></div>
                     <div className='m-2 text-textColorQuestionPrompt'>{question?.prompt}</div>
                     <div>

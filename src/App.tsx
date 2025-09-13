@@ -16,6 +16,8 @@ import { setRootPath } from "./redux/rootpath";
 import { LiveQuestionNumberProvider } from "./contexts/livequiz/LiveQuestionNumber";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import YoutubeVideoPlayerNew from "./components/shared/YoutubeVideoPlayerNew";
+import TakeQuiz from "./components/quiz_attempts/TakeQuiz";
 
 const Home = lazy(() => import("./components/navigation/Home"))
 const SubCategoryPageStudent = lazy(() => import("./components/navigation/SubCategoryStudent"))
@@ -81,6 +83,7 @@ function App() {
         setAuth(null)
     }
 
+    // <Route path="sub_categories/:sub_category_name/quizzes/:quizId" element={<QuizPageVideo />} />
   return (
     <>
       <SocketContextComponent>
@@ -95,7 +98,8 @@ function App() {
                   <Route path="/homepage/:role" element={<HomePage />} />
                   <Route path="/games" element={<Games />} />
                   <Route path="sub_categories_student/:sub_categoryId" element={<SubCategoryPageStudent />} />
-                  <Route path="sub_categories/:sub_category_name/quizzes/:quizId" element={<QuizPageVideo />} />
+                 
+                  <Route path="sub_categories/:sub_category_name/take_quiz/:quizId" element={<TakeQuiz />} />
                   
                   <Route path="/live_text" element={<LiveText />} />
                   <Route path="/simple_peer" element={<SimplePeer />} />
@@ -104,7 +108,7 @@ function App() {
                   </Route>
                   <Route path="/live_game/:game_id/:backcolor" element={<LiveMemoryGame />} />
                 
-                  <Route path="/live_youtube_video" element={<YoutubeVideoPlayer />} />
+                 
                 </Route>
               </Routes>
             </BrowserRouter>
