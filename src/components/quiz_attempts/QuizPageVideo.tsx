@@ -33,6 +33,7 @@ import { QuestionAttemptResults } from './QuestionAttemptResults';
 import axios from 'axios';
 import { CheckboxQuestion } from './question_attempts/CheckboxQuestion';
 import YoutubeVideoPlayerNew from '../shared/YoutubeVideoPlayerNew';
+import { get } from 'http';
 
 interface PageParamsProps {
     page_num: number
@@ -255,11 +256,15 @@ export default function QuizPageVideo(props:any) {
           
       };    
 
-      //const handleProgress = (state) => {
         const handleProgress = (state: { played: number; playedSeconds: number; loaded: number; loadedSeconds: number }) => {
-        if (state.playedSeconds > endTime) {
+            console.log(" in handleProgress state.playedSeconds = ", state.playedSeconds)
+            console.log(" in handleProgress startTime = ", endTime)
+            if (state.playedSeconds > endTime) {
           setPlaying(false); // Pause the video
           playerRef.current?.seekTo(startTime, 'seconds'); // Seek to the beginning of the segment
+          // load a question
+          get_next_question();
+
         }
       };
 
