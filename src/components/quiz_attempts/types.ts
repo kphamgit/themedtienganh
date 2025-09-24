@@ -8,6 +8,14 @@ export type QuizAttemptProps = {
   }
 }
 
+export type VideoSegmentProps = {
+  id: number,
+  duration: number,
+  start_time: string,
+  end_time: string,
+  quizId: number
+}
+
 export type QuestionAttemptResponseProps =
 {
     message :  string ,
@@ -37,6 +45,16 @@ export type RadioProps =
     choice_4_text: string
     selected: string
     questionId: number
+  }
+  
+  export interface QuizProps {
+    id: string;
+    name: string;
+    quiz_number: string;
+    disabled: boolean;
+    video_url: string | undefined;
+    unitId: string;
+    questions: QuestionProps[]
   }
 
  export type QuestionProps = {

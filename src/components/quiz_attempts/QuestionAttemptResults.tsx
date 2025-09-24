@@ -29,23 +29,14 @@ import  QuestionHelper from './QuestionHelper';
         if (props.response.user_answer) {
             //console.log("HERE IN useEffect user_answer = ", props.response.user_answer)
             let displayed_user_answer = props.response.user_answer
+        
             if (props?.question?.format === 4) { //radio
-                switch (props.response.user_answer) {
-                    case 'choice1':
-                        displayed_user_answer = props?.question.radio.choice_1_text
-                        break;
-                    case 'choice2':
-                        displayed_user_answer = props?.question.radio.choice_2_text
-                        break;
-                    case 'choice3':
-                        displayed_user_answer = props?.question.radio.choice_3_text
-                        break;
-                    case 'choice4':
-                        displayed_user_answer = props?.question.radio.choice_4_text
-                        break;
-                    default:
-                        break;
-                }
+                    // look for choice index in props.response.user_answer and replace with choice text
+                    const choice_number = props.response.user_answer.charAt(props.response.user_answer.length - 1)
+                    // content = "one/two/three/four"
+                    const choice_text = props?.question?.content.split('/')[parseInt(choice_number) - 1]
+                    console.log("choice_number, choice_text=", choice_number, choice_text)
+                    displayed_user_answer = choice_text
             }
             setDisplayedUserAnswer(displayed_user_answer)
         }
@@ -53,22 +44,12 @@ import  QuestionHelper from './QuestionHelper';
         if (props.question?.answer_key) {
             let displayed_answer_key = props.question?.answer_key
             if (props?.question?.format === 4) { //radio
-                switch (props.question?.answer_key) {
-                    case 'choice1':
-                        displayed_answer_key = props?.question.radio.choice_1_text
-                        break;
-                    case 'choice2':
-                        displayed_answer_key = props?.question.radio.choice_2_text
-                        break;
-                    case 'choice3':
-                        displayed_answer_key = props?.question.radio.choice_3_text
-                        break;
-                    case 'choice4':
-                        displayed_answer_key = props?.question.radio.choice_4_text
-                        break;
-                    default:
-                        break;
-                }
+                     // look for choice index in props.response.user_answer and replace with choice text
+                     const choice_number = props.response.user_answer.charAt(props.response.user_answer.length - 1)
+                     // content = "one/two/three/four"
+                     const choice_text = props?.question?.content.split('/')[parseInt(choice_number) - 1]
+                     //console.log("choice_number, choice_text=", choice_number, choice_text)
+                     displayed_answer_key = choice_text
             }
             setDisplayedAnswerKey(displayed_answer_key)
         }
@@ -164,18 +145,7 @@ import  QuestionHelper from './QuestionHelper';
     //bg-gradient-to-b from-bgColorQuestionAttempt to-green-100
     return (
         <div>
-            <h3>Question: {props.question?.question_number}, your score: {props.response.score}</h3>
-            <div className='bg-bgColorQuestionContent text-black ml-3 mb-3'>
-                {props?.question?.instruction &&
-                    <div dangerouslySetInnerHTML={{ __html: props?.question.instruction }}></div>
-                }
-                {props?.question?.prompt &&
-                    <div>{props?.question.prompt}</div>
-                }
-                {props?.question &&
-                    <div>{displayQuestion()}</div>
-                }
-            </div>
+         
             <div className='bg-gradient-to-t from-bg-bgColorQuestionResults to-white text-textColor1 p-2 m-0 rounded-md'>
                 {props.response.error_flag ?
                     <>

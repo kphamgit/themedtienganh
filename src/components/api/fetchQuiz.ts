@@ -1,4 +1,4 @@
-import { QuestionAttemptProps } from "../quiz_attempts/types";
+import { VideoSegmentProps } from "../quiz_attempts/types";
 import { store } from "../../redux/store";
 
 type QuizProps = {
@@ -7,7 +7,8 @@ type QuizProps = {
   quiz_number: number,
   unitId: number,
   disabled: boolean,
-  video_url: string
+  video_url: string,
+  video_segments?: VideoSegmentProps[],
 }
 
 /*

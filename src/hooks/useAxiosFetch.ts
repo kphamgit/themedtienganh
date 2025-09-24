@@ -9,15 +9,6 @@ interface DataResponse<T> {
   loading: boolean; 
   error: AxiosError | null
 }
-  
-/*
-export async function findCreateQuizAttempt(quiz_id, user_id) {
-  const url = `${rootpath}/api/quiz_attempts/find_create_new/${quiz_id}/${user_id}`
-  const response = await axios.get(url)
-  return response
-}
-
-*/
 
 export const useAxiosFetch = <T>(props: {url: string, method: string, body? : {} }): DataResponse<T> => {
 //console.log("useAxiosFetch url = ", props.url)

@@ -32,7 +32,7 @@ import { updateQuestionAttempt } from '../api/updateQuestionAttempt';
 import { QuestionAttemptResults } from './QuestionAttemptResults';
 import axios from 'axios';
 import { CheckboxQuestion } from './question_attempts/CheckboxQuestion';
-import YoutubeVideoPlayerNew from '../shared/YoutubeVideoPlayerNew';
+import YoutubeVideoPlayerNew from '../shared/YoutubeVideoPlayer';
 import { get } from 'http';
 
 interface PageParamsProps {
@@ -98,7 +98,8 @@ export default function QuizPageVideo(props:any) {
 
    const [nextQuestionEnabled, setNextQuestionEnabled] = useState(false)
   
-   const { data } = useQuizAttempt(params.quizId!, user?.id?.toString() ?? "", true)
+   // for normal quiz, pass null for video_url (2nd param)
+   const { data } = useQuizAttempt(params.quizId!, null, user?.id?.toString() ?? "", true)
 
    const rootpath = useAppSelector(state => state.rootpath.value)
 
@@ -321,9 +322,9 @@ export default function QuizPageVideo(props:any) {
             </div>
         )
     }
-
+// video_segments={videoSegments.current}
     return (
-        <>``
+        <>
             { endOfQuiz &&
                 <div className='flex flex-col items-center'>
                     <div className='bg-red-500 text-white text-lg m-4 rounded-md p-4'>
@@ -333,7 +334,7 @@ export default function QuizPageVideo(props:any) {
             }
             {showQuestion ?
                 <div className='flex flex-col items-center'>
-                     <div><YoutubeVideoPlayerNew video_url={videoUrl} video_segments={videoSegments.current}/></div>
+                     <div><YoutubeVideoPlayerNew video_url={videoUrl} /></div>
                     <div className='flex flex-row justify-start items-center w-full mx-10 bg-cyan-200 px-20 py-1  rounded-md'>
                     <div className='mb-2'>Question: {question?.question_number}</div>
                     </div>

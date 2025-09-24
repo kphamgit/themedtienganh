@@ -73,13 +73,23 @@ export type FetchQuizAttemptProps = {
       Promise<FetchQuizAttemptProps> => {
       const rootpath = store.getState().rootpath.value
       console.log("in fetchQuizAttempt, rootpath=", rootpath, " quiz_id=", quiz_id, " user_id=", user_id)
-      const url = `${rootpath}/api/quiz_attempts/find_create_new/${quiz_id}/${user_id}`;
-      //console.log("in fetchQuizAttempt url", url)
+      const url = `${rootpath}/api/quiz_attempts/find_create/${quiz_id}/${user_id}`;
       
       const response = await fetch(url);
       if (!response.ok) throw new Error("Failed to fetch quiz attempt");
       return response.json();
     };
+
+    export const fetchVideoQuizAttempt = async (quiz_id: string | undefined, user_id: string | undefined):
+    Promise<FetchQuizAttemptProps> => {
+    const rootpath = store.getState().rootpath.value
+    console.log("in fetchQuizAttempt, rootpath=", rootpath, " quiz_id=", quiz_id, " user_id=", user_id)
+    const url = `${rootpath}/api/quiz_attempts/find_create_video/${quiz_id}/${user_id}`;
+    
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Failed to fetch quiz attempt");
+    return response.json();
+  };
 
   
   //    

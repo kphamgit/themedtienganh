@@ -16,7 +16,7 @@ import { setRootPath } from "./redux/rootpath";
 import { LiveQuestionNumberProvider } from "./contexts/livequiz/LiveQuestionNumber";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import YoutubeVideoPlayerNew from "./components/shared/YoutubeVideoPlayerNew";
+import YoutubeVideoPlayerNew from "./components/shared/YoutubeVideoPlayer";
 import TakeQuiz from "./components/quiz_attempts/TakeQuiz";
 
 const Home = lazy(() => import("./components/navigation/Home"))

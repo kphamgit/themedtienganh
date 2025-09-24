@@ -6,7 +6,8 @@ import { ChildRef } from '../types';
 
 interface Props {
     //content: string | undefined;
-    question: QuestionProps
+    //question: QuestionProps
+    content: string | undefined;
   }
 
   interface OptionProps {
@@ -28,7 +29,19 @@ export const RadioQuestion = forwardRef<ChildRef, Props>((props, ref) => {
     setSelectedValue(event.target.value);
   };
 
+  useEffect(() => {
+       // split content by '/' to get options
+        let temp = []
+        let options = props.content?.split('/')
+        if (options) {
+          for (let i=0; i<options.length; i++) {
+            temp.push({value: `choice${i+1}`, label: options[i]})
+          }
+        }
+       setMyOptions({options: temp})
+    },[props.content])
   
+    /*
   useEffect(() => {
      let temp = []
      temp.push({value: 'choice1', label: props.question.radio.choice_1_text})
@@ -37,6 +50,7 @@ export const RadioQuestion = forwardRef<ChildRef, Props>((props, ref) => {
      temp.push({value: 'choice4', label: props.question.radio.choice_4_text})
      setMyOptions({options: temp})
   },[props.question.radio])
+*/
 
   const getAnswer = () => {
     return selectedValue

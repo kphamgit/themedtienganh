@@ -135,11 +135,7 @@ export default function MainStudent(props: any ) {
             <div className='col-span-9 bg-bgColor2 text-textColor2 text-lg m-1'>
               <NavBar role="student" />
             </div>
-            <div className='col-span-3 bg-cyan-200 text-textColor2 text-lg m-1'>
-          
-              <LiveAudioRecorder />
         
-            </div>
           </div>
           <Outlet  />
          
@@ -153,6 +149,15 @@ export default function MainStudent(props: any ) {
     </div>
   )
 }
+
+/*
+    <div className='col-span-3 bg-cyan-200 text-textColor2 text-lg m-1'>
+          
+              <LiveAudioRecorder />
+        
+            </div>
+*/
+
 
 /*
     // TextToSpeech.tsx
