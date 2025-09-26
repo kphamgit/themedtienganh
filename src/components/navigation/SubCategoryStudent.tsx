@@ -43,7 +43,9 @@ export default function SubCategoryPageStudent(props:any) {
                 navigate(api_url)
             }
             else {
-                console.log(" video quiz url: ", quiz.video_url)
+                console.log("******* video quiz")
+                const api_url = `/sub_categories/${sub_category.name}/take_video_quiz/${quiz.id}`
+                navigate(api_url)
            
             }
            

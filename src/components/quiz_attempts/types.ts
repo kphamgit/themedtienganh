@@ -1,15 +1,17 @@
 
 export type QuizAttemptProps = {
-  quiz_attempt: {
+  
     id: string,
     completion_status: string,
     question: QuestionProps,
     question_attempt_id: number
-  }
+  
 }
 
 export type VideoSegmentProps = {
   id: number,
+  segment_number: number,
+  question_numbers: string,
   duration: number,
   start_time: string,
   end_time: string,
@@ -47,6 +49,16 @@ export type RadioProps =
     questionId: number
   }
   
+  export interface PartialQuizProps {
+    id: string;
+    name: string;
+    quiz_number: number;
+    disabled: boolean;
+    video_url: string | undefined;
+    unitId: number;
+    
+  }
+
   export interface QuizProps {
     id: string;
     name: string;

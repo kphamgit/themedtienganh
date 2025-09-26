@@ -13,7 +13,7 @@ interface InputFieldProps {
 interface ComponentProps {
     content: string | undefined;
     choices: string | undefined;
-    parentFuncEnableSubmitButton: () => void;
+   
   }
  
   export type DOMRectPropsType = {
@@ -238,11 +238,7 @@ useEffect(() => {
       // so that it can animate to that position
       // check dropBoxComponentRefs.current to see if all dropboxes are filled
       const allFilled = dropBoxRefs.current.every(dropBox => !dropBox.available);
-      if (allFilled) {
-        //console.log(" All dropboxes are filled now!");
-        // call parent function to enable the Submit button
-        props.parentFuncEnableSubmitButton();
-      }
+     
       
       return { droppedBoxId: availableDropBox?.id, rect: availableDropBox?.rect };
       /*

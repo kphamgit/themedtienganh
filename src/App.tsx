@@ -16,18 +16,18 @@ import { setRootPath } from "./redux/rootpath";
 import { LiveQuestionNumberProvider } from "./contexts/livequiz/LiveQuestionNumber";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import YoutubeVideoPlayerNew from "./components/shared/YoutubeVideoPlayer";
+
 import TakeQuiz from "./components/quiz_attempts/TakeQuiz";
+import TakeVideoQuiz from "./components/quiz_attempts/TakeVideoQuiz";
 
 const Home = lazy(() => import("./components/navigation/Home"))
 const SubCategoryPageStudent = lazy(() => import("./components/navigation/SubCategoryStudent"))
 const SimplePeer = lazy(() => import('./components/shared/SimplePeer'))
-const QuizPageVideo  = lazy(() => import('./components/quiz_attempts/QuizPageVideo'));
 const TtSpeechProvider = lazy(() => import("./contexts/azure/AzureTtsContext"))
 const LiveMemoryGame = lazy(() => import("./components/live/LiveMemoryGame"))//
 const LivePicture = lazy(() => import("./components/live/LivePicture"))//
 const LiveQuiz = lazy(() => import("./components/live/LiveQuiz"))////
-const YoutubeVideoPlayer = lazy(() => import("./components/shared/YoutubeVideoPlayer"))////
+
 const LiveText = lazy(() => import("./components/live/LiveText"))////
 
 
@@ -100,7 +100,7 @@ function App() {
                   <Route path="sub_categories_student/:sub_categoryId" element={<SubCategoryPageStudent />} />
                  
                   <Route path="sub_categories/:sub_category_name/take_quiz/:quizId" element={<TakeQuiz />} />
-                  
+                  <Route path="sub_categories/:sub_category_name/take_video_quiz/:quizId" element={<TakeVideoQuiz />} />
                   <Route path="/live_text" element={<LiveText />} />
                   <Route path="/simple_peer" element={<SimplePeer />} />
                   <Route path="/live_quiz" element={<LiveQuiz />} >

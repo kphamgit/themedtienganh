@@ -86,31 +86,18 @@ export default function TakeQuiz() {
     , [quizAttempt]);
       //console.log("RIVHT HERE quiz_attempt=", quizAttempt);
 
-      const { data: questionAttemptData } = useQuestionAttempt(
+    const { data: questionAttemptData } = useQuestionAttempt(
         quizAttempt?.quiz_attempt.id.toString()!,
         nextQuestionEnabled)
-
-   
-
-    //use javascript fetch quiz data from backend API
-    //console.log("IN TAKE QUIZ, quiz id=", params.quizId)
-
-    /*
- Yes, **line 132 will be executed again** on every re-render of the `TakeQuiz` component.
-- This is because React re-evaluates the entire function body, including the JSX, during each render.
-- To avoid unnecessary executions, you can use `useMemo` or `useEffect` to control when specific code runs.
-    */
-   //const { data: quiz } = useAxiosFetch<VideoQuizData>({ url: `/quizzes/${params.quizId}`, method: 'get' });
-    //onsole.log("quiz data=", quiz);
 
     useEffect(() => {
         if (questionAttemptData) {
             if (questionAttemptData.end_of_quiz) {
-                console.log(" END OF QUIX")
+                //console.log(" END OF QUIX")
                 setEndOfQuiz(true)
             }
             else {
-                console.log(" NOT END OF QUIZ question = ", questionAttemptData.question)
+                //console.log(" NOT END OF QUIZ question = ", questionAttemptData.question)
                 setQuestion(questionAttemptData.question)
                 setQuestionAttemptId(String(questionAttemptData.question_attempt_id))
                 setNextQuestionEnabled(false)   // disable the useQuestionAttempt hook
@@ -125,11 +112,11 @@ export default function TakeQuiz() {
     setSubmitDisabled( false  )
 }
 const get_next_question = async () => {
-    console.log("get_next_question ")
+    //console.log("get_next_question ")
     setShowNextButton(false)
     setShowQuestion(false)
     setQuestionAttemptResponse(undefined)
-    console.log("get_next_question setNextQuestionEnabled to true ")
+    //console.log("get_next_question setNextQuestionEnabled to true ")
     setNextQuestionEnabled(true)  // trigger the useQuestionAttempt hook to get the next question
 }
     const mutation = useMutation({
@@ -148,7 +135,7 @@ const get_next_question = async () => {
 
 
    const handleSubmit: MouseEventHandler<HTMLButtonElement> = (event) => {
-        console.log("in TakeQuiz..... handleSubmit ")
+        //console.log("in TakeQuiz..... handleSubmit ")
         const button_el = event.target as HTMLButtonElement    
         //button_el.disabled = true
         const the_answer = childRef.current?.getAnswer()
@@ -181,7 +168,7 @@ const get_next_question = async () => {
         if (question?.format === 2) {  //button cloze
             return (
                 <div>
-                 <ButtonSelectCloze content={question.content} choices={question.button_cloze_options} parentFuncEnableSubmitButton={(enableSubmmitButton)} ref={childRef} />
+                 <ButtonSelectCloze content={question.content} choices={question.button_cloze_options}  ref={childRef} />
                 </div>
             )
         }

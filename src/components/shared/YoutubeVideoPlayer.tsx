@@ -6,7 +6,7 @@ import './MyReactPlayer.css';
 import exp from 'constants';
 
 export type YouTubePlayerRef = {
-  playVideo: () => void;
+  playSegment: (start_time: string, end_time: string) => void;
 }
 
 type YouTubePlayerProps = {
@@ -25,7 +25,7 @@ type YouTubePlayerProps = {
 
 //export default function YoutubeVideoPlayerNew(props: YouTubePlayerProps) {
     //const [videoUrl, setVideoUrl] = useState('')
-    const YoutubeVideoPlayerNew = React.memo(
+    const YoutubeVideoPlayer = React.memo(
       React.forwardRef<YouTubePlayerRef, YouTubePlayerProps>(function YoutubeVideoPlayerNew(props, ref) {
     const [playing, setPlaying] = useState(true);
 
@@ -34,6 +34,9 @@ type YouTubePlayerProps = {
 
     //const endTimes = useRef<string[]>(["1:05", "2:30", "3:00"]); // MM:SS
     const videoSegmentIndex = useRef(0);
+
+    const segmentStartTime = useRef(props.startTime ? props.startTime : "0:00");
+    const segmentEndTime = useRef(props.endTime ? props.endTime : undefined);
 
     /*
 [
@@ -65,10 +68,11 @@ type YouTubePlayerProps = {
 
     
     useEffect(() => {
-       console.log("YoutubeVideoPlayerNew props=", props)
+       console.log("YoutubeVideoPlayer props=", props)
        // seek to start time if provided
        if (props.startTime) {
         seekToTime(convertToSeconds(props.startTime) ); 
+        segmentEndTime.current = props.endTime ? props.endTime : undefined;
         // set playing to true
         setPlaying(true);
        }
@@ -151,17 +155,19 @@ type YouTubePlayerProps = {
 */
 const handleProgress = (state: { played: number; playedSeconds: number; loaded: number; loadedSeconds: number }) => {
   const millisecondsPlayed = Math.floor(state.playedSeconds * 1000);
-  if (props.endTime && convertToMiliSeconds(props.endTime) && millisecondsPlayed >= convertToMiliSeconds(props.endTime)) {
+  //console.log("in handleProgress, playedSeconds=", state.playedSeconds);
+  //console.log("in handleProgress, segmentEndTime=", segmentEndTime.current);
+  if (props.endTime && convertToMiliSeconds(segmentEndTime.current ?? "0:00") && millisecondsPlayed >= convertToMiliSeconds(segmentEndTime.current ?? "0:00")) {
     // Stop playing
-    console.log("HERE millisecondsPlayed:", millisecondsPlayed);
-    console.log("HERE props.endTime in milliseconds:", convertToMiliSeconds(props.endTime));
-    console.log(" HERE in handleProgress HERE. Stop playing because playedSeconds > video segment endtime");
+    //console.log("HERE millisecondsPlayed:", millisecondsPlayed);
+    //console.log("HERE props.endTime in milliseconds:", convertToMiliSeconds(props.endTime));
+    //console.log(" HERE in handleProgress HERE. Stop playing because playedSeconds > video segment endtime");
     setPlaying(false);
     stopCount.current += 1;
-    console.log("stopCount.current:", stopCount.current);
+    //console.log("stopCount.current:", stopCount.current);
     if (stopCount.current === 2) { // Call parentCallback only the first time
       if (props.parentCallback) {
-        console.log("calling parentCallback with segment index=", videoSegmentIndex.current);
+        //console.log("calling parentCallback with segment index=", videoSegmentIndex.current);
         props.parentCallback(videoSegmentIndex.current);
       }
     }
@@ -169,17 +175,16 @@ const handleProgress = (state: { played: number; playedSeconds: number; loaded: 
 };
 
      
-      useImperativeHandle(ref, () => ({
-        playVideo() {
-          console.log("playVideo called from parent component");
-          // If startTime is provided, seek to that time
-          //if (props.startTime) {
-          //  seekToTime(convertToSeconds(props.startTime));
-         // }
-         seekToTime(0);
+     useImperativeHandle(ref, () => ({
+        playSegment(start_time: string, end_time: string) {
+          console.log("playSegment called with start_time=", start_time, " end_time=", end_time);
+          segmentStartTime.current = start_time;
+          segmentEndTime.current = end_time;
+          seekToTime(convertToSeconds(start_time));
           setPlaying(true);
+          stopCount.current = 0; // reset stop count for new segment
         }
-      }), [props.startTime]);
+      }));
 
       const handlePlayPause = () => {
         setPlaying(!playing);
@@ -234,7 +239,7 @@ const handleProgress = (state: { played: number; playedSeconds: number; loaded: 
   })
 );
 
-export default YoutubeVideoPlayerNew;
+export default YoutubeVideoPlayer;
 /*
 {
     "id": 300,
