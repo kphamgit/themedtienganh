@@ -68,7 +68,7 @@ type YouTubePlayerProps = {
 
     
     useEffect(() => {
-       console.log("YoutubeVideoPlayer props=", props)
+       //console.log("YoutubeVideoPlayer props=", props)
        // seek to start time if provided
        if (props.startTime) {
         seekToTime(convertToSeconds(props.startTime) ); 

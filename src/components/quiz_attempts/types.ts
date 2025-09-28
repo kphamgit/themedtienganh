@@ -56,6 +56,7 @@ export type RadioProps =
     disabled: boolean;
     video_url: string | undefined;
     unitId: number;
+    video_segments? : VideoSegmentProps[]
     
   }
 

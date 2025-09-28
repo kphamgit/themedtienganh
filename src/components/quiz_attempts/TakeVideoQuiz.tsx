@@ -61,7 +61,7 @@ export default function TakeVideoQuiz() {
 
  
         const quizAttempt = useRef<QuizAttemptProps | null>(null);
-        const myQuiz = useRef<PartialQuizProps | undefined>(undefined);
+        //const myQuiz = useRef<PartialQuizProps | undefined>(undefined);
 
         const [segmentStartTime, setSegmentStartTime] = useState<string>("0:00")
         const [segmentEndTime, setSegmentEndTime] = useState<string>("0:00")
@@ -81,8 +81,8 @@ export default function TakeVideoQuiz() {
         //console.log("quiz data ****** in TakeQuiz=", quiz)
         useEffect(() => {
             if (quiz) {
-                myQuiz.current = { ...quiz, id: quiz.id.toString() }
-                console.log("New VIDEO quiz data received:", quiz);
+                
+                //console.log("New VIDEO quiz data received:", quiz);
                 // video_segments is an array, hence its index starts at 0
                 // while currentSegmentNumber starts at 1, so we need to subtract 1
                 setSegmentStartTime(quiz.video_segments && quiz.video_segments.length > 0 ? quiz.video_segments[currentSegmentNumber.current-1].start_time : "0:00")
@@ -92,7 +92,7 @@ export default function TakeVideoQuiz() {
                 setVideoSegments(quiz.video_segments ?? [])
                 // use fetch utility to create a new quiz attempt on the server
                 const url = `${rootpath}/api/quiz_attempts/create/${quiz.id}/${user.id}`;
-                console.log("fetch quiz attempt directly from TakeVideoQuiz, url=", url)
+               // console.log("fetch quiz attempt directly from TakeVideoQuiz, url=", url)
                 fetch(url, {
                     method: 'GET',
                     headers: {
@@ -107,7 +107,7 @@ export default function TakeVideoQuiz() {
                 }
                 )
                 .then(data => { 
-                    console.log(" *********** quiz attempt create ", data.quiz_attempt)
+                    //console.log(" *********** quiz attempt create ", data.quiz_attempt)
                     //setQuizAttempt(data.quiz_attempt)
                     quizAttempt.current = data.quiz_attempt
                     setEndOfQuiz(false) // make sure to reset end of quiz
@@ -119,23 +119,10 @@ export default function TakeVideoQuiz() {
         }, [quiz])
 
 
-
-/*
-{
-    "id": 15,
-    "duration": 10000,
-    "segment_number": 1,
-    "question_numbers": "1,2",
-    "start_time": "0:00",
-    "end_time": "0:25",
-    "quizId": 310
-}
-*/
-
 const get_next_question = async () => {
    
-    console.log(" get_next_question ENTRY,  number of questions taken so far =", numQuestionsTaken.current)
-    console.log("  get_next_question ENTRY, current videoSegment question numbers: ", videoSegments[currentSegmentNumber.current-1].question_numbers)
+    //console.log(" get_next_question ENTRY,  number of questions taken so far =", numQuestionsTaken.current)
+    //console.log("  get_next_question ENTRY, current videoSegment question numbers: ", videoSegments[currentSegmentNumber.current-1].question_numbers)
     const num_questions_in_segment = videoSegments[currentSegmentNumber.current-1].question_numbers.split(",").length
     setShowNextButton(false)
     setShowQuestion(false)
@@ -143,11 +130,11 @@ const get_next_question = async () => {
  
     currren_question_number.current = currren_question_number.current + 1  // increment the question number within a segment
     if (numQuestionsTaken.current === num_questions_in_segment) {
-         console.log("we have reached the end of the current segment")
+         //console.log("we have reached the end of the current segment")
          numQuestionsTaken.current = 0  // reset the number of questions taken so far within the segment
          // is this the last segment?
             if (currentSegmentNumber.current === videoSegments.length) {
-                console.log("we have reached the end of the quiz")
+                //console.log("we have reached the end of the quiz")
                 // use fetch utility to update quiz_attempt status on the server
                 fetch(`${rootpath}/api/quiz_attempts/${quizAttempt.current?.id.toString()}/mark_as_completed`, {
                     method: 'PUT',
@@ -162,13 +149,13 @@ const get_next_question = async () => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
-                    console.log("Quiz marked as completed on the server")
+                    //console.log("Quiz marked as completed on the server")
                     //return response.json();
                     setEndOfQuiz(true)
                 })
             }
             else {
-                console.log("Play the next segment")
+                //console.log("Play the next segment")
                 currentSegmentNumber.current = currentSegmentNumber.current + 1
                 const segment_start_time = videoSegments && videoSegments.length >= currentSegmentNumber.current ? videoSegments[currentSegmentNumber.current-1].start_time : "0:00"
                 const segment_end_time = videoSegments && videoSegments.length >= currentSegmentNumber.current ? videoSegments[currentSegmentNumber.current-1].end_time : "0:00"
@@ -187,7 +174,7 @@ const get_next_question = async () => {
         }
         )
         .then(data => {
-            console.log(" Next questionAttemptData = ", data)
+            //console.log(" Next questionAttemptData = ", data)
             setQuestion(data.question)
             setQuestionAttemptId(String(data.question_attempt_id))
             setShowNextButton(false)
@@ -200,12 +187,17 @@ const get_next_question = async () => {
 }
 
 const handleVideoSegmentPlayingEnd = useCallback((segmentIndex: number) => {
-    console.log("Video Segment ended, get  question of the segment segment index=", segmentIndex);
+    //console.log("Video Segment ended, get  question of the segment segment index=", segmentIndex);
 
-   console.log("HEEEEEE quiz attempt = ", quizAttempt)
+    if (!quiz) {
+        console.log("quiz is undefined, return")
+        return
+    }
+
+   //console.log("HEEEEEE quiz attempt = ", quizAttempt)
    // const url = `${rootpath}/api/quiz_attempts/${quiz_attempt_id}/create_video_question_attempt/${quiz_id}/${question_number}`;
    const url = `${rootpath}/api/quiz_attempts/${quizAttempt.current?.id}/create_video_question_attempt/${quiz?.id?.toString() ?? ""}/${currren_question_number.current}`;
-   console.log("fetch next question attempt directly from TakeVideoQuiz, url=", url)
+   //console.log("fetch next question attempt directly from TakeVideoQuiz, url=", url)
    fetch(url)
    .then(response => {
        if (!response.ok) {
@@ -215,7 +207,7 @@ const handleVideoSegmentPlayingEnd = useCallback((segmentIndex: number) => {
    }
    )
    .then(data => {
-       console.log(" &&&)((((((%%%%%% Next questionAttemptData = ", data)
+       //console.log(" &&&)((((((%%%%%% Next questionAttemptData = ", data)
        setQuestion(data.question)
        setQuestionAttemptId(String(data.question_attempt_id))
        setShowNextButton(false)
@@ -223,7 +215,7 @@ const handleVideoSegmentPlayingEnd = useCallback((segmentIndex: number) => {
        setShowQuestion(true)
    }
    )
-}, []);
+}, [quiz, rootpath]);
 
     const mutation = useMutation({
         mutationFn: ({  user_answer, score, error_flag }: { user_answer: string, score: string | undefined, error_flag: boolean | undefined  }) =>
@@ -240,7 +232,7 @@ const handleVideoSegmentPlayingEnd = useCallback((segmentIndex: number) => {
 
 
    const handleSubmit: MouseEventHandler<HTMLButtonElement> = (event) => {
-        console.log("in TakeQuiz..... handleSubmit ")
+       // console.log("in TakeQuiz..... handleSubmit ")
        
         const button_el = event.target as HTMLButtonElement    
         //button_el.disabled = true
