@@ -1,7 +1,7 @@
 import { MouseEventHandler, ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useAxiosFetch } from "../../hooks";
-import YoutubeVideoPlayerNew, { YouTubePlayerRef } from "../shared/YoutubeVideoPlayer";
+
+import { YouTubePlayerRef } from "../shared/YoutubeVideoPlayer";
 import { useQuestionAttempt } from "../../hooks/useQuestionAttempt";
 import { useQuizAttempt } from "../../hooks/useQuizAttempt";
 import { useAppSelector } from "../../redux/store";
@@ -23,18 +23,17 @@ import { processQuestion } from "../live/processQuestion";
 import { updateQuestionAttempt } from "../api/updateQuestionAttempt";
 import { useMutation } from "@tanstack/react-query";
 import { useQuiz } from "../../hooks/useQuiz";
-import { QueryClient , QueryClientProvider} from '@tanstack/react-query'
-import { VideoSegmentProps } from "./types";
 
 
 export default function TakeQuiz() {
     
-    const params = useParams<{ sub_category_name: string, quizId: string,  }>();
+    const params = useParams<{ subCagegoryId: string, quizId: string,  }>();
     //console.log("params in TakeQuiz=", params)
     const user = useAppSelector(state => state.user.value)
-    
-
-   const youTubeVideoRef  = useRef<YouTubePlayerRef>(null);
+    if (!user) {
+        alert("User is not logged in. Please log in to continue.");
+        return null; // Prevent further rendering of the component
+    }
 
         const [nextQuestionEnabled, setNextQuestionEnabled] = useState(false)
 

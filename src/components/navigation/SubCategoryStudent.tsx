@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAxiosFetch } from '../../hooks';
 import { TakeQuizButton } from '../shared/TakeQuizButton';
 import { QuizAttemptProps, QuizProps } from '../quiz_attempts/types';
+import { useAppSelector } from '../../redux/store';
 //import { useEffect } from 'react';
 
 type SubCategory = {
@@ -29,26 +30,46 @@ export default function SubCategoryPageStudent(props:any) {
     const { data: sub_category, loading: sub_loading, error: sub_error } = useAxiosFetch<SubCategory>({ url: `/sub_categories/${params.sub_categoryId}`, method: 'get' });
     const navigate = useNavigate()
 
-    //useEffect(() => {
-      //  console.log("HERE sub cat", sub_category)
-   // }, [sub_category])
+     const user = useAppSelector(state => state.user.value)
+        if (!user) {
+            alert("SubCategorStudent: User is not logged in. Please log in to continue.");
+            return null; // Prevent further rendering of the component
+        }
 
 //https://www.tienganhtuyhoa.com/categories/4/sub_categories_student/9
+//  <Route path="sub_categories/:sub_category_name/take_quiz/:quizId" element={<TakeQuiz />} />
     const take_quiz = (quiz: QuizProps) => {
         if (sub_category) {
             //const api_url = `/sub_categories/${sub_category.name}/quizzes/${quiz_id}`
             //"sub_categories/:sub_category_name/take_quiz/:quizId" element={<TakeQuiz />} />
             if (quiz.video_url === null) {
-                const api_url = `/sub_categories/${sub_category.name}/take_quiz/${quiz.id}`
+                const api_url = `/sub_categories/${sub_category.id}/take_quiz/${quiz.id}`
                 navigate(api_url)
             }
             else {
-                console.log("******* video quiz")
-                const api_url = `/sub_categories/${sub_category.name}/take_video_quiz/${quiz.id}`
+                //console.log("******* video quiz")
+                const api_url = `/sub_categories/${sub_category.id}/take_video_quiz/${quiz.id}`
                 navigate(api_url)
-           
             }
            
+        }
+    }
+
+    const assign = (quiz: QuizProps) => {
+        //console.log("Assign quiz to students - not implemented yet")
+        if (sub_category) {
+            //const api_url = `/sub_categories/${sub_category.name}/quizzes/${quiz_id}`
+            //"sub_categories/:sub_category_name/take_quiz/:quizId" element={<TakeQuiz />} />
+            let api_url = null
+            if (quiz.video_url === null) {
+                 api_url = `/sub_categories/${sub_category.id}/take_quiz/${quiz.id}`
+            }
+            else {
+                //console.log("******* video quiz")
+                 api_url = `/sub_categories/${sub_category.id}/take_video_quiz/${quiz.id}`
+               
+            }
+            alert(`Assign url = ${api_url} quiz name=${quiz.name}`)
         }
     }
 
@@ -67,7 +88,10 @@ export default function SubCategoryPageStudent(props:any) {
                                         <div className='text-sm my-1'>{quiz.quiz_number}</div>
                                         <div>
                                             <button className=' px-2 rounded-md hover:underline bg-bgColor2 text-textColor2' onClick={() => take_quiz(quiz)}>{quiz.name}</button>
-                                        </div>
+                                            {  user.role === 'teacher' &&
+                                            <button className=' px-2 rounded-md hover:underline bg-bgColor2 text-textColor2' onClick={() => assign(quiz)}>ASSIGN</button>
+                                            }
+                                            </div>
                                     </div>
                                 )}
                             </div>

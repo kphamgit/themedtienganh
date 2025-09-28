@@ -99,8 +99,8 @@ function App() {
                   <Route path="/games" element={<Games />} />
                   <Route path="sub_categories_student/:sub_categoryId" element={<SubCategoryPageStudent />} />
                  
-                  <Route path="sub_categories/:sub_category_name/take_quiz/:quizId" element={<TakeQuiz />} />
-                  <Route path="sub_categories/:sub_category_name/take_video_quiz/:quizId" element={<TakeVideoQuiz />} />
+                  <Route path="sub_categories/:subCagegoryId/take_quiz/:quizId" element={<TakeQuiz />} />
+                  <Route path="sub_categories/:subCagegoryId/take_video_quiz/:quizId" element={<TakeVideoQuiz />} />
                   <Route path="/live_text" element={<LiveText />} />
                   <Route path="/simple_peer" element={<SimplePeer />} />
                   <Route path="/live_quiz" element={<LiveQuiz />} >

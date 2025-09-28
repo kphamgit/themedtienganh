@@ -1,7 +1,7 @@
 import {configureStore} from "@reduxjs/toolkit"
 import { UserSlice } from "./current_user"
 import { RootPathSlice } from "./rootpath";
-
+import { AssignmentSlice } from "./assignments";
 
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import storage from 'redux-persist/lib/storage';
@@ -15,13 +15,13 @@ const persistConfig = {
   }
 
 const persistedUserReducer = persistReducer(persistConfig, UserSlice.reducer)
+const persistedAssignmentReducer = persistReducer(persistConfig, AssignmentSlice.reducer)
 const persistedRootPathReducer = persistReducer(persistConfig, RootPathSlice.reducer)
-
-
 
 export const store = configureStore({
     reducer: {
         user: persistedUserReducer,
+        assignments: persistedAssignmentReducer,
         rootpath: persistedRootPathReducer,
 
     },

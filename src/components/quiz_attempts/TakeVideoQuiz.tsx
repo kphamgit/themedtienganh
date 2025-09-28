@@ -25,12 +25,12 @@ import { useMutation } from "@tanstack/react-query";
 import { useQuiz } from "../../hooks/useQuiz";
 import { QueryClient } from '@tanstack/react-query'
 import { VideoSegmentProps } from "./types";
-import { useVideoQuestionAttempt } from "../../hooks/useVideoQuestionAttempt";
+
 
 
 export default function TakeVideoQuiz() {
     
-    const params = useParams<{ sub_category_name: string, quizId: string,  }>();
+    const params = useParams<{ subCagegoryId: string, quizId: string,  }>();
     //console.log("params in TakeQuiz=", params)
 
    // const [quizAttempt, setQuizAttempt] = useState<QuizAttemptProps | null>(null);
@@ -59,7 +59,7 @@ export default function TakeVideoQuiz() {
 
         const queryClient = new QueryClient()
 
-        //const [quizAttempt, setQuizAttempt] = useState<QuizAttemptProps | null>(null);
+ 
         const quizAttempt = useRef<QuizAttemptProps | null>(null);
         const myQuiz = useRef<PartialQuizProps | undefined>(undefined);
 
@@ -319,7 +319,7 @@ const handleVideoSegmentPlayingEnd = useCallback((segmentIndex: number) => {
                             <ButtonSelectCloze 
                             content={question.content} 
                             choices={question.button_cloze_options} 
-                            parentFuncEnableSubmitButton={(enableSubmmitButton)}
+                            
                             ref={childRef} />
                         ) : question?.format === 3 ? (
                             <ButtonSelect content={question.content} ref={childRef} />

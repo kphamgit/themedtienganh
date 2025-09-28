@@ -1,30 +1,65 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import TeacherControl from "./TeacherControl";
+import { useAppSelector } from "../../redux/store";
+import { AssignmentProps } from "../../redux/assignments";
 
 
 export default function HomePage() {
     //const params = useParams<{ role: string }>();
     const params = useParams<{role: string}>()
-
+    const assignments : AssignmentProps[] = useAppSelector(state => state.assignments.value)
     
+    const displayAssignments = () => {
+        if (assignments.length === 0) {
+            return <div className="m-5 p-5">No assignments</div>;
+        } else {  
+            return (
+                <div>
+                    {
+                        assignments.map((assignment) => (
+                            <div key={assignment.assignment_number} className="m-2 p-2 border rounded-md bg-bgColor2 text-textColor2">
+                                {assignment.assignment_number}.
+                                <Link to={assignment.quiz_link} className="m-4 p-4 text-blue hover:underline">
+                                    {assignment.quiz_name}
+                                </Link>
+                            </div>
+                        ))
+                    }
+                </div>
+            );
+        }
+    };
+
     return (
         <>
-            {params.role === 'teacher' ?
-                <TeacherControl />
+            {params.role === 'teacher' 
+                ?
+                    <TeacherControl />
                 :
-                (
-                  <>
-                <div className="flex flex-row bg-bgColor4 text-textColor4 justify-center text-4xl h-screen">
-                     Home 
+                <div className="grid grid-row bg-bgColor4 text-textColor4 justify-center text-lg">
+                     <div className=" m-5">Homework:</div>
+                     {displayAssignments()}
                   
-                </div>
-            
-               </>
-                )
+                </div>      
               }
         </>
     )
 }
+
+/*
+    {
+                        assignments.length > 0 &&
+                        assignments.map( (assignment) => (
+                            <div key={assignment.assignment_number} className="m-2 p-2 border rounded-md bg-bgColor2 text-textColor2">
+                               {assignment.assignment_number}.
+                                <Link to={assignment.quiz_link} className="m-4 p-4 text-blue  hover:underline">
+                                  {assignment.quiz_name}
+                                </Link>
+                            </div>
+                        ) )
+                     }
+*/
+
 
 // <DndClickDrop />
 /*

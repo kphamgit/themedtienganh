@@ -26,6 +26,7 @@ import LiveAudioRecorder from '../shared/LiveAudioRecorder'
 
 export default function MainStudent(props: any ) {
     const user = useAppSelector(state => state.user.value)
+    
     const [showLiveRecording, setShowLiveRecording] = useState(false)
     const { toggleTheme } = useContext(ThemeContext) as ThemeContextInterface;
 
@@ -42,6 +43,9 @@ export default function MainStudent(props: any ) {
         </select>
     */
 
+    //if (assignments) {
+    //  console.log("MainStudent, assignments=", assignments)
+   // }
     //const {socket, user_name, users} = useContext(SocketContext).SocketState;
     const {socket, user_name, users} = useSocketContext()
 
