@@ -19,4 +19,6 @@ import { store } from "../../redux/store";
    const quiz_attempt_id = req.params.id
       const quiz_id = req.params.quiz_id
       const question_number = req.params.question_number
+t("/:id/create_video_question_attempt/:quiz_id/:question_number", q
+
   */

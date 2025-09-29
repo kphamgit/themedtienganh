@@ -3,17 +3,16 @@ import ReactPlayer from 'react-player'
 import { useLocation } from 'react-router-dom';
 
 import './MyReactPlayer.css';
-import { VideoSegmentProps } from '../quiz_attempts/types';
 
-export type YouTubePlayerRef = {
-  playSegment: (start_time: string, end_time: string) => void;
-}
+    export type YouTubePlayerRef = {
+      playSegment: (segment_number: number, start_time: string, end_time: string) => void;
+    }
 
-type YouTubePlayerProps = {
-    video_url: string;
-    parentCallback?: () => void;
-   
-};
+    type YouTubePlayerProps = {
+        video_url: string;
+        parent_playingEnds?: (active_segment_number: number) => void;
+      
+    };
 
     //const [videoUrl, setVideoUrl] = useState('')
     const YoutubeVideoPlayer = React.memo(
@@ -22,6 +21,7 @@ type YouTubePlayerProps = {
 
     const stopCount = useRef(0);
 
+    const [activeSegmentNumber, setActiveSegmentNumber] = useState<number | null>(null); // starting from 0, 1, ....
     const playerRef = useRef<ReactPlayer>(null);
 
     const endTime = useRef<string | null>(null);
@@ -36,19 +36,22 @@ type YouTubePlayerProps = {
       return (minutes * 60 + seconds); // Calculate total seconds
     };
     
-const handleProgress = (state: { played: number; playedSeconds: number; loaded: number; loadedSeconds: number }) => {
-  const millisecondsPlayed = Math.floor(state.playedSeconds * 1000);
-  if (endTime.current && millisecondsPlayed >= convertToMiliSeconds(endTime.current)) {
-    setPlaying(false);
-    stopCount.current += 1;
-    console.log("Playing stopped,");
-    props.parentCallback && props.parentCallback();
-  }
-};
+    const handleProgress = (state: { played: number; playedSeconds: number; loaded: number; loadedSeconds: number }) => {
+      const millisecondsPlayed = Math.floor(state.playedSeconds * 1000);
+      if (endTime.current && millisecondsPlayed >= convertToMiliSeconds(endTime.current)) {
+        setPlaying(false);
+        stopCount.current += 1;
+        console.log("Playing stopped,");
+        if (activeSegmentNumber !== null) {
+          props.parent_playingEnds && props.parent_playingEnds(activeSegmentNumber);
+        }
+      }
+    };
 
      
      useImperativeHandle(ref, () => ({
-        playSegment(start_time: string, end_time: string) {
+        playSegment(segment_number: number, start_time: string, end_time: string) {
+          setActiveSegmentNumber(segment_number);
           endTime.current = end_time;
           seekToTime(convertToSeconds(start_time));
           setPlaying(true);
@@ -77,7 +80,7 @@ const handleProgress = (state: { played: number; playedSeconds: number; loaded: 
     <>
     
     <div className='flex justify-items-start bg-cyan-300'>
-      
+      <h2>in YoutubePlayer, currently playing segment number: {activeSegmentNumber}</h2>
     <div className='flex flex-col'>
       <div className='w-3/4'>
         <div className="player-wrapper">

@@ -15,17 +15,15 @@ export interface VideoSegmentPlayerRefProps {
 
 interface VideoSegmentPlayerProps {
   segment: VideoSegmentProps;
-  parent_playSegment: (segment_index: number) => void;
+  parent_playSegment: (segment_number: number) => void;
+ 
 }
 
 export const VideoSegmentPlayer = forwardRef<VideoSegmentPlayerRefProps, VideoSegmentPlayerProps>(
-    ({ segment, parent_playSegment: parentCallback }, ref) => {
-      // Internal state or logic
-     
-      
-      const [questionsTakenStatus, setQuestionsTakenStatus] = useState<QuestionStatusProps[]>()
- 
+    ({ segment, parent_playSegment }, ref) => {
 
+      const [questionsTakenStatus, setQuestionsTakenStatus] = useState<QuestionStatusProps[]>()
+     
       useEffect(() => {
         const initialStatus = segment.question_numbers.split(',').map(num => ({
           question_number: parseInt(num.trim(), 10),
@@ -58,11 +56,18 @@ export const VideoSegmentPlayer = forwardRef<VideoSegmentPlayerRefProps, VideoSe
 
     return (
         <div>
-            Video Segment Placeholder
+            Video Segment 
             {segment.segment_number} - {segment.start_time} - {segment.end_time}
             {JSON.stringify(questionsTakenStatus)}
             <div>
-                <button onClick={() => parentCallback && parentCallback(segment.segment_number)}>Notify Parent</button>
+                <button onClick={() => {
+                    if (parent_playSegment) {
+                        parent_playSegment(segment.segment_number); // zero-based number
+                    }
+                }
+                }>
+                    Play Video Segment
+                </button>
             </div>
         </div>
     )
