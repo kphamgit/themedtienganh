@@ -91,7 +91,16 @@ import './MyReactPlayer.css';
           />
         </div>
       </div>
-      <div className='flex flex-row justify-start gap-2 mt-3 mb-5'>
+    
+    </div>
+    </div>
+    </>
+    );
+  })
+);
+
+/*
+  <div className='flex flex-row justify-start gap-2 mt-3 mb-5'>
           <div className='text-textColor1'>
           <button className='bg-amber-500 p-1 rounded-md' onClick={handlePlayPause}>
           {playing ? 'Pause' : 'Play'}
@@ -104,12 +113,7 @@ import './MyReactPlayer.css';
           <button className='bg-cyan-400 p-1 rounded-md' onClick={seekBackward}>Backward</button>
           </div>
       </div>
-    </div>
-    </div>
-    </>
-    );
-  })
-);
+*/
 
 export default YoutubeVideoPlayer;
 /*

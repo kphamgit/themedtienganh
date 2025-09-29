@@ -150,6 +150,8 @@ const get_next_question = async () => {
                 // play the next segment
                 const start_time = videoSegments[nextSegmentIndex]?.start_time
                 const end_time = videoSegments[nextSegmentIndex]?.end_time
+                // disable next question
+                setShowNextButton(false)
                 youTubeVideoRef.current?.playSegment(start_time, end_time);
             } else {
                 console.log("No more video segments to play. Quiz has ended.");
@@ -190,25 +192,22 @@ const get_next_question = async () => {
 
 const handleYoutubePlayingEnds = useCallback(() => {
     //console.log("handleYoutubePlayingEnds: active_segment_number sent from YoutubeVideoPlayer = ", active_segment_number)
-    console.log("handleYoutubePlayingEnds: activeSegmentNumber in TakeVideoQuiz = ", activeSegmentNumber)
+    //console.log("handleYoutubePlayingEnds: activeSegmentNumber in TakeVideoQuiz = ", activeSegmentNumber)
     //console.log(" *************** Segment: ", activeSegmentNumber , " playing ended.")
     // get next question number for the current segment
-  
-    const next_question_number = activeSegmentNumber !== undefined 
+    // normally this would be the first question in the segment
+    // but here we get the first question (within the questions of the active segment in case
+    // the user has already answered some questions in this segment and rewatched the segment
+    const show_question = () => {
+        const next_question_number = activeSegmentNumber !== undefined 
         ? videoSegmentRefs.current[activeSegmentNumber]?.current?.getNextQuestionNumber() 
         : undefined;
-
-    // normally this would be the first question in the segment
-    // unless the user has already answered some questions in this segment and rewatched the segment
-    // will take care of this later
      
     if (next_question_number === undefined) {
         console.log("next_question_number is undefined, return")
         return
     }
-
-    console.log(" handleYoutubePlayingEnd, next_question_number = ", next_question_number)
-   
+  
     if (!quiz) {
         console.log("quiz is undefined, return")
         return
@@ -233,6 +232,12 @@ const handleYoutubePlayingEnds = useCallback(() => {
        setShowQuestion(true)
    }
    )
+    }
+    //show_question()
+    const timer = setTimeout(() => {
+        show_question()
+    }
+    , 1200); // show question after 1 second
    
 },[rootpath, quiz, quizAttempt, activeSegmentNumber]);
 //}, [quiz, rootpath]);
@@ -249,8 +254,8 @@ const handleYoutubePlayingEnds = useCallback(() => {
             const currentVideoSegmentRef = videoSegmentRefs.current[activeSegmentNumber ?? 0];
             currentVideoSegmentRef.current?.updateQuestionsTakenStatus(question?.question_number ?? 0, 'taken');
 
-            //setQuestionAttemptResponse(response)
-            // update currentSegmentQuestionStatus
+            setQuestionAttemptResponse(response)
+           
         }
       })
 
@@ -299,7 +304,9 @@ const handleYoutubePlayingEnds = useCallback(() => {
                 console.log("TakeVideoQuiz: play_a_video_segment called, segment number = ", segment_number)
                 if (showQuestion) {
                     setShowQuestion(false)
+                    setShowSubmitButton(false)
                 }
+                setShowNextButton(false)
                 const start_time = videoSegments[segment_number]?.start_time
                 const end_time = videoSegments[segment_number]?.end_time
                 console.log("TakeVideoQuiz: set segment number to: ", segment_number)
@@ -307,32 +314,91 @@ const handleYoutubePlayingEnds = useCallback(() => {
                 youTubeVideoRef.current?.playSegment( start_time, end_time);
            }
 
+    const displayQuestion = () => {
+            if (question?.format === 1) {  //word scramble
+                return (
+                    <div>
+                     <DynamicWordInputs content={question.content} ref={childRef} />
+                    </div>
+                )
+            }
+            if (question?.format === 2) {  //button cloze
+                return (
+                    <div>
+                     <ButtonSelectCloze content={question.content} choices={question.button_cloze_options}  ref={childRef} />
+                    </div>
+                )
+            }
+            if (question?.format === 3) {  //button select
+                return (
+                    <div>
+                     <ButtonSelect content={question.content} ref={childRef} />
+                    </div>
+                )   
+            }
+            if (question?.format === 4) {  //radio
+                return (
+                    <div>
+                     <RadioQuestion content={question.content} ref={childRef} />
+                    </div>
+                )   
+            }
+            if (question?.format === 5) {  //checkbox
+                return (
+                    <div>
+                     <CheckboxQuestion content={question.content} ref={childRef} />
+                    </div>
+                )   
+            }
+            if (question?.format === 6) {  //drag and drop
+                return (
+                    <div>
+                     <DragDrop content={question.content} ref={childRef} />
+                    </div>
+                )   
+            }
+            if (question?.format === 7) {  //speech recognition continuous
+                return (
+                    <div>
+                     <SRContinuous content={question.content} ref={childRef} />
+                    </div>
+                )   
+            }
+            if (question?.format === 8) {  //words select
+                return (
+                    <div>
+                     <WordsSelect content={question.content} ref={childRef} />
+                    </div>
+                )   
+            }
+            if (question?.format === 10) {  //dropdown
+                return (
+                    <div>
+                     <DropDowns content={question.content} ref={childRef} />
+                    </div>
+                )   
+            }
+            if (question?.format === 11) {  //dynamic letter inputs
+                return (
+                    <div>
+                     <DynamicLetterInputs content={question.content} ref={childRef} />
+                    </div>
+                )   
+            }
+            return (<div>UNKNOW question format</div>)
+        }
   
 
     return (
-        <div className='flex flex-col items-center bg-green-800'>
-          
-         
+        <div className='flex flex-row items-center bg-gray-100 mx-16'> 
+        <div className='flex flex-col  bg-gray-200'>
             <h1>Current Playing Segment: {activeSegmentNumber}</h1>
-               
-        
-            <div><YoutubeVideoPlayer
+            <div>
+                <YoutubeVideoPlayer
                 ref={youTubeVideoRef}
                 video_url={quiz?.video_url || ""} 
                 parent_playingEnds={handleYoutubePlayingEnds}
-                />
-                { videoSegments.length > 0 && 
-                    videoSegments.map((segment, index) => (
-                       
-                            <VideoSegmentPlayer 
-                                ref={videoSegmentRefs.current[index]} // Assign the ref
-                                segment={segment} 
-                                isActive={index === activeSegmentNumber}
-                                parent_playSegment={() => play_a_video_segment(segment.segment_number)}
-                            />
-                       
-                    ))
-                }
+                /> 
                 { !videoStarted &&
                 <button className="m-2 p-2 bg-amber-500 rounded-md"
                 onClick={() => { 
@@ -343,12 +409,23 @@ const handleYoutubePlayingEnds = useCallback(() => {
                 }>Start video</button>
                 }
             </div>
-        
-        {showQuestion ?
-                <div className='flex flex-col items-center bg-red-600'>
-                   
-                   
-                    <div className='flex flex-row justify-start items-center w-full mx-10 bg-cyan-200 px-20 py-1  rounded-md'>
+            <div>
+            { (videoSegments.length > 0) && 
+                    videoSegments.map((segment, index) => (
+                            <VideoSegmentPlayer 
+                                ref={videoSegmentRefs.current[index]} // Assign the ref
+                                segment={segment} 
+                                isActive={index === activeSegmentNumber}
+                                parent_playSegment={() => play_a_video_segment(segment.segment_number)}
+                                showQuestion = {showQuestion}
+                            />
+                       
+                    ))
+                }
+            </div>
+        {showQuestion &&
+                <div className='flex flex-col items-center bg-gray-300'>
+                    <div className='flex flex-row justify-start items-center  mx-10 bg-cyan-200 px-20 py-1  rounded-md'>
                     <div className='mb-2'>Question: {question?.question_number}</div>
                     </div>
                     <div className='text-textColor2 m-2' dangerouslySetInnerHTML={{ __html: question?.instruction ?? '' }}></div>
@@ -361,50 +438,15 @@ const handleYoutubePlayingEnds = useCallback(() => {
                             <audio src={question.audio_src} controls />
                         }
                     </div>
-                    <div className='bg-cyan-200 flex flex-colrounded-md justify-center'>
-                        {question?.format === 1 ? (
-                            <DynamicWordInputs content={question.content} ref={childRef} />
-                        ) : question?.format === 2 ? (
-                            <ButtonSelectCloze 
-                            content={question.content} 
-                            choices={question.button_cloze_options} 
-                            
-                            ref={childRef} />
-                        ) : question?.format === 3 ? (
-                            <ButtonSelect content={question.content} ref={childRef} />
-                        ) : question?.format === 4 ? (
-                            <RadioQuestion content={question.content} ref={childRef} />
-                        ) : question?.format === 5 ? (
-                            <CheckboxQuestion content={question.content} ref={childRef} />
-                        ) : question?.format === 6 ? (
-                            <DragDrop content={question.content} ref={childRef} />
-                        ) : question?.format === 7 ? (
-                            <SRContinuous content={question.content} ref={childRef} />
-                        ) : question?.format === 8 ? (
-                            <WordsSelect content={question.content} ref={childRef} />
-                        ) : question?.format === 10 ? (
-                            <DropDowns content={question.content} ref={childRef} />
-                        ) : question?.format === 11 ? (
-                            <DynamicLetterInputs content={question.content} ref={childRef} />
-                        ) : (
-                            null
-                        )}
-
+                    <div className='bg-cyan-200 flex flex-col rounded-md justify-center'>
+                    {displayQuestion()}
                     </div>
                 </div>
-                :
-                questionAttemptResponse &&
-                <div className='flex flex-col justify-center items-center'><QuestionAttemptResults
-                    live_flag={false}
-                    question={question}
-                    response={questionAttemptResponse} />
-                    </div>
             }
-
 
             <div className='flex flex-col items-center justify-center m-4'>
                 {showNextButton &&
-                    <button className='bg-green-500 p-2 mt-2 rounded-md' onClick={() => {
+                    <button className='bg-red-500 p-2 mt-2 rounded-md' onClick={() => {
                         get_next_question()
                     }}>Next</button>
                 }
@@ -415,10 +457,27 @@ const handleYoutubePlayingEnds = useCallback(() => {
                     onClick={(e) => handleSubmit(e)}>Submit</button>
                 }
             </div>
-          
-        
-
+        </div>
+        <div className='w-1/4'>
+                { questionAttemptResponse &&
+                <div className='flex flex-col justify-center items-center'><QuestionAttemptResults
+                    live_flag={false}
+                    question={question}
+                    response={questionAttemptResponse} />
+                    </div>
+                }
+            </div>
         </div>
     )
 
 }
+
+/*
+  :
+                questionAttemptResponse &&
+                <div className='flex flex-col justify-center items-center'><QuestionAttemptResults
+                    live_flag={false}
+                    question={question}
+                    response={questionAttemptResponse} />
+                    </div>
+*/

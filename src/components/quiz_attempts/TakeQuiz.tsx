@@ -263,12 +263,11 @@ const get_next_question = async () => {
                             <audio src={question.audio_src} controls />
                         }
                     </div>
-                    <div className='bg-cyan-200 flex flex-colrounded-md justify-center'>
+                    <div className='bg-cyan-200 flex flex-col rounded-md justify-center'>
                         {displayQuestion()}
                     </div>
                 </div>
                 }
-
                 <div className='flex flex-col items-center justify-center m-4'>
                     {showNextButton &&
                     <button className='bg-green-500 p-2 mt-2 rounded-md' onClick={() => {

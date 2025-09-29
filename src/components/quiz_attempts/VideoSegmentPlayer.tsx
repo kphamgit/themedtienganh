@@ -17,10 +17,11 @@ interface VideoSegmentPlayerProps {
   segment: VideoSegmentProps;
   parent_playSegment: (segment_number: number) => void;
   isActive: boolean; // Optional prop to indicate if this segment is active
+  showQuestion: boolean;
 }
 
 export const VideoSegmentPlayer = forwardRef<VideoSegmentPlayerRefProps, VideoSegmentPlayerProps>(
-    ({ segment, isActive, parent_playSegment }, ref) => {
+    ({ segment, isActive, parent_playSegment, showQuestion }, ref) => {
 
       const [questionsTakenStatus, setQuestionsTakenStatus] = useState<QuestionStatusProps[]>()
       const [allQuestionsTaken, setAllQuestionsTaken] = useState(false)
@@ -64,15 +65,36 @@ export const VideoSegmentPlayer = forwardRef<VideoSegmentPlayerRefProps, VideoSe
         }
       }));
 
-      if (allQuestionsTaken || !isActive) {
+      // don't show replay button if all questions taken or not active or when no question to show
+      if (allQuestionsTaken || !isActive || !showQuestion) {
         return (
                null
         )
       }
 
-    return (
+   
+      return (
+        <div className="flex bg-cyan-200 p-2 m-2 rounded-md">
+            <button
+                className="bg-blue-500 text-white p-2 rounded"
+                onClick={() => {
+                    if (parent_playSegment) {
+                        parent_playSegment(segment.segment_number); // zero-based number
+                    }
+                }}
+            >
+                Play again
+            </button>
+        </div>
+    );
+    
+})
+
+/*
+ return (
         <div>
             Video Segment 
+            Show Question: {showQuestion ? 'Yes' : 'No'}
             {allQuestionsTaken && <span className="text-green-500 font-bold"> (All Questions Taken)</span>}
             <br />
             Active: {isActive ? 'Yes' : 'No'}
@@ -90,4 +112,5 @@ export const VideoSegmentPlayer = forwardRef<VideoSegmentPlayerRefProps, VideoSe
             </div>
         </div>
     )
-})
+*/
+
