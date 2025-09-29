@@ -149,7 +149,7 @@ const get_next_question = async () => {
                 // play the next segment
                 const start_time = videoSegments[nextSegmentIndex]?.start_time
                 const end_time = videoSegments[nextSegmentIndex]?.end_time
-                youTubeVideoRef.current?.playSegment(videoSegments[nextSegmentIndex]?.segment_number, start_time, end_time);
+                youTubeVideoRef.current?.playSegment(start_time, end_time);
             } else {
                 console.log("No more video segments to play. Quiz has ended.");
                 setEndOfQuiz(true)
@@ -187,24 +187,32 @@ const get_next_question = async () => {
     }
 }
 
-const handleYoutubePlayingEnds = useCallback((active_segment_number: number) => {
-    console.log(" *************** Segment: ", activeSegmentNumber , " playing ended.")
+const handleYoutubePlayingEnds = useCallback(() => {
+    //console.log("handleYoutubePlayingEnds: active_segment_number sent from YoutubeVideoPlayer = ", active_segment_number)
+    console.log("handleYoutubePlayingEnds: activeSegmentNumber in TakeVideoQuiz = ", activeSegmentNumber)
+    //console.log(" *************** Segment: ", activeSegmentNumber , " playing ended.")
     // get next question number for the current segment
   
-    const next_question_number = videoSegmentRefs.current[active_segment_number].current?.getNextQuestionNumber();
+    const next_question_number = activeSegmentNumber !== undefined 
+        ? videoSegmentRefs.current[activeSegmentNumber]?.current?.getNextQuestionNumber() 
+        : undefined;
+
     // normally this would be the first question in the segment
     // unless the user has already answered some questions in this segment and rewatched the segment
     // will take care of this later
      
-       console.log(" handleYoutubePlayingEnd, next_question_number = ", next_question_number)
-   
+    if (next_question_number === undefined) {
+        console.log("next_question_number is undefined, return")
+        return
+    }
 
+    console.log(" handleYoutubePlayingEnd, next_question_number = ", next_question_number)
+   
     if (!quiz) {
         console.log("quiz is undefined, return")
         return
     }
 
-   //const url = `${rootpath}/api/quiz_attempts/${quizAttempt.current?.id}/create_video_question_attempt/${quiz?.id?.toString() ?? ""}/${untaken_question.question_number}`;
    const url = `${rootpath}/api/quiz_attempts/${quizAttempt.current?.id}/create_video_question_attempt/${quiz?.id?.toString() ?? ""}/${next_question_number}`;
    console.log("fetch next question attempt directly from TakeVideoQuiz, url=", url)
    fetch(url)
@@ -225,7 +233,7 @@ const handleYoutubePlayingEnds = useCallback((active_segment_number: number) => 
    }
    )
    
-},[rootpath, quiz, quizAttempt]);
+},[rootpath, quiz, quizAttempt, activeSegmentNumber]);
 //}, [quiz, rootpath]);
 
     const mutation = useMutation({
@@ -286,12 +294,13 @@ const handleYoutubePlayingEnds = useCallback((active_segment_number: number) => 
 
     }
 
-           const playSegment = (segment_number: number) => {
-                console.log("playSegment called, segment index = ", segment_number)
+           const play_a_video_segment = (segment_number: number) => {
+                console.log("TakeVideoQuiz: play_a_video_segment called, segment number = ", segment_number)
                 const start_time = videoSegments[segment_number]?.start_time
                 const end_time = videoSegments[segment_number]?.end_time
+                console.log("TakeVideoQuiz: set segment number to: ", segment_number)
                 setActiveSegmentNumber(segment_number)
-                youTubeVideoRef.current?.playSegment(segment_number, start_time, end_time);
+                youTubeVideoRef.current?.playSegment( start_time, end_time);
            }
 
   
@@ -314,7 +323,7 @@ const handleYoutubePlayingEnds = useCallback((active_segment_number: number) => 
                             <VideoSegmentPlayer 
                                 ref={videoSegmentRefs.current[index]} // Assign the ref
                                 segment={segment} 
-                                parent_playSegment={playSegment}
+                                parent_playSegment={() => play_a_video_segment(segment.segment_number)}
                             />
                         </div>
                     ))
