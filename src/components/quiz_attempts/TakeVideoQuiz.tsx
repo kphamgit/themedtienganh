@@ -69,6 +69,7 @@ export default function TakeVideoQuiz() {
      
         const childRef = useRef<ChildRef>(null);
         
+        const [videoStarted, setVideoStarted] = useState(false)
 
         const queryClient = new QueryClient()
 
@@ -296,6 +297,9 @@ const handleYoutubePlayingEnds = useCallback(() => {
 
            const play_a_video_segment = (segment_number: number) => {
                 console.log("TakeVideoQuiz: play_a_video_segment called, segment number = ", segment_number)
+                if (showQuestion) {
+                    setShowQuestion(false)
+                }
                 const start_time = videoSegments[segment_number]?.start_time
                 const end_time = videoSegments[segment_number]?.end_time
                 console.log("TakeVideoQuiz: set segment number to: ", segment_number)
@@ -319,14 +323,24 @@ const handleYoutubePlayingEnds = useCallback(() => {
                 />
                 { videoSegments.length > 0 && 
                     videoSegments.map((segment, index) => (
-                        <div key={segment.id} className={`m-2 p-2 border ${index === activeSegmentNumber ? 'bg-yellow-300' : 'bg-bgColor2 text-textColor2'}`}>
+                       
                             <VideoSegmentPlayer 
                                 ref={videoSegmentRefs.current[index]} // Assign the ref
                                 segment={segment} 
+                                isActive={index === activeSegmentNumber}
                                 parent_playSegment={() => play_a_video_segment(segment.segment_number)}
                             />
-                        </div>
+                       
                     ))
+                }
+                { !videoStarted &&
+                <button className="m-2 p-2 bg-amber-500 rounded-md"
+                onClick={() => { 
+                        setVideoStarted(true)
+                        play_a_video_segment(0)
+                    
+                }
+                }>Start video</button>
                 }
             </div>
         

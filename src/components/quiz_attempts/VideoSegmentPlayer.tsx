@@ -16,13 +16,15 @@ export interface VideoSegmentPlayerRefProps {
 interface VideoSegmentPlayerProps {
   segment: VideoSegmentProps;
   parent_playSegment: (segment_number: number) => void;
- 
+  isActive: boolean; // Optional prop to indicate if this segment is active
 }
 
 export const VideoSegmentPlayer = forwardRef<VideoSegmentPlayerRefProps, VideoSegmentPlayerProps>(
-    ({ segment, parent_playSegment }, ref) => {
+    ({ segment, isActive, parent_playSegment }, ref) => {
 
       const [questionsTakenStatus, setQuestionsTakenStatus] = useState<QuestionStatusProps[]>()
+      const [allQuestionsTaken, setAllQuestionsTaken] = useState(false)
+     
      
       useEffect(() => {
         const initialStatus = segment.question_numbers.split(',').map(num => ({
@@ -32,6 +34,14 @@ export const VideoSegmentPlayer = forwardRef<VideoSegmentPlayerRefProps, VideoSe
         console.log("@@@@@@ initialStatus", initialStatus)
         setQuestionsTakenStatus(initialStatus)
       }, [segment])
+
+      useEffect(() => {
+        if (questionsTakenStatus && questionsTakenStatus.every(q => q.status === 'taken')) {
+          setAllQuestionsTaken(true);
+        } else {
+          setAllQuestionsTaken(false);  
+        }
+      }, [questionsTakenStatus])
 
       // Expose methods to the parent via the ref
       useImperativeHandle(ref, () => ({
@@ -54,9 +64,18 @@ export const VideoSegmentPlayer = forwardRef<VideoSegmentPlayerRefProps, VideoSe
         }
       }));
 
+      if (allQuestionsTaken || !isActive) {
+        return (
+               null
+        )
+      }
+
     return (
         <div>
             Video Segment 
+            {allQuestionsTaken && <span className="text-green-500 font-bold"> (All Questions Taken)</span>}
+            <br />
+            Active: {isActive ? 'Yes' : 'No'}
             {segment.segment_number} - {segment.start_time} - {segment.end_time}
             {JSON.stringify(questionsTakenStatus)}
             <div>
@@ -66,7 +85,7 @@ export const VideoSegmentPlayer = forwardRef<VideoSegmentPlayerRefProps, VideoSe
                     }
                 }
                 }>
-                    Play Video Segment
+                    Replay
                 </button>
             </div>
         </div>
