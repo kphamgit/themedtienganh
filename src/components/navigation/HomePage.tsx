@@ -38,7 +38,7 @@ export default function HomePage() {
                 :
                 <div className="grid grid-row bg-bgColor4 text-textColor4 justify-center text-lg">
                      <div className=" m-5">Homework:</div>
-                     {displayAssignments()}
+                  
                   
                 </div>      
               }

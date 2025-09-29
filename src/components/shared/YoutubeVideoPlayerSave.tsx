@@ -6,25 +6,27 @@ import './MyReactPlayer.css';
 import { VideoSegmentProps } from '../quiz_attempts/types';
 
 export type YouTubePlayerRef = {
-  playSegment: (start_time: string, end_time: string) => void;
+  playSegment: (current_segment_index: number) => void;
 }
 
 type YouTubePlayerProps = {
     video_url: string;
+    //video_segments: { startTime: string; endTime: string }[];
     parentCallback?: () => void;
-   
+    videoSegments: VideoSegmentProps[];
+    currentSegmentIndex: number;
 };
 
     //const [videoUrl, setVideoUrl] = useState('')
-    const YoutubeVideoPlayer = React.memo(
+    const YoutubeVideoPlayerSave = React.memo(
       React.forwardRef<YouTubePlayerRef, YouTubePlayerProps>(function YoutubeVideoPlayer(props, ref) {
     const [playing, setPlaying] = useState(false);
+
+    const [videoSegments, setVideoSegments] = useState<VideoSegmentProps[]>(props.videoSegments || []);
 
     const stopCount = useRef(0);
 
     const playerRef = useRef<ReactPlayer>(null);
-
-    const endTime = useRef<string | null>(null);
 
     const convertToMiliSeconds = (time: string): number => {
       const [minutes, seconds] = time.split(":").map(Number); // Split and convert to numbers
@@ -38,23 +40,43 @@ type YouTubePlayerProps = {
     
 const handleProgress = (state: { played: number; playedSeconds: number; loaded: number; loadedSeconds: number }) => {
   const millisecondsPlayed = Math.floor(state.playedSeconds * 1000);
-  if (endTime.current && millisecondsPlayed >= convertToMiliSeconds(endTime.current)) {
+  //console.log("in handleProgress, playedSeconds=", state.playedSeconds);
+  //console.log("in handleProgress, segmentEndTime=", props.videoSegment.end_time);
+ // if (props.endTime && convertToMiliSeconds(segmentEndTime.current ?? "0:00") && millisecondsPlayed >= convertToMiliSeconds(segmentEndTime.current ?? "0:00")) {
+  if (videoSegments[props.currentSegmentIndex].end_time && convertToMiliSeconds(videoSegments[props.currentSegmentIndex].end_time) && millisecondsPlayed >= convertToMiliSeconds(videoSegments[props.currentSegmentIndex].end_time)) {
+    //console.log("HERE millisecondsPlayed:", millisecondsPlayed);
+    //console.log("HERE props.endTime in milliseconds:", convertToMiliSeconds(props.endTime));
+    //console.log(" HERE in handleProgress HERE. Stop  because playedSeconds > video segment endtime");
     setPlaying(false);
     stopCount.current += 1;
-    console.log("Playing stopped,");
-    props.parentCallback && props.parentCallback();
+    //console.log("stopCount.current:", stopCount.current);
+    if (stopCount.current === 2) { // Call parentCallback only the first time
+      if (props.parentCallback) {
+        //console.log("calling parentCallback with segment index=", videoSegmentIndex.current);
+        props.parentCallback();
+      }
+    }
   }
 };
 
      
      useImperativeHandle(ref, () => ({
-        playSegment(start_time: string, end_time: string) {
-          endTime.current = end_time;
-          seekToTime(convertToSeconds(start_time));
+        playSegment(current_segment_index: number) {
+          //segmentStartTime.current = start_time;
+          console.log("********************** in playSegment, segment  = ", videoSegments);
+          console.log(
+            "XXXXXXXXXXXXXXXXXXXX in playSegment, currentSegmentIndex  = ",
+            props.currentSegmentIndex,
+          )
+          seekToTime(convertToSeconds(videoSegments[current_segment_index].start_time));
+          //segmentEndTime.current = end_time;
+          //console.log("********************** in playSegment, segment = ", props.videoSegment);
           setPlaying(true);
+          stopCount.current = 0; // reset stop count for new segment
         }
-      }));
-    
+     // }));
+    }), [props.currentSegmentIndex]);
+
       const handlePlayPause = () => {
         setPlaying(!playing);
       };
@@ -77,7 +99,9 @@ const handleProgress = (state: { played: number; playedSeconds: number; loaded: 
     <>
     
     <div className='flex justify-items-start bg-cyan-300'>
-      
+      <div className='bg-bgColor2 text-textColor2'>In YoutubePlayer, Segment number:     {videoSegments[props.currentSegmentIndex].segment_number}</div>
+      <div className='bg-bgColor2 text-textColor2'>In YoutubePlayer, Segment start_time: {videoSegments[props.currentSegmentIndex].start_time}</div>
+      <div className='bg-bgColor2 text-textColor2'>In YoutubePlayer, Segment end time:   {videoSegments[props.currentSegmentIndex].end_time}</div>
     <div className='flex flex-col'>
       <div className='w-3/4'>
         <div className="player-wrapper">
@@ -112,7 +136,7 @@ const handleProgress = (state: { played: number; playedSeconds: number; loaded: 
   })
 );
 
-export default YoutubeVideoPlayer;
+export default YoutubeVideoPlayerSave;
 /*
 {
     "id": 300,
