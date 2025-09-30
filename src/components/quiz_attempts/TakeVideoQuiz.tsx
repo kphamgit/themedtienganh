@@ -97,7 +97,7 @@ export default function TakeVideoQuiz() {
         //console.log("quiz data ****** in TakeQuiz=", quiz)
         useEffect(() => {
             if (quiz) {
-                console.log("New VIDEO quiz data received:", quiz);
+                //console.log("New VIDEO quiz data received:", quiz);
                 setFetchQuizEnabled(false) // only fetch quiz once
                 setVideoSegments(quiz.video_segments ?? [])
                 const url = `${rootpath}/api/quiz_attempts/create/${quiz.id}/${user.id}`;
@@ -115,7 +115,7 @@ export default function TakeVideoQuiz() {
                 }
                 )
                 .then(data => { 
-                    console.log(" *********** quiz attempt created = ", data.quiz_attempt)
+                    //console.log(" *********** quiz attempt created = ", data.quiz_attempt)
                     //setQuizAttempt(data.quiz_attempt)
                     quizAttempt.current = data.quiz_attempt
                     setEndOfQuiz(false) // make sure to reset end of quiz
@@ -129,7 +129,8 @@ export default function TakeVideoQuiz() {
       
 
 const get_next_question = async () => {
-    console.log(" ^^^^^^ get_next_question: active Segment = ", activeSegmentNumber)
+   // console.log(" ^^^^^^ get_next_question: active Segment = ", activeSegmentNumber)
+    setQuestionAttemptResponse(undefined) // reset previous question attempt response
     if (activeSegmentNumber === undefined) {
         console.log("currentPlayingSegmentIndex is undefined, setting to 0")
         return
@@ -140,12 +141,12 @@ const get_next_question = async () => {
     if (videoSegmentRef?.current) {
         const nextQuestionNumber = videoSegmentRef.current.getNextQuestionNumber();
         if (nextQuestionNumber === -1) { // all questions in this segment have been taken
-            console.log("All questions in this segment have been taken.");
-            console.log("Currently active segment is: ", activeSegmentNumber, " let's move on to the next segment if any");
+            //console.log("All questions in this segment have been taken.");
+            //console.log("Currently active segment is: ", activeSegmentNumber, " let's move on to the next segment if any");
             // check if there are more video segments to play
             if (activeSegmentNumber + 1 < videoSegments.length) {
                 const nextSegmentIndex = activeSegmentNumber + 1;
-                console.log("There are more video segments to play. Move to segment #", nextSegmentIndex);
+                //console.log("There are more video segments to play. Move to segment #", nextSegmentIndex);
                 setActiveSegmentNumber(nextSegmentIndex);
                 // play the next segment
                 const start_time = videoSegments[nextSegmentIndex]?.start_time
@@ -154,20 +155,35 @@ const get_next_question = async () => {
                 setShowNextButton(false)
                 youTubeVideoRef.current?.playSegment(start_time, end_time);
             } else {
-                console.log("No more video segments to play. Quiz has ended.");
+                //console.log("No more video segments to play. Quiz has ended.");
                 setEndOfQuiz(true)
+                // set quiz attempt to completed on the server
+                //mark_as_completed
+                const url = `${rootpath}/api/quiz_attempts/${quizAttempt.current?.id}/mark_as_completed`;
+                fetch(url, {
+                    method: 'PUT',
+                    headers: {  
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => {
+                    if (!response.ok) { 
+                    }
+                    return response.json();
+                })
+
                 // quiz has ended
             }
             return
         }
-        console.log(`******* get_next_question: Next question number for segment ${activeSegmentNumber} is:`, nextQuestionNumber);
+        //console.log(`******* get_next_question: Next question number for segment ${activeSegmentNumber} is:`, nextQuestionNumber);
         if (!quiz) {
             console.log("quiz is undefined, return")
             return
         }
     
        const url = `${rootpath}/api/quiz_attempts/${quizAttempt.current?.id}/create_video_question_attempt/${quiz?.id?.toString() ?? ""}/${nextQuestionNumber}`;
-       console.log("fetch next question attempt for question number ", nextQuestionNumber ,"url=", url)
+       //console.log("fetch next question attempt for question number ", nextQuestionNumber ,"url=", url)
        fetch(url)
        .then(response => {
            if (!response.ok) {
@@ -183,6 +199,7 @@ const get_next_question = async () => {
            setShowNextButton(false)
            setShowSubmitButton(true)
            setShowQuestion(true)
+          
        }
        )
     } else {
@@ -214,7 +231,7 @@ const handleYoutubePlayingEnds = useCallback(() => {
     }
 
    const url = `${rootpath}/api/quiz_attempts/${quizAttempt.current?.id}/create_video_question_attempt/${quiz?.id?.toString() ?? ""}/${next_question_number}`;
-   console.log("fetch next question attempt directly from TakeVideoQuiz, url=", url)
+   //console.log(" handleYoutubePlayingEnds ***** fetch next question attempt directly from TakeVideoQuiz, url=", url)
    fetch(url)
    .then(response => {
        if (!response.ok) {
@@ -224,20 +241,21 @@ const handleYoutubePlayingEnds = useCallback(() => {
    }
    )
    .then(data => {
-       //console.log(" &&&)((((((%%%%%% Next questionAttemptData = ", data)
+       //console.log(" handleYoutubePlayingEnds ***** questionAttemptData fetched = ", data)
        setQuestion(data.question)
        setQuestionAttemptId(String(data.question_attempt_id))
        setShowNextButton(false)
        setShowSubmitButton(true)
        setShowQuestion(true)
+       //setQuestionAttemptResponse(undefined) // reset previous question attempt response
    }
    )
     }
     //show_question()
-    const timer = setTimeout(() => {
+    setTimeout(() => {
         show_question()
     }
-    , 1200); // show question after 1 second
+    , 500); // show question after 1 second
    
 },[rootpath, quiz, quizAttempt, activeSegmentNumber]);
 //}, [quiz, rootpath]);
@@ -301,7 +319,7 @@ const handleYoutubePlayingEnds = useCallback(() => {
     }
 
            const play_a_video_segment = (segment_number: number) => {
-                console.log("TakeVideoQuiz: play_a_video_segment called, segment number = ", segment_number)
+                //console.log("TakeVideoQuiz: play_a_video_segment called, segment number = ", segment_number)
                 if (showQuestion) {
                     setShowQuestion(false)
                     setShowSubmitButton(false)
@@ -309,7 +327,7 @@ const handleYoutubePlayingEnds = useCallback(() => {
                 setShowNextButton(false)
                 const start_time = videoSegments[segment_number]?.start_time
                 const end_time = videoSegments[segment_number]?.end_time
-                console.log("TakeVideoQuiz: set segment number to: ", segment_number)
+                //console.log("TakeVideoQuiz: set segment number to: ", segment_number)
                 setActiveSegmentNumber(segment_number)
                 youTubeVideoRef.current?.playSegment( start_time, end_time);
            }

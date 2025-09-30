@@ -40,8 +40,13 @@ import './MyReactPlayer.css';
       if (endTime.current && millisecondsPlayed >= convertToMiliSeconds(endTime.current)) {
         setPlaying(false);
         stopCount.current += 1;
-        console.log("Playing stopped,");
+        //console.log("Playing stopped,");
+        if (stopCount.current === 2) {  // to avoid calling parent function twice
+          // because ReactPlayer onProgress is called twice when stopping. Why? Probably due to a lag 
+          // when the end time is reached but the video is not fully stopped yet.
           props.parent_playingEnds && props.parent_playingEnds();
+          stopCount.current = 0;
+        }
       }
     };
 

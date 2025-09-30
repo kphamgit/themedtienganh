@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import  { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 
 import { VideoSegmentProps } from '../quiz_attempts/types';
 
@@ -32,7 +32,6 @@ export const VideoSegmentPlayer = forwardRef<VideoSegmentPlayerRefProps, VideoSe
           question_number: parseInt(num.trim(), 10),
           status: 'not_taken' as 'not_taken' | 'taken'
         }));
-        console.log("@@@@@@ initialStatus", initialStatus)
         setQuestionsTakenStatus(initialStatus)
       }, [segment])
 
@@ -47,15 +46,15 @@ export const VideoSegmentPlayer = forwardRef<VideoSegmentPlayerRefProps, VideoSe
       // Expose methods to the parent via the ref
       useImperativeHandle(ref, () => ({
         getNextQuestionNumber: () => {
-            console.log("@@@@@@ getNextQuestionNumber called", questionsTakenStatus)
+            //console.log("@@@@@@ getNextQuestionNumber called", questionsTakenStatus)
           // search for the first question with status 'not_taken'
           const nextQuestion = questionsTakenStatus?.find(q => q.status === 'not_taken');
-          console.log("XXXXX FOUND nextQuestion", nextQuestion)
+          //console.log("XXXXX FOUND nextQuestion", nextQuestion)
           return nextQuestion ? nextQuestion.question_number : -1; // return -1 if all questions are taken
         },
 
         updateQuestionsTakenStatus: (question_number: number, status: 'not_taken' | 'taken') => {
-            console.log(" ****** updateQuestionsTakenStatus called question number =", question_number, " status=", status)
+           // console.log(" ****** updateQuestionsTakenStatus called question number =", question_number, " status=", status)
           setQuestionsTakenStatus(prevStatus => {
             if (!prevStatus) return prevStatus;
             return prevStatus.map(q => 
