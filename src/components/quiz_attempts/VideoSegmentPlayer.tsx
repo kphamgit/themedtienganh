@@ -70,9 +70,15 @@ export const VideoSegmentPlayer = forwardRef<VideoSegmentPlayerRefProps, VideoSe
                null
         )
       }
-
-   
+      // don't show replay button for now
       return (
+       null
+    );
+    
+})
+
+/*
+  return (
         <div className="flex bg-cyan-200 p-2 m-2 rounded-md">
             <button
                 className="bg-blue-500 text-white p-2 rounded"
@@ -86,8 +92,7 @@ export const VideoSegmentPlayer = forwardRef<VideoSegmentPlayerRefProps, VideoSe
             </button>
         </div>
     );
-    
-})
+*/
 
 /*
  return (
