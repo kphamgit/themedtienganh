@@ -42,7 +42,7 @@ export default function SubCategoryPageStudent(props:any) {
         if (sub_category) {
             //const api_url = `/sub_categories/${sub_category.name}/quizzes/${quiz_id}`
             //"sub_categories/:sub_category_name/take_quiz/:quizId" element={<TakeQuiz />} />
-            if (quiz.video_url === null) {
+            if (quiz.video_url === null || quiz.video_url === '') {
                 const api_url = `/sub_categories/${sub_category.id}/take_quiz/${quiz.id}`
                 navigate(api_url)
             }
@@ -61,7 +61,7 @@ export default function SubCategoryPageStudent(props:any) {
             //const api_url = `/sub_categories/${sub_category.name}/quizzes/${quiz_id}`
             //"sub_categories/:sub_category_name/take_quiz/:quizId" element={<TakeQuiz />} />
             let api_url = null
-            if (quiz.video_url === null) {
+            if (quiz.video_url === null || quiz.video_url === '') {
                  api_url = `/sub_categories/${sub_category.id}/take_quiz/${quiz.id}`
             }
             else {
