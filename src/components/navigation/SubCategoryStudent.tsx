@@ -105,39 +105,7 @@ export default function SubCategoryPageStudent(props:any) {
         </>
     );
 
-    /*
-    <div>
-        <TakeQuizButton quiz_id={quiz.id} quiz_name={quiz.name} video_url={quiz.video_url} parentFunct={take_quiz} />
-    </div>
-    */
-
-   /*
-   export function TakeQuizButton(props: TakeQuizButtonProps ) {
-       const [quizId, setQuizId] = useState<number>()
-       //const [pagesParams, setPagesParams] = useState<PageParamsProps []>()
-       const [videoUrl, setVideoUrl] = useState<string>()
-   
-       useEffect(() => {
-           //console.log("BBBBBBBBB props: ", props)
-           setVideoUrl(props.video_url)
-           setQuizId(props.quiz_id)
-           //if (props.video_params) {
-              // console.log("OOOOO", props.video_params)
-           //}
-           //setVideoParams(props.video_params)
-       },[props])
-   
-       const handleClick = () => {
-           props.parentFunct(quizId, videoUrl)
-       }
-   
-       return (
-           <>
-             <div><button className=' px-2 rounded-md hover:underline' onClick={handleClick}>{props.quiz_name}</button></div>
-           </>
-       )
-   }
-      */
+ 
 }
 
 //  <Link className='underline text-sm' to={`/categories/${sub_category.categoryId}/sub_categories/${sub_category.name}/quizzes/${quiz.id}`}>{quiz.name}</Link>

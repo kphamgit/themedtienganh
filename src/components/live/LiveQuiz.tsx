@@ -28,11 +28,17 @@ import LiveQuestion from './LiveQuestion';
 import { QuestionAttemptResults } from '../quiz_attempts/QuestionAttemptResults';
 import { QuestionAttemptAttributes, QuestionProps } from '../quiz_attempts/types';
 import { ScoreBoard, ScoreBoardRefProps } from './ScoreBoard';
+
 //import {QuestionAttemptResponseProps} from '../components/services/list'
 
 export default function LiveQuiz(props: any) {
    
     const user = useAppSelector(state => state.user.value)
+
+    
+
+    console.log("LiveQuiz user=", user)
+
   
     const [showLivePicture, setShowLivePicture] = useState(false)
     const [pictureUrl, setPictureUrl] = useState<string>('')

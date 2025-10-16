@@ -140,7 +140,7 @@ type ScoreBoardRefProps = {
       if (socket) {
       
         socket.on('live_question_acknowledgement', (arg: { quiz_id: string, question_number: string, target_student: string }) => {
-            console.log("IN score board ON live_question_acknowledgement received target student=", arg.target_student)
+            //console.log("IN score board ON live_question_acknowledgement received target student=", arg.target_student)
             for (let my_div of studenDivRefs.current) {
                 //console.log(my_div.childNodes[0].childNodes[0].textContent);
                 if (my_div.childNodes[0].childNodes[0].textContent === arg.target_student) {

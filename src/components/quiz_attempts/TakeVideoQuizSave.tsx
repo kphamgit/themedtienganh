@@ -29,7 +29,7 @@ import { VideoSegmentPlayer } from "./VideoSegmentPlayer";
 import YoutubeVideoPlayer, { YouTubePlayerRef } from "../shared/YoutubeVideoPlayer";
 import {VideoSegmentPlayerRefProps} from "./VideoSegmentPlayer";
 
-export default function TakeVideoQuiz() {
+export default function TakeVideoQuizSave() {
     
     const params = useParams<{ subCagegoryId: string, quizId: string,  }>();
     //console.log("params in TakeQuiz=", params)
