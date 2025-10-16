@@ -1,5 +1,13 @@
 //export const processQuestion = (format: string | undefined, answer_key: string | undefined, user_answer: string | undefined) => {
 
+export interface ProcessQuestionResultsProps {
+    user_answer: string | undefined,
+    score: number,
+    error_flag: boolean,
+   
+}
+
+
 export const processQuestion = (format: string | undefined, answer_key: string | undefined, user_answer: any | undefined) => {
   
    //console.log("processQuestion format = ", format)
@@ -160,8 +168,9 @@ const process_button_cloze = (answer_key:string, user_answer: string ) => {
 
 
     const process_radio = (answer_key: any, user_answer: string) => {  // 4
-       // console.log("process_radio answer_key = ", answer_key)
-        //console.log("process_radio user_answer = ", user_answer)
+        console.log("process_radio answer_key = ", answer_key)
+        console.log("process_radio user_answer = ", user_answer)
+        
         let error = false;
         let score = 0
         if (answer_key != user_answer) {
@@ -170,14 +179,18 @@ const process_button_cloze = (answer_key:string, user_answer: string ) => {
         else {
             score += 5;
         }
+        console.log("process_radio error = ", error)
 
-        return {
-            ...default_results,
+        const my_results =  { ...default_results,
             user_answer: user_answer,
             score: score,
             error_flag: error,
 
-        }
+            }
+
+         console.log("process_radio my_results = ", my_results)
+         return my_results
+       
     }
 
     const process_checkbox = (answer_key: any, user_answer: string) => {  // 4

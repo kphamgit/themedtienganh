@@ -19,7 +19,7 @@ import { WordsSelect } from "./question_attempts/WordsSelect";
 import { DropDowns } from "./question_attempts/DropDowns";
 import { DynamicLetterInputs } from "./question_attempts/DynamicLetterInputs";
 import { QuestionAttemptResults } from "./QuestionAttemptResults";
-import { processQuestion } from "../live/processQuestion";
+import { processQuestion, ProcessQuestionResultsProps } from "../live/processQuestion";
 import { updateQuestionAttempt } from "../api/updateQuestionAttempt";
 import { useMutation } from "@tanstack/react-query";
 import { useQuiz } from "../../hooks/useQuiz";
@@ -71,6 +71,8 @@ export default function TakeVideoQuiz() {
         const quizAttempt = useRef<QuizAttemptProps | null>(null);
         //const myQuiz = useRef<PartialQuizProps | undefined>(undefined);
 
+        const [processQuestionResults, setProcessQuestionResults] = useState<ProcessQuestionResultsProps | undefined>(undefined)
+
 
         const [videoSegments, setVideoSegments] = useState<VideoSegmentProps[]>([])
 
@@ -87,6 +89,27 @@ export default function TakeVideoQuiz() {
                 (_, index) => videoSegmentRefs.current[index] || React.createRef()
             );
         }, [videoSegments]);
+
+        /* VideoSegmentProps
+ id: number,
+  segment_number: number,
+  question_numbers: string,
+  duration: number,
+  start_time: string,
+  end_time: string,
+  quizId: number
+
+type QuizProps = {
+  id: number,
+  name: string,
+  quiz_number: number,
+  unitId: number,
+  disabled: boolean,
+  video_url: string,
+  video_segments?: VideoSegmentProps[],
+}
+
+        */
 
         //console.log("quiz data ****** in TakeQuiz=", quiz)
         useEffect(() => {
@@ -241,7 +264,7 @@ const handleYoutubePlayingEnds = useCallback(() => {
        setShowNextButton(false)
        setShowSubmitButton(true)
        setShowQuestion(true)
-       //setQuestionAttemptResponse(undefined) // reset previous question attempt response
+     
    }
    )
     }
@@ -258,7 +281,7 @@ const handleYoutubePlayingEnds = useCallback(() => {
         mutationFn: ({  user_answer, score, error_flag }: { user_answer: string, score: string | undefined, error_flag: boolean | undefined  }) =>
           updateQuestionAttempt(questionAttemptId ? String(questionAttemptId) : "", user_answer, score, error_flag),
         onSuccess: (response) => {
-            //console.log('✅ Get XXXXXXX question attempt results:', response)
+           
             setShowNextButton(true)
             setShowSubmitButton(false)
             setShowQuestion(false)
@@ -283,6 +306,7 @@ const handleYoutubePlayingEnds = useCallback(() => {
             const result = processQuestion(question?.format?.toString() ?? "", question?.answer_key ?? "", the_answer ?? "")
               //console.log("handleSubmit result = ", result)
             if (result) { // update the question attempt on the server
+                setProcessQuestionResults(result)
                 mutation.mutate({  // next question button will be enabled in onSuccess callback from mutation
                     user_answer: result?.user_answer,
                     score: result?.score.toString(),
@@ -472,6 +496,21 @@ const handleYoutubePlayingEnds = useCallback(() => {
             </div>
         </div>
         <div className='w-1/4'>
+                { questionAttemptResponse && processQuestionResults &&
+                <div className='flex flex-col justify-center items-center'><QuestionAttemptResults
+                    live_flag={false}
+                    question={question}
+                    response={processQuestionResults} />
+                    </div>
+                }
+            </div>
+        </div>
+    )
+
+}
+
+/*
+   <div className='w-1/4'>
                 { questionAttemptResponse &&
                 <div className='flex flex-col justify-center items-center'><QuestionAttemptResults
                     live_flag={false}
@@ -481,9 +520,7 @@ const handleYoutubePlayingEnds = useCallback(() => {
                 }
             </div>
         </div>
-    )
-
-}
+*/
 
 /*
   :

@@ -4,6 +4,7 @@ import { FaFrown } from 'react-icons/fa';
 //import ReactPlayer from 'react-player';
 import { QuestionAttemptAttributes, QuestionProps } from './types';
 import  QuestionHelper from './QuestionHelper';
+import { ProcessQuestionResultsProps } from '../live/processQuestion';
 
 
   interface DynamicObject {
@@ -14,7 +15,8 @@ import  QuestionHelper from './QuestionHelper';
     export function QuestionAttemptResults(props:
         { live_flag: boolean, 
                 question: QuestionProps | undefined,
-                response: QuestionAttemptAttributes
+                //response: QuestionAttemptAttributes
+                response: ProcessQuestionResultsProps
             }) 
            {
         //console.log("XXXXQQQQQQQQ", question_attempt_results)
@@ -35,7 +37,7 @@ import  QuestionHelper from './QuestionHelper';
                     const choice_number = props.response.user_answer.charAt(props.response.user_answer.length - 1)
                     // content = "one/two/three/four"
                     const choice_text = props?.question?.content.split('/')[parseInt(choice_number) - 1]
-                    console.log("choice_number, choice_text=", choice_number, choice_text)
+                    console.log("QuestonAttempResult: choice_number, choice_text=", choice_number, choice_text)
                     displayed_user_answer = choice_text
             }
             setDisplayedUserAnswer(displayed_user_answer)
@@ -45,10 +47,11 @@ import  QuestionHelper from './QuestionHelper';
             let displayed_answer_key = props.question?.answer_key
             if (props?.question?.format === 4) { //radio
                      // look for choice index in props.response.user_answer and replace with choice text
-                     const choice_number = props.response.user_answer.charAt(props.response.user_answer.length - 1)
+                     //const choice_number = props.response.user_answer.charAt(props.response.user_answer.length - 1)
+                     const choice_number = props.question?.answer_key.charAt(props.question?.answer_key.length - 1)
                      // content = "one/two/three/four"
                      const choice_text = props?.question?.content.split('/')[parseInt(choice_number) - 1]
-                     //console.log("choice_number, choice_text=", choice_number, choice_text)
+                     console.log("QuestonAttempResult: choice_number, choice_text=", choice_number, choice_text)
                      displayed_answer_key = choice_text
             }
             setDisplayedAnswerKey(displayed_answer_key)
