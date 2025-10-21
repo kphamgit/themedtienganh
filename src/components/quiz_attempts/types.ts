@@ -16,6 +16,7 @@ export type VideoSegmentProps = {
   start_time: string,
   end_time: string,
   quizId: number
+  questions: any[]
 }
 
 export type QuestionAttemptResponseProps =

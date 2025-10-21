@@ -26,11 +26,21 @@ import './MyReactPlayer.css';
     const endTime = useRef<string | null>(null);
 
     const convertToMiliSeconds = (time: string): number => {
+      if (!time || typeof time !== "string") {
+        console.error("Invalid time value:", time);
+        return 0; // Return 0 or handle the error appropriately
+      }
+    
       const [minutes, seconds] = time.split(":").map(Number); // Split and convert to numbers
       return (minutes * 60 + seconds) * 1000; // Calculate total seconds
     };
 
     const convertToSeconds = (time: string): number => {
+      if (!time || typeof time !== "string") {
+        console.error("Invalid time value:", time);
+        return 0; // Return 0 or handle the error appropriately
+      }
+    
       const [minutes, seconds] = time.split(":").map(Number); // Split and convert to numbers
       return (minutes * 60 + seconds); // Calculate total seconds
     };

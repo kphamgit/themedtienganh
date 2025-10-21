@@ -28,6 +28,7 @@ import { VideoSegmentProps } from "./types";
 import { VideoSegmentPlayer } from "./VideoSegmentPlayer";
 import YoutubeVideoPlayer, { YouTubePlayerRef } from "../shared/YoutubeVideoPlayer";
 import {VideoSegmentPlayerRefProps} from "./VideoSegmentPlayer";
+import { get } from "http";
 
 export default function TakeVideoQuiz() {
     
@@ -76,7 +77,7 @@ export default function TakeVideoQuiz() {
 
         const [videoSegments, setVideoSegments] = useState<VideoSegmentProps[]>([])
 
-        const [activeSegmentNumber, setActiveSegmentNumber] = useState<number | undefined>()
+        const [activeSegmentIndex, setActiveSegmentIndex] = useState<number | undefined>() // index in the videoSegments array, starts from 0
      
         const {data: quiz} = useQuiz(
             params.quizId ? params.quizId : ""
@@ -90,28 +91,6 @@ export default function TakeVideoQuiz() {
             );
         }, [videoSegments]);
 
-        /* VideoSegmentProps
- id: number,
-  segment_number: number,
-  question_numbers: string,
-  duration: number,
-  start_time: string,
-  end_time: string,
-  quizId: number
-
-type QuizProps = {
-  id: number,
-  name: string,
-  quiz_number: number,
-  unitId: number,
-  disabled: boolean,
-  video_url: string,
-  video_segments?: VideoSegmentProps[],
-}
-
-        */
-
-        //console.log("quiz data ****** in TakeQuiz=", quiz)
         useEffect(() => {
             if (quiz) {
                 //console.log("New VIDEO quiz data received:", quiz);
@@ -148,12 +127,12 @@ type QuizProps = {
 const get_next_question = async () => {
    // console.log(" ^^^^^^ get_next_question: active Segment = ", activeSegmentNumber)
     setQuestionAttemptResponse(undefined) // reset previous question attempt response
-    if (activeSegmentNumber === undefined) {
+    if (activeSegmentIndex === undefined) {
         console.log("currentPlayingSegmentIndex is undefined, setting to 0")
         return
     }
 
-    const videoSegmentRef = videoSegmentRefs.current[activeSegmentNumber];
+    const videoSegmentRef = videoSegmentRefs.current[activeSegmentIndex];
 
     if (videoSegmentRef?.current) {
         const nextQuestionNumber = videoSegmentRef.current.getNextQuestionNumber();
@@ -161,13 +140,19 @@ const get_next_question = async () => {
             //console.log("All questions in this segment have been taken.");
             //console.log("Currently active segment is: ", activeSegmentNumber, " let's move on to the next segment if any");
             // check if there are more video segments to play
-            if (activeSegmentNumber + 1 < videoSegments.length) {
-                const nextSegmentIndex = activeSegmentNumber + 1;
+            // 0, 1, 2
+            // length = 3
+
+            /// 1, 2, 3
+            // length = 3
+
+            if (activeSegmentIndex + 1 < videoSegments.length) {
+                const nextSegmentNumber = activeSegmentIndex + 1;
                 //console.log("There are more video segments to play. Move to segment #", nextSegmentIndex);
-                setActiveSegmentNumber(nextSegmentIndex);
+                setActiveSegmentIndex(nextSegmentNumber);
                 // play the next segment
-                const start_time = videoSegments[nextSegmentIndex]?.start_time
-                const end_time = videoSegments[nextSegmentIndex]?.end_time
+                const start_time = videoSegments[nextSegmentNumber]?.start_time
+                const end_time = videoSegments[nextSegmentNumber]?.end_time
                 // disable next question
                 setShowNextButton(false)
                 youTubeVideoRef.current?.playSegment(start_time, end_time);
@@ -220,7 +205,7 @@ const get_next_question = async () => {
        }
        )
     } else {
-        console.log(`No ref found for segment index ${activeSegmentNumber}`);
+        console.log(`No ref found for segment index ${activeSegmentIndex}`);
     }
 }
 
@@ -233,8 +218,9 @@ const handleYoutubePlayingEnds = useCallback(() => {
     // but here we get the first question (within the questions of the active segment in case
     // the user has already answered some questions in this segment and rewatched the segment
     const show_question = () => {
-        const next_question_number = activeSegmentNumber !== undefined 
-        ? videoSegmentRefs.current[activeSegmentNumber]?.current?.getNextQuestionNumber() 
+        //console.log(" show_question called ,current activeSegmentNumber = ", activeSegmentIndex)
+        const next_question_number = activeSegmentIndex !== undefined 
+        ? videoSegmentRefs.current[activeSegmentIndex]?.current?.getNextQuestionNumber() 
         : undefined;
      
     if (next_question_number === undefined) {
@@ -246,6 +232,8 @@ const handleYoutubePlayingEnds = useCallback(() => {
         console.log("quiz is undefined, return")
         return
     }
+
+    //console.log(" handleYoutubePlayingEnds ***** next_question_number = ", next_question_number)
 
    const url = `${rootpath}/api/quiz_attempts/${quizAttempt.current?.id}/create_video_question_attempt/${quiz?.id?.toString() ?? ""}/${next_question_number}`;
    //console.log(" handleYoutubePlayingEnds ***** fetch next question attempt directly from TakeVideoQuiz, url=", url)
@@ -274,19 +262,21 @@ const handleYoutubePlayingEnds = useCallback(() => {
     }
     , 500); // show question after 1 second
    
-},[rootpath, quiz, quizAttempt, activeSegmentNumber]);
+},[rootpath, quiz, quizAttempt, activeSegmentIndex]);
 //}, [quiz, rootpath]);
 
     const mutation = useMutation({
         mutationFn: ({  user_answer, score, error_flag }: { user_answer: string, score: string | undefined, error_flag: boolean | undefined  }) =>
           updateQuestionAttempt(questionAttemptId ? String(questionAttemptId) : "", user_answer, score, error_flag),
         onSuccess: (response) => {
-           
+            
             setShowNextButton(true)
             setShowSubmitButton(false)
             setShowQuestion(false)
-
-            const currentVideoSegmentRef = videoSegmentRefs.current[activeSegmentNumber ?? 0];
+           
+            const currentVideoSegmentRef = videoSegmentRefs.current[activeSegmentIndex ?? 0];
+            //console.log("TakeVideoQuiz: mutation onSuccess, activeSegmentNumber = ", activeSegmentIndex)
+            //console.log("Mutation successful, current questionsTakenStatus for this segment: ", currentVideoSegmentRef?.current?.getQuestionsTakenStatus());
             currentVideoSegmentRef.current?.updateQuestionsTakenStatus(question?.question_number ?? 0, 'taken');
 
             setQuestionAttemptResponse(response)
@@ -336,17 +326,17 @@ const handleYoutubePlayingEnds = useCallback(() => {
 
     }
 
-           const play_a_video_segment = (segment_number: number) => {
+           const start_video = () => {
                 //console.log("TakeVideoQuiz: play_a_video_segment called, segment number = ", segment_number)
                 if (showQuestion) {
                     setShowQuestion(false)
                     setShowSubmitButton(false)
                 }
                 setShowNextButton(false)
-                const start_time = videoSegments[segment_number]?.start_time
-                const end_time = videoSegments[segment_number]?.end_time
+                const start_time = videoSegments[0]?.start_time
+                const end_time = videoSegments[0]?.end_time
                 //console.log("TakeVideoQuiz: set segment number to: ", segment_number)
-                setActiveSegmentNumber(segment_number)
+                setActiveSegmentIndex(0)
                 youTubeVideoRef.current?.playSegment( start_time, end_time);
            }
 
@@ -428,7 +418,7 @@ const handleYoutubePlayingEnds = useCallback(() => {
     return (
         <div className='flex flex-row items-center bg-gray-100 mx-16'> 
         <div className='flex flex-col  bg-gray-200'>
-            <h1>Current Playing Segment: {activeSegmentNumber}</h1>
+            <h1>Current Playing Segment: {activeSegmentIndex}</h1>
             <div>
                 <YoutubeVideoPlayer
                 ref={youTubeVideoRef}
@@ -439,7 +429,7 @@ const handleYoutubePlayingEnds = useCallback(() => {
                 <button className="m-2 p-2 bg-amber-500 rounded-md"
                 onClick={() => { 
                         setVideoStarted(true)
-                        play_a_video_segment(0)
+                        start_video()
                     
                 }
                 }>Start video</button>
@@ -452,8 +442,7 @@ const handleYoutubePlayingEnds = useCallback(() => {
                                 key={index}
                                 ref={videoSegmentRefs.current[index]} // Assign the ref
                                 segment={segment} 
-                                isActive={index === activeSegmentNumber}
-                                parent_playSegment={() => play_a_video_segment(segment.segment_number)}
+                                isActive={index === activeSegmentIndex}
                                 showQuestion = {showQuestion}
                             />
                        
