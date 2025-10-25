@@ -8,7 +8,8 @@ export const useQuiz = (quiz_id: string, enabled: boolean) => {
     queryKey: ['quiz', quiz_id],
     queryFn: () => fetchQuiz(quiz_id),
     enabled: enabled, // prevents the query from running if enabled is falsy
-    staleTime: 1000, // 5 minutes
+    staleTime: 5000, // 5 minutes
+    //staleTime: 0, // no caching, always refetch
   });
 };
 

@@ -21,7 +21,7 @@ name        | varchar(255) | YES  |     | NULL    |                |
 */
 
   export const fetchQuiz = async (quiz_id: string): Promise<QuizProps> => {
-   //console.log("fetchQuestionAttempt ENTRY quiz_attempt_id=", quiz_attempt_id);
+   //console.log("fetchQuiz ENTRY quiz_id=", quiz_id);
       const rootpath = store.getState().rootpath.value
       
       const url = `${rootpath}/api/quizzes/${quiz_id}`;

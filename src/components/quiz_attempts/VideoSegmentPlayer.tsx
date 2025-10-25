@@ -1,6 +1,7 @@
 import  { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 
-import { VideoSegmentProps } from '../quiz_attempts/types';
+import { VideoSegmentProps } from './types';
+import { YouTubePlayerRef } from '../shared/YoutubeVideoPlayer';
 
 interface QuestionStatusProps 
     {
@@ -9,24 +10,30 @@ interface QuestionStatusProps
     }
 
 export interface VideoSegmentPlayerRefProps {
+
+    playSegment: () => void;
     getNextQuestionNumber: () => number;
     updateQuestionsTakenStatus: (question_number: number, status: 'not_taken' | 'taken') => void;
     getQuestionsTakenStatus: () => QuestionStatusProps[] | undefined; // this function is here only for debugging. Will have to remove
-}
+    enablePlayButton: () => void;
+  }
+
 
 interface VideoSegmentPlayerProps {
+  youtubePlayerRef: React.RefObject<YouTubePlayerRef>; // Accept the YoutubeVideoPlayer ref
   segment: VideoSegmentProps;
   //parent_playSegment: (segment_number: number) => void;
   isActive: boolean; // Optional prop to indicate if this segment is active
-  showQuestion: boolean;
+  //showQuestion: boolean;
+  parent_setShowQuestion: (show: boolean) => void;
 }
 
 export const VideoSegmentPlayer = forwardRef<VideoSegmentPlayerRefProps, VideoSegmentPlayerProps>(
-    ({ segment, isActive, showQuestion }, ref) => {
+    ({ segment, isActive , youtubePlayerRef, parent_setShowQuestion}, ref) => {
 
+      const [playButtonDisabled, setPlayButtonDisabled] = useState<boolean>(false);
       const [questionsTakenStatus, setQuestionsTakenStatus] = useState<QuestionStatusProps[]>()
-      const [allQuestionsTaken, setAllQuestionsTaken] = useState(false)
-     
+    
      
       useEffect(() => {
         //console.log("VideoSegmentPlayer: segment changed, segment=", segment)
@@ -48,28 +55,15 @@ export const VideoSegmentPlayer = forwardRef<VideoSegmentPlayerRefProps, VideoSe
           question_number: q.question_number,
           status: 'not_taken' as 'not_taken' | 'taken'
         }));
-/*
-        const initialStatus = segment.question_numbers.split(',').map(num => ({
-          question_number: parseInt(num.trim(), 10),
-          status: 'not_taken' as 'not_taken' | 'taken'
-        }));
-        */
+
         //console.log("VideoSegmentPlayer: initialStatus =", initialStatus)
         setQuestionsTakenStatus(initialStatus)
       }, [segment])
 
-      useEffect(() => {
-        if (questionsTakenStatus && questionsTakenStatus.every(q => q.status === 'taken')) {
-          setAllQuestionsTaken(true);
-        } else {
-          setAllQuestionsTaken(false);  
-        }
-      }, [questionsTakenStatus])
-
       // Expose methods to the parent via the ref
       useImperativeHandle(ref, () => ({
         getNextQuestionNumber: () => {
-           // console.log("VideoSegmentPlayer: in getNextQuestionNumber, questionsTakenStatus = ", questionsTakenStatus)
+           //console.log("VideoSegmentPlayer: in getNextQuestionNumber, questionsTakenStatus = ", questionsTakenStatus)
           // search for the first question with status 'not_taken'
           const nextQuestion = questionsTakenStatus?.find(q => q.status === 'not_taken');
           //console.log("XXXXX FOUND nextQuestion", nextQuestion)
@@ -87,13 +81,49 @@ export const VideoSegmentPlayer = forwardRef<VideoSegmentPlayerRefProps, VideoSe
         },
         getQuestionsTakenStatus: () => {
           return questionsTakenStatus;
+        },
+        playSegment: () => {
+          // this function is called automatically (from the parent component) when the last question of a segment is answered
+          // this is different from the even handler handlePlaySegment below. It is not redundant. 
+          if (youtubePlayerRef.current) {
+              youtubePlayerRef.current.playSegment(segment.start_time, segment.end_time); // Call playSegment on YoutubeVideoPlayer
+              setPlayButtonDisabled(true);}
+        },
+        enablePlayButton: () => {  // to enable the Play button when video segment finishes playing
+                                   // called from parent component when video ends
+          setPlayButtonDisabled(false);
         }
+      
+    
 
       }));
-      // don't show replay button for now
-      return (
-        null
-     );
+     
+      // this function is called when the Play button is clicked
+      const handlePlaySegment = () => {
+        parent_setShowQuestion(false);
+        if (youtubePlayerRef.current) {
+            youtubePlayerRef.current.playSegment(segment.start_time, segment.end_time); // Call playSegment on YoutubeVideoPlayer
+            setPlayButtonDisabled(true);
+          }
+    };
+// className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 my-2 rounded'
+    return (
+      <div>
+        {isActive &&
+       <button
+       className={`${
+         playButtonDisabled
+           ? 'bg-blue-50 text-gray-400 cursor-not-allowed'
+           : 'bg-blue-500 hover:bg-blue-700 text-white'
+       } font-bold py-1 px-3 my-2 rounded`}
+       disabled={playButtonDisabled}
+       onClick={handlePlaySegment}
+     >
+       Play
+     </button>
+        }
+      </div>
+    );
 })
 
 /*
