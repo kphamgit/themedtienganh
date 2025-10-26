@@ -91,7 +91,21 @@ export default function MainStudent(props: any ) {
           }
       }, [socket, navigate, user.user_name])
         
-
+//play_video_segment
+      useEffect(() => {
+        socket.on('live_video_quiz', (arg: { target_student: string, quizId: string }) => {
+          //if (arg.target_student.trim() === 'everybody') {
+         // console.log(" MainStudent live_video_quiz received, arg=", arg)
+            navigate(`/live_video_quiz/${arg.quizId}`)
+            //navigate(`/live_video_quiz/${quiz_id}`, { state: {video_url: arg.video_url, video_duration: arg.video_duration} })
+          //}
+  
+        })
+        return () => {
+          socket?.off("live_video_quiz")
+        }
+    }, [socket, navigate])
+      
   useEffect(() => {
       socket.on('enable_game', (arg: { game_id: string, backcolor: string }) => {
         navigate(`/live_game/${arg.game_id}/${arg.backcolor}`)

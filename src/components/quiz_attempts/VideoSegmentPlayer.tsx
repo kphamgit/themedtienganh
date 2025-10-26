@@ -119,7 +119,7 @@ export const VideoSegmentPlayer = forwardRef<VideoSegmentPlayerRefProps, VideoSe
        disabled={playButtonDisabled}
        onClick={handlePlaySegment}
      >
-       Play
+       Play 
      </button>
         }
       </div>

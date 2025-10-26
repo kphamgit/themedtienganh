@@ -59,7 +59,7 @@ type ScoreBoardRefProps = {
     const { questionNumber } = useLiveQuestionNumber();
 
     useEffect(() => {
-        console.log("IN score board NEW ****************.......questionNumber changed to: ", questionNumber)
+        //console.log("IN score board NEW ****************.......questionNumber changed to: ", questionNumber)
         for (let my_div of studenDivRefs.current) {
             //console.log(my_div.childNodes[0].childNodes[0].textContent);
             if (my_div.childNodes[0].childNodes[0].textContent === user.user_name) {

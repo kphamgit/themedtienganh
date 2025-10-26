@@ -9,6 +9,7 @@ import { RecordViewTeacher } from './RecordViewTeacher'
 import { SendLivePicture } from '../live/SendLivePicture'
 import { getAClass } from '../../services/list'
 import { useSocketContext } from '../../hooks/useSocketContext'
+import { SendPlayVideoSegment } from '../live/SendPlayVideoSegment'
 
 
 export default function TeacherControl(props: any ) {
@@ -98,6 +99,9 @@ return (
         <SendLiveQuestion />
       </div>
 
+      <div className='mx-14'>
+        <SendPlayVideoSegment />
+      </div>
       <div>
         <SendLivePicture user_name={user_name} />
       </div>

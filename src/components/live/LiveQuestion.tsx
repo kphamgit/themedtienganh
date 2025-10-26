@@ -115,45 +115,12 @@ export default function LiveQuestion(props: LiveQuestionProps) {
             } else {
                 console.error("Question data is undefined");
             }
-            //console.log("handleSubmit result = ", result)
-            //props.set_question_attempt_result(result)   
         }
       }
       
     if (endOfQuiz) {
        navigate('/')
     }
-
-    const ball = {
-        width: 100,
-        height: 100,
-        backgroundColor: "#5686F5",
-        borderRadius: "50%",
-    }
-
-    const center: React.CSSProperties = {
-
-        position: "absolute",
-        margin: "auto",
-        top: 0,
-        right: 0,
-        bottom: 0,
-        left: 0,
-        width: "100px",
-        height: "100px",
-        backgroundColor: "red",
-        borderRadius: "50%",
-      
-   
-      }
-
-      const text: React.CSSProperties = {
-        position: "absolute",
-        textAlign: "center",
-        width: "100%",
-        top: "30%",
-        fontSize: "30px",
-      }
 
     const enableSubmitButton = () => {
         // retrieve the submit button and enable it
@@ -169,10 +136,10 @@ export default function LiveQuestion(props: LiveQuestionProps) {
                        
                         { props.question &&
                             <>
-                              <div className='mb-2'>Question: {questionNumber}</div>
-                            <div className='bg-bgColorQuestionContent text-textColor1'>
-                            
-                            <div  className='text-textColor2' dangerouslySetInnerHTML={{ __html: props.question.instruction }}></div>
+                        <div className='mb-2'>Question: {questionNumber}</div>
+                        <div className='bg-bgColorQuestionContent text-textColor1'>
+
+                            <div className='text-textColor2' dangerouslySetInnerHTML={{ __html: props.question.instruction }}></div>
                             <div className='m-2 text-textColor3'>{props.question.prompt}</div>
                             <div>
                                 {(props.question.audio_str && props.question.audio_str.trim().length > 0) &&
@@ -181,7 +148,7 @@ export default function LiveQuestion(props: LiveQuestionProps) {
                                 {(props.question.audio_src && props.question.audio_src.trim().length > 0) &&
                                     <audio src={props.question.audio_src} controls />
                                 }
-                            
+
                             </div>
                       
                             <div className='mt-3'>
@@ -191,12 +158,11 @@ export default function LiveQuestion(props: LiveQuestionProps) {
                                 <ButtonSelectCloze 
                                 content={props.question.content} 
                                 choices={props.question.button_cloze_options} 
-                                parentFuncEnableSubmitButton={(enableSubmitButton)}
                                 ref={childRef} />
                             ) : props.question.format === 3 ? (
                                 <ButtonSelect content={props.question.content} ref={childRef} />
                             ) : props.question.format === 4 ? (
-                                <RadioQuestion question={props.question} ref={childRef} />
+                                <RadioQuestion content={props.question.content} ref={childRef} />
                             ) : props.question.format === 6 ? (
                                 <DragDrop content={props.question.content} ref={childRef} />
                             ) : props.question.format === 7 ? (

@@ -19,6 +19,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import TakeQuiz from "./components/quiz_attempts/TakeQuiz";
 import TakeVideoQuiz from "./components/quiz_attempts/TakeVideoQuiz";
+import LiveVideoQuiz from "./components/live/LiveVideoQuiz";
 
 const Home = lazy(() => import("./components/navigation/Home"))
 const SubCategoryPageStudent = lazy(() => import("./components/navigation/SubCategoryStudent"))
@@ -103,12 +104,11 @@ function App() {
                   <Route path="sub_categories/:subCagegoryId/take_video_quiz/:quizId" element={<TakeVideoQuiz />} />
                   <Route path="/live_text" element={<LiveText />} />
                   <Route path="/simple_peer" element={<SimplePeer />} />
+                  <Route path="/live_video_quiz/:quizId" element={<LiveVideoQuiz />} />
                   <Route path="/live_quiz" element={<LiveQuiz />} >
                       <Route path="live_picture" element={<LivePicture />} />
                   </Route>
                   <Route path="/live_game/:game_id/:backcolor" element={<LiveMemoryGame />} />
-                
-                 
                 </Route>
               </Routes>
             </BrowserRouter>

@@ -19,6 +19,18 @@ import { NameList } from './NameList'
             socket.emit('enable_live_quiz', arg)
         }
       }
+      
+      const live_video_quiz: MouseEventHandler<HTMLButtonElement> = (event) => {
+        
+        if (socket) {
+            console.log("sending live_video_quiz ...")
+            //const el = event.target as HTMLButtonElement
+            //const arg = {}
+            const arg = {quizId: liveQuizId}
+            socket.emit('live_video_quiz', arg)
+        }
+      }
+
 
     const send_live_question: MouseEventHandler<HTMLButtonElement> = (event) => {
         if (liveQuizId.length === 0) {
@@ -56,6 +68,9 @@ import { NameList } from './NameList'
                         <div className='text-md flex flex-col'>
                             <div className='mx-14 m-2'>
                             <button className='p-1 rounded-md bg-bgColorSubmitBtn text-textColorSubmitBtn mx-2' onClick={enable_live_quiz}>Enable Live Quiz</button>
+                             </div>
+                             <div className='mx-14 m-2'>
+                            <button className='p-1 rounded-md bg-bgColorSubmitBtn text-textColorSubmitBtn mx-2' onClick={live_video_quiz}>Send Live Video Quiz</button>
                              </div>
                             <div>
                             <span className='mx-1 text-textColor3'>Quiz id 1:</span>

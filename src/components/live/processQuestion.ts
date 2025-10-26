@@ -168,8 +168,8 @@ const process_button_cloze = (answer_key:string, user_answer: string ) => {
 
 
     const process_radio = (answer_key: any, user_answer: string) => {  // 4
-        console.log("process_radio answer_key = ", answer_key)
-        console.log("process_radio user_answer = ", user_answer)
+        //console.log("process_radio answer_key = ", answer_key)
+        //console.log("process_radio user_answer = ", user_answer)
         
         let error = false;
         let score = 0
@@ -179,7 +179,7 @@ const process_button_cloze = (answer_key:string, user_answer: string ) => {
         else {
             score += 5;
         }
-        console.log("process_radio error = ", error)
+        //console.log("process_radio error = ", error)
 
         const my_results =  { ...default_results,
             user_answer: user_answer,
@@ -188,14 +188,14 @@ const process_button_cloze = (answer_key:string, user_answer: string ) => {
 
             }
 
-         console.log("process_radio my_results = ", my_results)
+        //console.log("process_radio my_results = ", my_results)
          return my_results
        
     }
 
     const process_checkbox = (answer_key: any, user_answer: string) => {  // 4
-        console.log("process_checkbox answer_key = ", answer_key)
-        console.log("process_checkbox user_answer = ", user_answer)
+        //console.log("process_checkbox answer_key = ", answer_key)
+        //console.log("process_checkbox user_answer = ", user_answer)
         let error = false;
         let score = 0
         let answer_key_parts = answer_key.split('/')
@@ -210,9 +210,9 @@ const process_button_cloze = (answer_key:string, user_answer: string ) => {
         else {
             // sort both arrays and compare
            const answer_keys_arr = answer_key_parts.map( (part:string) => part.trim() ).sort()
-           console.log("answer_keys_arr = ", answer_keys_arr)
+           //console.log("answer_keys_arr = ", answer_keys_arr)
            const user_answers_arr = user_answer_parts.map( (part:string) => part.trim() ).sort()
-              console.log("user_answers_arr = ", user_answers_arr)
+              //console.log("user_answers_arr = ", user_answers_arr)
               // join both arrays into strings and compare
            if (answer_keys_arr.join(',') != user_answers_arr.join(',')) {
                 error = true
